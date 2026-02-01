@@ -6,10 +6,10 @@
 [![Portfolio Project](https://img.shields.io/badge/Portfolio-TFM-blueviolet.svg)]()
 [![Development Status](https://img.shields.io/badge/Status-Fase%201%20en%20Desarrollo-yellow.svg)]()
 [![Phase](https://img.shields.io/badge/Fase-1%2F6-orange.svg)]()
-[![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?logo=php)](https://php.net)
-[![Symfony](https://img.shields.io/badge/Symfony-7.2-000000?logo=symfony)](https://symfony.com)
+[![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php)](https://php.net)
+[![Symfony](https://img.shields.io/badge/Symfony-7.4-000000?logo=symfony)](https://symfony.com)
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.5-4FC08D?logo=vue.js)](https://vuejs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?logo=typescript)](https://typescriptlang.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript)](https://typescriptlang.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql)](https://postgresql.org)
 
 ---
@@ -185,8 +185,8 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 
 ### Backend - API REST
 
-- **Framework:** Symfony 7.2
-- **Lenguaje:** PHP 8.2
+- **Framework:** Symfony 7.4
+- **Lenguaje:** PHP 8.4
 - **Base de Datos:** PostgreSQL 16
 - **ORM:** Doctrine ORM
 - **Testing:** PestPHP
@@ -196,8 +196,8 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 ### Frontend - Single Page Application
 
 - **Framework:** Vue.js 3.5 (Composition API)
-- **Lenguaje:** TypeScript 5.3
-- **Bundler:** Vite 5
+- **Lenguaje:** TypeScript 5.6
+- **Bundler:** Vite 6
 - **CSS Framework:** Tailwind CSS 3.4
 - **Validación:** Zod
 - **Testing:** Vitest
@@ -247,7 +247,7 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 - **Git:** 2.40+
 
 **Opcional (solo para desarrollo sin Docker):**
-- PHP 8.2+ con extensiones: pdo_pgsql, intl, opcache, apcu
+- PHP 8.4+ con extensiones: pdo_pgsql, intl, opcache, apcu
 - PostgreSQL 16+
 
 ### Pasos de Instalación
