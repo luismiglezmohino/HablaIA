@@ -1,0 +1,82 @@
+# =============================================================================
+# HablaIA - Backend CI
+# =============================================================================
+# Pipeline de integración continua para el backend Symfony
+
+name: Backend CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Tests y Análisis
+  # ---------------------------------------------------------------------------
+  test:
+    name: Tests PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: ['8.2']
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: hablaia_test
+          POSTGRES_USER: hablaia_user
+          POSTGRES_PASSWORD: hablaia_pass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo_pgsql, intl, opcache
+          coverage: xdebug
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run PHPStan
+        run: composer analyse
+
+      - name: Run tests
+        run: composer test
+        env:
+          DATABASE_URL: "postgresql://hablaia_user:hablaia_pass@localhost:5432/hablaia_test?serverVersion=16"
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.xml
+          flags: backend
