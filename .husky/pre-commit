@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# =============================================================================
+# HablaIA - Pre-commit Hook
+# =============================================================================
+# Ejecuta lint-staged para verificar archivos staged
+
+npx lint-staged

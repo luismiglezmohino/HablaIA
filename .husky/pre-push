@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# =============================================================================
+# HablaIA - Pre-push Hook
+# =============================================================================
+# Ejecuta tests antes de push
+
+echo "Running frontend tests..."
+if [ -f "frontend/package.json" ]; then
+    cd frontend && npm run test -- --run || exit 1
+    cd ..
+fi
+
+echo "Running backend tests..."
+if [ -f "backend/vendor/bin/pest" ]; then
+    cd backend && ./vendor/bin/pest || exit 1
+    cd ..
+fi
+
+echo "All tests passed!"
