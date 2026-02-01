@@ -18,7 +18,7 @@ src/
 ├── Domain/                 # Capa de Dominio (pura, sin dependencias)
 │   ├── Pictogram/          # Pictogramas ARASAAC
 │   ├── Category/           # Categorías (Acciones, Emociones, etc.)
-│   └── Phrase/             # Frases cacheadas de OpenAI
+│   └── Phrase/             # Frases cacheadas del LLM
 ├── Application/            # Casos de uso (⏳ pendiente)
 ├── Infrastructure/         # Implementaciones técnicas (⏳ pendiente)
 └── Shared/                 # Código compartido
@@ -28,11 +28,13 @@ src/
 
 Ver diagramas completos en [docs/diagrams/domain-layer.md](../docs/diagrams/domain-layer.md)
 
-| Módulo | Entidad | Value Objects | Repositorio |
-|--------|---------|---------------|-------------|
-| **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `PictogramRepository` |
-| **Category** | `Category` | `CategoryId` | `CategoryRepository` |
-| **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `PhraseRepository` |
+| Módulo | Entidad | Value Objects | Repositorio | Servicio |
+|--------|---------|---------------|-------------|----------|
+| **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `PictogramRepository` | - |
+| **Category** | `Category` | `CategoryId` | `CategoryRepository` | - |
+| **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `PhraseRepository` | `PhraseGeneratorInterface` |
+
+> **Nota:** `PhraseGeneratorInterface` permite cambiar el proveedor de IA sin modificar el dominio.
 
 ## Instalación
 
@@ -58,13 +60,13 @@ php bin/console app:sync-arasaac
 symfony server:start
 
 # Tests
-./vendor/bin/pest
+composer test
 
 # Tests con cobertura
-./vendor/bin/pest --coverage
+composer test:coverage
 
 # Análisis estático
-./vendor/bin/phpstan analyse src --level=8
+composer analyse
 
 # Limpiar caché
 php bin/console cache:clear

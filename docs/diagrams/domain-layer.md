@@ -92,7 +92,7 @@ classDiagram
     PictogramSequence --> PictogramId
 ```
 
-## Diagrama de Repositorios
+## Diagrama de Repositorios y Servicios
 
 ```mermaid
 classDiagram
@@ -121,11 +121,19 @@ classDiagram
         +save(Phrase) void
     }
 
+    class PhraseGeneratorInterface {
+        <<interface>>
+        +generate(PictogramSequence) array~string~
+    }
+
     CategoryRepository ..> Category
     PictogramRepository ..> Pictogram
     PictogramRepository ..> CategoryId
     PhraseRepository ..> Phrase
+    PhraseGeneratorInterface ..> PictogramSequence
 ```
+
+> **Nota:** `PhraseGeneratorInterface` permite cambiar el proveedor de IA (OpenAI, Claude, Gemini, etc.) sin modificar el dominio.
 
 ## Diagrama de Módulos
 
@@ -150,11 +158,13 @@ graph TB
             Ph_VO1[PhraseId]
             Ph_VO2[PictogramSequence]
             Ph_Repo[PhraseRepository]
+            Ph_Service[PhraseGeneratorInterface]
         end
     end
 
     P_Entity --> C_VO
     Ph_VO2 --> P_VO1
+    Ph_Service --> Ph_VO2
 
     style Domain fill:#e1f5fe
     style PictogramModule fill:#fff3e0
@@ -189,11 +199,11 @@ sequenceDiagram
 
 ## Resumen
 
-| Módulo | Entidad | Value Objects | Repositorio |
-|--------|---------|---------------|-------------|
-| **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `PictogramRepository` |
-| **Category** | `Category` | `CategoryId` | `CategoryRepository` |
-| **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `PhraseRepository` |
+| Módulo | Entidad | Value Objects | Repositorio | Servicio |
+|--------|---------|---------------|-------------|----------|
+| **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `PictogramRepository` | - |
+| **Category** | `Category` | `CategoryId` | `CategoryRepository` | - |
+| **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `PhraseRepository` | `PhraseGeneratorInterface` |
 
 ## Validaciones de Seguridad
 

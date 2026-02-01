@@ -6,8 +6,8 @@
 [![Portfolio Project](https://img.shields.io/badge/Portfolio-TFM-blueviolet.svg)]()
 [![Development Status](https://img.shields.io/badge/Status-Fase%201%20en%20Desarrollo-yellow.svg)]()
 [![Phase](https://img.shields.io/badge/Fase-1%2F6-orange.svg)]()
-[![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?logo=php)](https://php.net)
-[![Symfony](https://img.shields.io/badge/Symfony-7.2-000000?logo=symfony)](https://symfony.com)
+[![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php)](https://php.net)
+[![Symfony](https://img.shields.io/badge/Symfony-7.4-000000?logo=symfony)](https://symfony.com)
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.5-4FC08D?logo=vue.js)](https://vuejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?logo=typescript)](https://typescriptlang.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql)](https://postgresql.org)
@@ -147,7 +147,7 @@ Los comunicadores SAAC tradicionales (Tobii Dynavox, Proloquo2Go) ofrecen pictog
 
 ### Solución: HablaIA
 
-HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia Artificial contextual** (OpenAI GPT-4o-mini) y **síntesis de voz progresiva** para crear un comunicador que:
+HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia Artificial contextual** (OpenAI GPT-4o-mini inicialmente, arquitectura agnóstica de proveedor) y **síntesis de voz progresiva** para crear un comunicador que:
 
 1. **Permite seleccionar pictogramas** de forma visual e intuitiva
 2. **Genera 3 variaciones de frase humanizada** usando IA contextual
@@ -160,7 +160,7 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 **Fase 1 - Core Funcional:**
 - Grid de pictogramas organizados por categorías (Acciones, Emociones, Personas, Objetos)
 - Selección multi-pictograma para construir frases
-- Integración OpenAI para generar 3 variaciones humanizadas
+- Integración LLM (OpenAI inicial) para generar 3 variaciones humanizadas
 - Text-to-Speech con Web Speech API
 - Caché de frases en PostgreSQL
 - Interfaz accesible (WCAG 2.1 AA)
@@ -185,8 +185,8 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 
 ### Backend - API REST
 
-- **Framework:** Symfony 7.2
-- **Lenguaje:** PHP 8.2
+- **Framework:** Symfony 7.4
+- **Lenguaje:** PHP 8.4
 - **Base de Datos:** PostgreSQL 16
 - **ORM:** Doctrine ORM
 - **Testing:** PestPHP
@@ -205,10 +205,10 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 
 ### Inteligencia Artificial & APIs Externas
 
-- **OpenAI API:** GPT-4o-mini para generación de frases humanizadas
+- **LLM para generación de frases:** OpenAI GPT-4o-mini (inicial). Arquitectura agnóstica permite cambiar a Claude, Gemini, LLaMA, etc.
 - **ARASAAC API:** Repositorio de pictogramas (30,000+ símbolos en español)
 - **Web Speech API:** Síntesis de voz nativa del navegador (Fase 1)
-- **ElevenLabs API:** Text-to-Speech premium (Fase 3 - futuro)
+- **ElevenLabs API:** Text-to-Speech premium (Fase 4 - futuro)
 - **Voice Cloning:** Clonación de voz del usuario (Fase 6 - futuro)
 
 ### Observabilidad & Monitoreo
@@ -352,20 +352,17 @@ composer test
 # Tests con reporte de cobertura
 composer test:coverage
 
-# Análisis estático de código (PHPStan)
+# Análisis estático de código (PHPStan nivel 8)
 composer analyse
-
-# Formateo de código (PHP-CS-Fixer)
-composer format
-
-# Sincronizar pictogramas desde ARASAAC
-php bin/console app:sync-arasaac
-
-# Generar caché de frases frecuentes
-php bin/console app:cache-frequent-phrases
 
 # Limpiar caché
 php bin/console cache:clear
+
+# ⏳ Sincronizar pictogramas desde ARASAAC (pendiente)
+php bin/console app:sync-arasaac
+
+# ⏳ Formateo de código (pendiente)
+composer format
 ```
 
 #### Frontend (Vue + TypeScript)
@@ -539,9 +536,9 @@ docs/adrs/
 |---------------|--------|-------------|
 | Grid de pictogramas | 🔲 Pendiente | Categorías: Acciones, Emociones, Personas, Objetos |
 | Selección multi-pictograma | 🔲 Pendiente | Construir frases seleccionando pictogramas |
-| Generación IA | 🔲 Pendiente | 3 variaciones humanizadas con OpenAI GPT-4o-mini |
+| Generación IA | 🔲 Pendiente | 3 variaciones humanizadas con LLM (OpenAI inicial) |
 | Text-to-Speech | 🔲 Pendiente | Web Speech API (voz nativa del navegador) |
-| Caché de frases | 🔲 Pendiente | PostgreSQL para reducir llamadas a OpenAI |
+| Caché de frases | 🔲 Pendiente | PostgreSQL para reducir llamadas al LLM |
 | Sincronización ARASAAC | 🔲 Pendiente | Descarga de pictogramas desde API |
 | Accesibilidad WCAG 2.1 AA | 🔲 Pendiente | Navegación por teclado, ARIA labels, contraste |
 
@@ -549,10 +546,10 @@ docs/adrs/
 
 | Aspecto | Estado | Descripción |
 |---------|--------|-------------|
-| Clean Architecture | 🔲 Pendiente | Domain → Application → Infrastructure |
-| TDD | 🔲 Pendiente | 100% Domain, 80% Application |
-| Docker | 🔲 Pendiente | Contenedores para todos los servicios |
-| CI/CD | 🔲 Pendiente | GitHub Actions + Husky pre-commit |
+| Clean Architecture | 🚧 En progreso | Domain ✅ → Application ⏳ → Infrastructure ⏳ |
+| TDD | 🚧 En progreso | 36 tests Domain (100%), Application ⏳ |
+| Docker | ✅ Completado | Contenedores para todos los servicios |
+| CI/CD | ✅ Completado | GitHub Actions + Husky (pre-commit + pre-push) |
 
 **Leyenda:** 🔲 Pendiente | 🚧 En progreso | ✅ Completado
 
