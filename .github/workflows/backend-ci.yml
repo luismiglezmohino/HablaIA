@@ -30,14 +30,14 @@ jobs:
 
     strategy:
       matrix:
-        php: ['8.2']
+        php: ['8.4']
 
     services:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: hablaia_test
-          POSTGRES_USER: ${{ secrets.DB_USER_TEST }}
+          POSTGRES_DB: ${{ secrets.DB_NAME_TEST || 'hablaia_test' }}
+          POSTGRES_USER: ${{ secrets.DB_USER_TEST || 'hablaia_ci' }}
           POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD_TEST }}
         ports:
           - 5432:5432
@@ -51,12 +51,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Verify secrets are configured
+        run: |
+          if [ -z "${{ secrets.DB_PASSWORD_TEST }}" ]; then
+            echo "::error::Secret DB_PASSWORD_TEST is not configured. Please add it in repository settings."
+            exit 1
+          fi
+          if [ -z "${{ secrets.APP_SECRET_TEST }}" ]; then
+            echo "::error::Secret APP_SECRET_TEST is not configured. Please add it in repository settings."
+            exit 1
+          fi
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: pdo_pgsql, intl, opcache
           coverage: xdebug
+
+      - name: Create .env file
+        run: |
+          cat > .env << EOF
+          APP_ENV=test
+          APP_SECRET=${{ secrets.APP_SECRET_TEST }}
+          DATABASE_URL=postgresql://${{ secrets.DB_USER_TEST || 'hablaia_ci' }}:${{ secrets.DB_PASSWORD_TEST }}@localhost:5432/${{ secrets.DB_NAME_TEST || 'hablaia_test' }}?serverVersion=16
+          EOF
 
       - name: Cache Composer
         uses: actions/cache@v4
@@ -72,8 +91,6 @@ jobs:
 
       - name: Run tests
         run: composer test
-        env:
-          DATABASE_URL: "postgresql://${{ secrets.DB_USER_TEST }}:${{ secrets.DB_PASSWORD_TEST }}@localhost:5432/hablaia_test?serverVersion=16"
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4

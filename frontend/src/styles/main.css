@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Focus styles for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-focus ring-accessible-focus ring-offset-2;
+  }
+
+  /* Ensure minimum touch target size */
+  button,
+  a,
+  [role='button'] {
+    @apply min-h-touch min-w-touch;
+  }
+
+  /* Skip link for keyboard users */
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-white focus:text-accessible-text;
+  }
+}
+
+@layer components {
+  /* Pictogram card base styles */
+  .pictogram-card {
+    @apply flex flex-col items-center justify-center p-4 rounded-lg border-2 border-gray-200 bg-white;
+    @apply hover:border-primary-500 focus:border-primary-500;
+    @apply transition-colors duration-200;
+    @apply min-h-touch min-w-touch;
+  }
+}

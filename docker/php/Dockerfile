@@ -1,9 +1,9 @@
 # =============================================================================
 # HablaIA Backend - Dockerfile
 # =============================================================================
-# PHP 8.2 con extensiones para Symfony 7
+# PHP 8.4 con extensiones para Symfony 7
 
-FROM php:8.2-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 # Metadatos
 LABEL maintainer="HablaIA"
