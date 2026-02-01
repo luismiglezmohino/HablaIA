@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* WCAG 2.1 AA - Focus visible */
+:focus-visible {
+  outline: 3px solid #0ea5e9;
+  outline-offset: 2px;
+}
+
+/* WCAG 2.1 AA - Minimum touch target size */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+}
