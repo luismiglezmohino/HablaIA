@@ -8,11 +8,19 @@ use App\Domain\Phrase\Exception\InvalidPictogramSequenceException;
 use App\Domain\Phrase\ValueObject\PhraseId;
 use App\Domain\Phrase\ValueObject\PictogramSequence;
 use App\Domain\Pictogram\ValueObject\PictogramId;
+use Tests\Shared\FakeUuidGenerator;
+
+beforeEach(function (): void {
+    $this->uuidGenerator = new FakeUuidGenerator();
+});
 
 describe('Phrase Entity', function (): void {
     it('can be created with valid data', function (): void {
-        $id = PhraseId::generate();
-        $pictogramIds = [PictogramId::generate(), PictogramId::generate()];
+        $id = PhraseId::fromString($this->uuidGenerator->generate());
+        $pictogramIds = [
+            PictogramId::fromString($this->uuidGenerator->generate()),
+            PictogramId::fromString($this->uuidGenerator->generate()),
+        ];
         $sequence = new PictogramSequence($pictogramIds);
         $variations = [
             'Quiero comer',
@@ -35,8 +43,8 @@ describe('Phrase Entity', function (): void {
     });
 
     it('requires at least one variation', function (): void {
-        $id = PhraseId::generate();
-        $sequence = new PictogramSequence([PictogramId::generate()]);
+        $id = PhraseId::fromString($this->uuidGenerator->generate());
+        $sequence = new PictogramSequence([PictogramId::fromString($this->uuidGenerator->generate())]);
 
         new Phrase(
             id: $id,
@@ -47,8 +55,8 @@ describe('Phrase Entity', function (): void {
     })->throws(InvalidPhraseVariationsException::class, 'Phrase must have at least one variation');
 
     it('requires maximum 3 variations', function (): void {
-        $id = PhraseId::generate();
-        $sequence = new PictogramSequence([PictogramId::generate()]);
+        $id = PhraseId::fromString($this->uuidGenerator->generate());
+        $sequence = new PictogramSequence([PictogramId::fromString($this->uuidGenerator->generate())]);
 
         new Phrase(
             id: $id,
@@ -59,8 +67,8 @@ describe('Phrase Entity', function (): void {
     })->throws(InvalidPhraseVariationsException::class, 'Too many phrase variations: 4 (max: 3)');
 
     it('rejects empty variation strings', function (): void {
-        $id = PhraseId::generate();
-        $sequence = new PictogramSequence([PictogramId::generate()]);
+        $id = PhraseId::fromString($this->uuidGenerator->generate());
+        $sequence = new PictogramSequence([PictogramId::fromString($this->uuidGenerator->generate())]);
 
         new Phrase(
             id: $id,
@@ -71,8 +79,8 @@ describe('Phrase Entity', function (): void {
     })->throws(InvalidPhraseVariationsException::class, 'Phrase must have at least one variation');
 
     it('rejects variations exceeding 500 characters', function (): void {
-        $id = PhraseId::generate();
-        $sequence = new PictogramSequence([PictogramId::generate()]);
+        $id = PhraseId::fromString($this->uuidGenerator->generate());
+        $sequence = new PictogramSequence([PictogramId::fromString($this->uuidGenerator->generate())]);
 
         new Phrase(
             id: $id,
@@ -84,8 +92,8 @@ describe('Phrase Entity', function (): void {
 });
 
 describe('PhraseId Value Object', function (): void {
-    it('can be generated', function (): void {
-        $id = PhraseId::generate();
+    it('can be created from generator', function (): void {
+        $id = PhraseId::fromString($this->uuidGenerator->generate());
 
         expect($id)->toBeInstanceOf(PhraseId::class);
         expect($id->value())->toBeString();
@@ -114,7 +122,10 @@ describe('PhraseId Value Object', function (): void {
 
 describe('PictogramSequence Value Object', function (): void {
     it('can be created with pictogram IDs', function (): void {
-        $pictogramIds = [PictogramId::generate(), PictogramId::generate()];
+        $pictogramIds = [
+            PictogramId::fromString($this->uuidGenerator->generate()),
+            PictogramId::fromString($this->uuidGenerator->generate()),
+        ];
         $sequence = new PictogramSequence($pictogramIds);
 
         expect($sequence->pictogramIds())->toBe($pictogramIds);
@@ -126,7 +137,10 @@ describe('PictogramSequence Value Object', function (): void {
     })->throws(InvalidPictogramSequenceException::class, 'Pictogram sequence cannot be empty');
 
     it('requires maximum 10 pictograms', function (): void {
-        $pictogramIds = array_map(fn () => PictogramId::generate(), range(1, 11));
+        $pictogramIds = array_map(
+            fn () => PictogramId::fromString($this->uuidGenerator->generate()),
+            range(1, 11)
+        );
         new PictogramSequence($pictogramIds);
     })->throws(InvalidPictogramSequenceException::class, 'Too many pictograms in sequence: 11 (max: 10)');
 

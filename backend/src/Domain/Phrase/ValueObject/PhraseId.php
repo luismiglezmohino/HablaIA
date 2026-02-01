@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Phrase\ValueObject;
 
+use App\Domain\Shared\ValueObject\Uuid;
 use InvalidArgumentException;
-use Symfony\Component\Uid\Uuid;
 
 final readonly class PhraseId
 {
@@ -14,18 +14,13 @@ final readonly class PhraseId
     ) {
     }
 
-    public static function generate(): self
-    {
-        return new self(Uuid::v4()->toRfc4122());
-    }
-
     public static function fromString(string $value): self
     {
         if (!Uuid::isValid($value)) {
-            throw new InvalidArgumentException('Invalid UUID format');
+            throw new InvalidArgumentException('Invalid UUID v4 format');
         }
 
-        return new self($value);
+        return new self(Uuid::normalize($value));
     }
 
     public function value(): string

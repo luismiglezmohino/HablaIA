@@ -15,8 +15,8 @@
 
 ```
 src/
-├── Domain/                 # Capa de Dominio (pura, sin dependencias)
-│   ├── Shared/             # Código compartido (DomainException base)
+├── Domain/                 # Capa de Dominio (pura, sin dependencias externas)
+│   ├── Shared/             # Código compartido (DomainException, Uuid)
 │   ├── Pictogram/          # Pictogramas (ARASAAC inicial)
 │   ├── Category/           # Categorías (Acciones, Emociones, etc.)
 │   └── Phrase/             # Frases cacheadas del LLM
@@ -31,7 +31,7 @@ Ver diagramas completos en [docs/diagrams/domain-layer.md](../docs/diagrams/doma
 
 | Módulo | Entidad | Value Objects | Excepciones | Repositorio | Servicio |
 |--------|---------|---------------|-------------|-------------|----------|
-| **Shared** | - | - | `DomainException` | - | - |
+| **Shared** | - | `Uuid` | `DomainException` | - | `UuidGeneratorInterface` |
 | **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `InvalidPictogramLabelException`, `InvalidImagePathException` | `PictogramRepository` | `PictogramProviderInterface` |
 | **Category** | `Category` | `CategoryId` | `InvalidCategoryNameException` | `CategoryRepository` | - |
 | **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `InvalidPhraseVariationsException`, `InvalidPictogramSequenceException` | `PhraseRepository` | `PhraseGeneratorInterface` |
@@ -41,6 +41,8 @@ Ver diagramas completos en [docs/diagrams/domain-layer.md](../docs/diagrams/doma
 > - `PictogramProviderInterface` → ARASAAC, Mulberry Symbols, etc.
 >
 > **Excepciones de Dominio:** Todas las excepciones extienden `DomainException` para captura semántica en capas superiores.
+>
+> **UUID Puro:** `Uuid` solo valida formatos. La generación se delega a `UuidGeneratorInterface` (implementación en Infrastructure).
 
 ## Instalación
 

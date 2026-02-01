@@ -5,10 +5,15 @@ declare(strict_types=1);
 use App\Domain\Category\Entity\Category;
 use App\Domain\Category\Exception\InvalidCategoryNameException;
 use App\Domain\Category\ValueObject\CategoryId;
+use Tests\Shared\FakeUuidGenerator;
+
+beforeEach(function (): void {
+    $this->uuidGenerator = new FakeUuidGenerator();
+});
 
 describe('Category Entity', function (): void {
     it('can be created with valid data', function (): void {
-        $id = CategoryId::generate();
+        $id = CategoryId::fromString($this->uuidGenerator->generate());
         $name = 'Acciones';
         $icon = '🏃';
 
@@ -24,7 +29,7 @@ describe('Category Entity', function (): void {
     });
 
     it('can be created without icon', function (): void {
-        $id = CategoryId::generate();
+        $id = CategoryId::fromString($this->uuidGenerator->generate());
 
         $category = new Category(
             id: $id,
@@ -36,7 +41,7 @@ describe('Category Entity', function (): void {
     });
 
     it('requires a non-empty name', function (): void {
-        $id = CategoryId::generate();
+        $id = CategoryId::fromString($this->uuidGenerator->generate());
 
         new Category(
             id: $id,
@@ -46,7 +51,7 @@ describe('Category Entity', function (): void {
     })->throws(InvalidCategoryNameException::class, 'Category name cannot be empty');
 
     it('requires name under 50 characters', function (): void {
-        $id = CategoryId::generate();
+        $id = CategoryId::fromString($this->uuidGenerator->generate());
 
         new Category(
             id: $id,
@@ -57,8 +62,8 @@ describe('Category Entity', function (): void {
 });
 
 describe('CategoryId Value Object', function (): void {
-    it('can be generated', function (): void {
-        $id = CategoryId::generate();
+    it('can be created from generator', function (): void {
+        $id = CategoryId::fromString($this->uuidGenerator->generate());
 
         expect($id)->toBeInstanceOf(CategoryId::class);
         expect($id->value())->toBeString();

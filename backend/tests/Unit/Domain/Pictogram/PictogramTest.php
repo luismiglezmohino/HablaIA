@@ -8,12 +8,17 @@ use App\Domain\Pictogram\Exception\InvalidImagePathException;
 use App\Domain\Pictogram\Exception\InvalidPictogramLabelException;
 use App\Domain\Pictogram\ValueObject\ArasaacId;
 use App\Domain\Pictogram\ValueObject\PictogramId;
+use Tests\Shared\FakeUuidGenerator;
+
+beforeEach(function (): void {
+    $this->uuidGenerator = new FakeUuidGenerator();
+});
 
 describe('Pictogram Entity', function (): void {
     it('can be created with valid data', function (): void {
-        $id = PictogramId::generate();
+        $id = PictogramId::fromString($this->uuidGenerator->generate());
         $arasaacId = new ArasaacId(4887);
-        $categoryId = CategoryId::generate();
+        $categoryId = CategoryId::fromString($this->uuidGenerator->generate());
         $label = 'comer';
         $imagePath = '/pictograms/4887.png';
 
@@ -33,9 +38,9 @@ describe('Pictogram Entity', function (): void {
     });
 
     it('requires a non-empty label', function (): void {
-        $id = PictogramId::generate();
+        $id = PictogramId::fromString($this->uuidGenerator->generate());
         $arasaacId = new ArasaacId(4887);
-        $categoryId = CategoryId::generate();
+        $categoryId = CategoryId::fromString($this->uuidGenerator->generate());
 
         new Pictogram(
             id: $id,
@@ -47,9 +52,9 @@ describe('Pictogram Entity', function (): void {
     })->throws(InvalidPictogramLabelException::class, 'Pictogram label cannot be empty');
 
     it('requires label under 100 characters', function (): void {
-        $id = PictogramId::generate();
+        $id = PictogramId::fromString($this->uuidGenerator->generate());
         $arasaacId = new ArasaacId(4887);
-        $categoryId = CategoryId::generate();
+        $categoryId = CategoryId::fromString($this->uuidGenerator->generate());
 
         new Pictogram(
             id: $id,
@@ -61,9 +66,9 @@ describe('Pictogram Entity', function (): void {
     })->throws(InvalidPictogramLabelException::class, 'Pictogram label is too long: 101 characters (max: 100)');
 
     it('requires a non-empty image path', function (): void {
-        $id = PictogramId::generate();
+        $id = PictogramId::fromString($this->uuidGenerator->generate());
         $arasaacId = new ArasaacId(4887);
-        $categoryId = CategoryId::generate();
+        $categoryId = CategoryId::fromString($this->uuidGenerator->generate());
 
         new Pictogram(
             id: $id,
@@ -75,9 +80,9 @@ describe('Pictogram Entity', function (): void {
     })->throws(InvalidImagePathException::class, 'Image path cannot be empty');
 
     it('rejects path traversal in image path', function (): void {
-        $id = PictogramId::generate();
+        $id = PictogramId::fromString($this->uuidGenerator->generate());
         $arasaacId = new ArasaacId(4887);
-        $categoryId = CategoryId::generate();
+        $categoryId = CategoryId::fromString($this->uuidGenerator->generate());
 
         new Pictogram(
             id: $id,
@@ -90,12 +95,12 @@ describe('Pictogram Entity', function (): void {
 });
 
 describe('PictogramId Value Object', function (): void {
-    it('can be generated', function (): void {
-        $id = PictogramId::generate();
+    it('can be created from generator', function (): void {
+        $id = PictogramId::fromString($this->uuidGenerator->generate());
 
         expect($id)->toBeInstanceOf(PictogramId::class);
         expect($id->value())->toBeString();
-        expect(strlen($id->value()))->toBe(36); // UUID format
+        expect(strlen($id->value()))->toBe(36);
     });
 
     it('can be created from string', function (): void {

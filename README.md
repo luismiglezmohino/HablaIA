@@ -555,8 +555,9 @@ docs/adrs/
 | Aspecto | Estado | Descripción |
 |---------|--------|-------------|
 | Clean Architecture | 🚧 En progreso | Domain ✅ → Application ⏳ → Infrastructure ⏳ |
-| TDD | 🚧 En progreso | 52 tests Domain (100%), Application ⏳ |
+| TDD | 🚧 En progreso | 61 tests Domain (100%), Application ⏳ |
 | Excepciones de Dominio | ✅ Completado | `DomainException` base + excepciones semánticas por módulo |
+| UUID Desacoplado | ✅ Completado | Domain valida (`Uuid`), Infrastructure genera (`UuidGeneratorInterface`) |
 | Docker | ✅ Completado | Contenedores para todos los servicios |
 | CI/CD | ✅ Completado | GitHub Actions + Husky (pre-commit + pre-push) |
 

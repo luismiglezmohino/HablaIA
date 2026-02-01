@@ -8,6 +8,18 @@
 classDiagram
     direction TB
 
+    %% Shared Module
+    class Uuid {
+        <<utility>>
+        +isValid(string)$ bool
+        +normalize(string)$ string
+    }
+
+    class UuidGeneratorInterface {
+        <<interface>>
+        +generate() string
+    }
+
     %% Category Module
     class Category {
         -CategoryId id
@@ -90,6 +102,9 @@ classDiagram
     Phrase --> PhraseId
     Phrase --> PictogramSequence
     PictogramSequence --> PictogramId
+    CategoryId ..> Uuid : uses
+    PictogramId ..> Uuid : uses
+    PhraseId ..> Uuid : uses
 ```
 
 ## Diagrama de Repositorios y Servicios
@@ -152,6 +167,8 @@ graph TB
     subgraph Domain["Domain Layer"]
         subgraph SharedModule["Shared"]
             S_Exception[DomainException]
+            S_Uuid[Uuid]
+            S_UuidGen[UuidGeneratorInterface]
         end
 
         subgraph PictogramModule["Pictogram"]
@@ -191,6 +208,10 @@ graph TB
     C_Exc --> S_Exception
     Ph_Exc1 --> S_Exception
     Ph_Exc2 --> S_Exception
+
+    P_VO1 -.-> S_Uuid
+    C_VO -.-> S_Uuid
+    Ph_VO1 -.-> S_Uuid
 
     style Domain fill:#e1f5fe
     style SharedModule fill:#f3e5f5
@@ -292,10 +313,12 @@ classDiagram
 
 | Módulo | Entidad | Value Objects | Excepciones | Repositorio | Servicio |
 |--------|---------|---------------|-------------|-------------|----------|
-| **Shared** | - | - | `DomainException` | - | - |
+| **Shared** | - | `Uuid` | `DomainException` | - | `UuidGeneratorInterface` |
 | **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `InvalidPictogramLabelException`, `InvalidImagePathException` | `PictogramRepository` | `PictogramProviderInterface` |
 | **Category** | `Category` | `CategoryId` | `InvalidCategoryNameException` | `CategoryRepository` | - |
 | **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `InvalidPhraseVariationsException`, `InvalidPictogramSequenceException` | `PhraseRepository` | `PhraseGeneratorInterface` |
+
+> **Nota sobre Uuid:** `Uuid` solo valida formato UUID v4 (RFC 4122). La generación se delega a `UuidGeneratorInterface`, cuya implementación vive en Infrastructure (inyección de dependencias).
 
 ## Validaciones de Seguridad
 
