@@ -126,14 +126,24 @@ classDiagram
         +generate(PictogramSequence) array~string~
     }
 
+    class PictogramProviderInterface {
+        <<interface>>
+        +searchByKeyword(string, string) array~Pictogram~
+        +fetchById(int) Pictogram?
+        +sync(array~string~) int
+    }
+
     CategoryRepository ..> Category
     PictogramRepository ..> Pictogram
     PictogramRepository ..> CategoryId
     PhraseRepository ..> Phrase
     PhraseGeneratorInterface ..> PictogramSequence
+    PictogramProviderInterface ..> Pictogram
 ```
 
-> **Nota:** `PhraseGeneratorInterface` permite cambiar el proveedor de IA (OpenAI, Claude, Gemini, etc.) sin modificar el dominio.
+> **Nota:** Las interfaces de servicio permiten cambiar proveedores sin modificar el dominio:
+> - `PhraseGeneratorInterface` → OpenAI, Claude, Gemini, etc.
+> - `PictogramProviderInterface` → ARASAAC, Mulberry Symbols, etc.
 
 ## Diagrama de Módulos
 
@@ -145,6 +155,7 @@ graph TB
             P_VO1[PictogramId]
             P_VO2[ArasaacId]
             P_Repo[PictogramRepository]
+            P_Service[PictogramProviderInterface]
         end
 
         subgraph CategoryModule["Category"]
@@ -179,7 +190,7 @@ sequenceDiagram
     participant U as Usuario
     participant App as Application
     participant PR as PhraseRepository
-    participant OpenAI as OpenAI API
+    participant LLM as LLM Provider
 
     U->>App: Selecciona pictogramas [🍎,👦,⏰]
     App->>App: Genera PictogramSequence
@@ -190,18 +201,20 @@ sequenceDiagram
         PR-->>App: Phrase existente
         App-->>U: Variaciones cacheadas
     else No está en caché
-        App->>OpenAI: Genera 3 variaciones
-        OpenAI-->>App: ["Quiero comer", "Me gustaría...", "Tengo ganas..."]
+        App->>LLM: Genera 3 variaciones
+        LLM-->>App: ["Quiero comer", "Me gustaría...", "Tengo ganas..."]
         App->>PR: save(nuevaPhrase)
         App-->>U: Variaciones nuevas
     end
 ```
 
+> **Nota:** LLM Provider implementa `PhraseGeneratorInterface`. Inicialmente OpenAI GPT-4o-mini.
+
 ## Resumen
 
 | Módulo | Entidad | Value Objects | Repositorio | Servicio |
 |--------|---------|---------------|-------------|----------|
-| **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `PictogramRepository` | - |
+| **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `PictogramRepository` | `PictogramProviderInterface` |
 | **Category** | `Category` | `CategoryId` | `CategoryRepository` | - |
 | **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `PhraseRepository` | `PhraseGeneratorInterface` |
 
@@ -212,5 +225,5 @@ sequenceDiagram
 | `Pictogram` | `imagePath` no contiene `..` | Prevenir path traversal |
 | `Pictogram` | `label` máx 100 chars | Prevenir DoS |
 | `Category` | `name` máx 50 chars | Prevenir DoS |
-| `Phrase` | `variations` máx 3, 500 chars c/u | Límite OpenAI + DoS |
+| `Phrase` | `variations` máx 3, 500 chars c/u | Límite LLM + DoS |
 | `PictogramSequence` | Máx 10 pictogramas | Límite razonable |

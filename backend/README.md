@@ -16,7 +16,7 @@
 ```
 src/
 ├── Domain/                 # Capa de Dominio (pura, sin dependencias)
-│   ├── Pictogram/          # Pictogramas ARASAAC
+│   ├── Pictogram/          # Pictogramas (ARASAAC inicial)
 │   ├── Category/           # Categorías (Acciones, Emociones, etc.)
 │   └── Phrase/             # Frases cacheadas del LLM
 ├── Application/            # Casos de uso (⏳ pendiente)
@@ -30,11 +30,13 @@ Ver diagramas completos en [docs/diagrams/domain-layer.md](../docs/diagrams/doma
 
 | Módulo | Entidad | Value Objects | Repositorio | Servicio |
 |--------|---------|---------------|-------------|----------|
-| **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `PictogramRepository` | - |
+| **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `PictogramRepository` | `PictogramProviderInterface` |
 | **Category** | `Category` | `CategoryId` | `CategoryRepository` | - |
 | **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `PhraseRepository` | `PhraseGeneratorInterface` |
 
-> **Nota:** `PhraseGeneratorInterface` permite cambiar el proveedor de IA sin modificar el dominio.
+> **Nota:** Las interfaces de servicio permiten cambiar proveedores sin modificar el dominio:
+> - `PhraseGeneratorInterface` → OpenAI, Claude, Gemini, etc.
+> - `PictogramProviderInterface` → ARASAAC, Mulberry Symbols, etc.
 
 ## Instalación
 
