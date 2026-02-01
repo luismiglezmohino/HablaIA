@@ -1,0 +1,82 @@
+#!/bin/sh
+
+# =============================================================================
+# HablaIA - Pre-push Hook
+# =============================================================================
+# Ejecuta tests antes de cada push
+# - Frontend: Vitest
+# - Backend: PestPHP
+
+echo "🧪 Running pre-push checks..."
+echo ""
+
+FAILED=0
+
+# -----------------------------------------------------------------------------
+# Frontend Tests (Vitest)
+# -----------------------------------------------------------------------------
+echo "📦 Frontend Tests"
+echo "─────────────────"
+
+if [ -f "frontend/package.json" ]; then
+    if [ -d "frontend/node_modules" ]; then
+        cd frontend
+        npm run test -- --run
+        if [ $? -ne 0 ]; then
+            echo "❌ Frontend tests failed!"
+            FAILED=1
+        else
+            echo "✅ Frontend tests passed!"
+        fi
+        cd ..
+    else
+        echo "⚠️  Frontend node_modules not found. Run: cd frontend && npm install"
+        FAILED=1
+    fi
+else
+    echo "⚠️  Frontend package.json not found"
+fi
+
+echo ""
+
+# -----------------------------------------------------------------------------
+# Backend Tests (PestPHP)
+# -----------------------------------------------------------------------------
+echo "🐘 Backend Tests"
+echo "────────────────"
+
+if [ -f "backend/composer.json" ]; then
+    if [ -f "backend/vendor/bin/pest" ]; then
+        cd backend
+        ./vendor/bin/pest
+        if [ $? -ne 0 ]; then
+            echo "❌ Backend tests failed!"
+            FAILED=1
+        else
+            echo "✅ Backend tests passed!"
+        fi
+        cd ..
+    else
+        echo "⚠️  Backend vendor not found. Run: cd backend && composer install"
+        FAILED=1
+    fi
+else
+    echo "⚠️  Backend composer.json not found"
+fi
+
+echo ""
+
+# -----------------------------------------------------------------------------
+# Final Result
+# -----------------------------------------------------------------------------
+if [ $FAILED -ne 0 ]; then
+    echo "═══════════════════════════════════════"
+    echo "❌ Pre-push checks FAILED!"
+    echo "   Fix the issues above before pushing."
+    echo "═══════════════════════════════════════"
+    exit 1
+fi
+
+echo "═══════════════════════════════════════"
+echo "✅ All pre-push checks passed!"
+echo "═══════════════════════════════════════"

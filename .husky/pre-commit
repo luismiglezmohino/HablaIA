@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# =============================================================================
+# HablaIA - Pre-commit Hook
+# =============================================================================
+# Ejecuta linters en archivos staged antes de cada commit
+# - Frontend: ESLint para .ts, .vue, .js
+# - Backend: PHPStan para .php
+
+echo "🔍 Running pre-commit checks..."
+
+# Verificar que lint-staged está disponible
+if ! command -v npx &> /dev/null; then
+    echo "❌ npx not found. Please install Node.js"
+    exit 1
+fi
+
+# Ejecutar lint-staged
+npx lint-staged
+
+# Capturar código de salida
+RESULT=$?
+
+if [ $RESULT -ne 0 ]; then
+    echo ""
+    echo "❌ Pre-commit checks failed!"
+    echo "   Fix the issues above before committing."
+    exit 1
+fi
+
+echo "✅ Pre-commit checks passed!"
