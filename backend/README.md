@@ -4,35 +4,35 @@
 
 ## Stack
 
-- **Framework:** Symfony 7.2
-- **Lenguaje:** PHP 8.2
+- **Framework:** Symfony 7.4
+- **Lenguaje:** PHP 8.4
 - **Base de datos:** PostgreSQL 16
 - **ORM:** Doctrine
 - **Testing:** PestPHP
-- **Arquitectura:** Clean Architecture
+- **Arquitectura:** Clean Architecture / DDD
 
 ## Estructura
 
 ```
 src/
-├── Domain/           # Capa de Dominio (pura, sin dependencias)
-│   ├── Entity/       # Entidades de negocio
-│   ├── ValueObject/  # Value Objects
-│   ├── Repository/   # Interfaces de repositorios
-│   └── Service/      # Servicios de dominio
-├── Application/      # Casos de uso
-│   ├── UseCase/      # Casos de uso organizados por módulo
-│   ├── DTO/          # Data Transfer Objects
-│   └── Service/      # Servicios de aplicación
-├── Infrastructure/   # Implementaciones técnicas
-│   ├── Persistence/  # Doctrine ORM
-│   ├── Http/         # Controllers API REST
-│   ├── Security/     # Autenticación/Autorización
-│   └── ExternalApi/  # Clientes HTTP (OpenAI, ARASAAC)
-└── Shared/           # Código compartido
-    ├── Exception/    # Excepciones custom
-    └── Validator/    # Validadores
+├── Domain/                 # Capa de Dominio (pura, sin dependencias)
+│   ├── Pictogram/          # Pictogramas ARASAAC
+│   ├── Category/           # Categorías (Acciones, Emociones, etc.)
+│   └── Phrase/             # Frases cacheadas de OpenAI
+├── Application/            # Casos de uso (⏳ pendiente)
+├── Infrastructure/         # Implementaciones técnicas (⏳ pendiente)
+└── Shared/                 # Código compartido
 ```
+
+## Domain Layer
+
+Ver diagramas completos en [docs/diagrams/domain-layer.md](../docs/diagrams/domain-layer.md)
+
+| Módulo | Entidad | Value Objects | Repositorio |
+|--------|---------|---------------|-------------|
+| **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `PictogramRepository` |
+| **Category** | `Category` | `CategoryId` | `CategoryRepository` |
+| **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `PhraseRepository` |
 
 ## Instalación
 
@@ -44,10 +44,10 @@ composer install
 cp .env.example .env
 # Editar .env con tus credenciales
 
-# Ejecutar migraciones
+# ⏳ Ejecutar migraciones (pendiente)
 php bin/console doctrine:migrations:migrate
 
-# Sincronizar pictogramas desde ARASAAC
+# ⏳ Sincronizar pictogramas desde ARASAAC (pendiente)
 php bin/console app:sync-arasaac
 ```
 
@@ -58,29 +58,26 @@ php bin/console app:sync-arasaac
 symfony server:start
 
 # Tests
-composer test
+./vendor/bin/pest
 
 # Tests con cobertura
-composer test:coverage
+./vendor/bin/pest --coverage
 
 # Análisis estático
-composer analyse
-
-# Formateo de código
-composer format
+./vendor/bin/phpstan analyse src --level=8
 
 # Limpiar caché
 php bin/console cache:clear
 ```
 
-## API Endpoints
+## API Endpoints (⏳ pendiente)
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| GET | `/api/categories` | Listar categorías |
-| GET | `/api/pictograms?category={id}` | Pictogramas por categoría |
-| POST | `/api/phrases` | Generar frase humanizada |
-| GET | `/api/health` | Health check |
+| Método | Endpoint | Descripción | Estado |
+|--------|----------|-------------|--------|
+| GET | `/api/categories` | Listar categorías | ⏳ |
+| GET | `/api/pictograms?category={id}` | Pictogramas por categoría | ⏳ |
+| POST | `/api/phrases` | Generar frase humanizada | ⏳ |
+| GET | `/api/health` | Health check | ⏳ |
 
 ## Testing
 
