@@ -6,9 +6,9 @@ services:
     image: postgres:16-alpine
     container_name: hablaia_postgres
     environment:
-      POSTGRES_DB: hablaia
-      POSTGRES_USER: hablaia_user
-      POSTGRES_PASSWORD: hablaia_pass
+      POSTGRES_DB: ${POSTGRES_DB:-hablaia}
+      POSTGRES_USER: ${POSTGRES_USER:-hablaia_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     ports:
       - "5432:5432"
     volumes:
@@ -34,10 +34,10 @@ services:
     volumes:
       - ./backend:/var/www
     environment:
-      DATABASE_URL: "postgresql://hablaia_user:hablaia_pass@postgres:5432/hablaia?serverVersion=16&charset=utf8"
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
-      APP_ENV: dev
-      APP_SECRET: ${APP_SECRET:-changeme}
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-hablaia_user}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hablaia}?serverVersion=16&charset=utf8"
+      OPENAI_API_KEY: ${OPENAI_API_KEY:?Set OPENAI_API_KEY in .env}
+      APP_ENV: ${APP_ENV:-dev}
+      APP_SECRET: ${APP_SECRET:?Set APP_SECRET in .env}
     ports:
       - "8080:8000"
     depends_on:

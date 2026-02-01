@@ -37,8 +37,8 @@ jobs:
         image: postgres:16-alpine
         env:
           POSTGRES_DB: hablaia_test
-          POSTGRES_USER: hablaia_user
-          POSTGRES_PASSWORD: hablaia_pass
+          POSTGRES_USER: ${{ secrets.DB_USER_TEST }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD_TEST }}
         ports:
           - 5432:5432
         options: >-
@@ -73,7 +73,7 @@ jobs:
       - name: Run tests
         run: composer test
         env:
-          DATABASE_URL: "postgresql://hablaia_user:hablaia_pass@localhost:5432/hablaia_test?serverVersion=16"
+          DATABASE_URL: "postgresql://${{ secrets.DB_USER_TEST }}:${{ secrets.DB_PASSWORD_TEST }}@localhost:5432/hablaia_test?serverVersion=16"
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4
