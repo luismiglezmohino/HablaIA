@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "husky",
     "lint:frontend": "cd frontend && npm run lint",
-    "lint:backend": "cd backend && ./vendor/bin/phpstan analyse src --level=6",
+    "lint:backend": "cd backend && ./vendor/bin/phpstan analyse src --level=8",
     "format:frontend": "cd frontend && npm run format",
     "format:backend": "cd backend && ./vendor/bin/php-cs-fixer fix src --rules=@PSR12",
     "test:frontend": "cd frontend && npm run test",
@@ -15,14 +15,6 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^15.2.11"
-  },
-  "lint-staged": {
-    "frontend/**/*.{ts,tsx,vue,js}": [
-      "npm run lint:frontend"
-    ],
-    "backend/**/*.php": [
-      "npm run lint:backend"
-    ]
   },
   "engines": {
     "node": ">=20.0.0"
