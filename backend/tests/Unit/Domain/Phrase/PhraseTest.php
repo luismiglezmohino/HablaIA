@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Domain\Phrase\Entity\Phrase;
+use App\Domain\Phrase\Exception\InvalidPhraseVariationsException;
+use App\Domain\Phrase\Exception\InvalidPictogramSequenceException;
 use App\Domain\Phrase\ValueObject\PhraseId;
 use App\Domain\Phrase\ValueObject\PictogramSequence;
 use App\Domain\Pictogram\ValueObject\PictogramId;
@@ -42,7 +44,7 @@ describe('Phrase Entity', function (): void {
             variations: [],
             createdAt: new DateTimeImmutable()
         );
-    })->throws(InvalidArgumentException::class, 'At least one variation is required');
+    })->throws(InvalidPhraseVariationsException::class, 'Phrase must have at least one variation');
 
     it('requires maximum 3 variations', function (): void {
         $id = PhraseId::generate();
@@ -54,7 +56,7 @@ describe('Phrase Entity', function (): void {
             variations: ['a', 'b', 'c', 'd'],
             createdAt: new DateTimeImmutable()
         );
-    })->throws(InvalidArgumentException::class, 'Maximum 3 variations allowed');
+    })->throws(InvalidPhraseVariationsException::class, 'Too many phrase variations: 4 (max: 3)');
 
     it('rejects empty variation strings', function (): void {
         $id = PhraseId::generate();
@@ -66,7 +68,7 @@ describe('Phrase Entity', function (): void {
             variations: ['Valid phrase', ''],
             createdAt: new DateTimeImmutable()
         );
-    })->throws(InvalidArgumentException::class, 'Variation cannot be empty');
+    })->throws(InvalidPhraseVariationsException::class, 'Phrase must have at least one variation');
 
     it('rejects variations exceeding 500 characters', function (): void {
         $id = PhraseId::generate();
@@ -78,7 +80,7 @@ describe('Phrase Entity', function (): void {
             variations: [str_repeat('a', 501)],
             createdAt: new DateTimeImmutable()
         );
-    })->throws(InvalidArgumentException::class, 'Variation cannot exceed 500 characters');
+    })->throws(InvalidPhraseVariationsException::class, 'Phrase variation at index 0 is too long: 501 characters (max: 500)');
 });
 
 describe('PhraseId Value Object', function (): void {
@@ -121,12 +123,12 @@ describe('PictogramSequence Value Object', function (): void {
 
     it('requires at least one pictogram', function (): void {
         new PictogramSequence([]);
-    })->throws(InvalidArgumentException::class, 'At least one pictogram is required');
+    })->throws(InvalidPictogramSequenceException::class, 'Pictogram sequence cannot be empty');
 
     it('requires maximum 10 pictograms', function (): void {
         $pictogramIds = array_map(fn () => PictogramId::generate(), range(1, 11));
         new PictogramSequence($pictogramIds);
-    })->throws(InvalidArgumentException::class, 'Maximum 10 pictograms allowed');
+    })->throws(InvalidPictogramSequenceException::class, 'Too many pictograms in sequence: 11 (max: 10)');
 
     it('generates consistent hash for same sequence', function (): void {
         $id1 = PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001');

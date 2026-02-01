@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Domain\Pictogram\Entity;
 
 use App\Domain\Category\ValueObject\CategoryId;
+use App\Domain\Pictogram\Exception\InvalidImagePathException;
+use App\Domain\Pictogram\Exception\InvalidPictogramLabelException;
 use App\Domain\Pictogram\ValueObject\ArasaacId;
 use App\Domain\Pictogram\ValueObject\PictogramId;
-use InvalidArgumentException;
 
 final readonly class Pictogram
 {
@@ -52,26 +53,23 @@ final readonly class Pictogram
     private function validateLabel(string $label): void
     {
         if ($label === '') {
-            throw new InvalidArgumentException('Label cannot be empty');
+            throw InvalidPictogramLabelException::empty();
         }
 
-        if (strlen($label) > self::MAX_LABEL_LENGTH) {
-            throw new InvalidArgumentException('Label cannot exceed 100 characters');
+        $length = strlen($label);
+        if ($length > self::MAX_LABEL_LENGTH) {
+            throw InvalidPictogramLabelException::tooLong($length, self::MAX_LABEL_LENGTH);
         }
     }
 
     private function validateImagePath(string $imagePath): void
     {
         if ($imagePath === '') {
-            throw new InvalidArgumentException('Image path cannot be empty');
-        }
-
-        if (!str_starts_with($imagePath, '/')) {
-            throw new InvalidArgumentException('Invalid image path');
+            throw InvalidImagePathException::empty();
         }
 
         if (str_contains($imagePath, '..')) {
-            throw new InvalidArgumentException('Invalid image path');
+            throw InvalidImagePathException::pathTraversalDetected($imagePath);
         }
     }
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Category\Entity;
 
+use App\Domain\Category\Exception\InvalidCategoryNameException;
 use App\Domain\Category\ValueObject\CategoryId;
-use InvalidArgumentException;
 
 final readonly class Category
 {
@@ -37,11 +37,12 @@ final readonly class Category
     private function validateName(string $name): void
     {
         if ($name === '') {
-            throw new InvalidArgumentException('Name cannot be empty');
+            throw InvalidCategoryNameException::empty();
         }
 
-        if (strlen($name) > self::MAX_NAME_LENGTH) {
-            throw new InvalidArgumentException('Name cannot exceed 50 characters');
+        $length = strlen($name);
+        if ($length > self::MAX_NAME_LENGTH) {
+            throw InvalidCategoryNameException::tooLong($length, self::MAX_NAME_LENGTH);
         }
     }
 }

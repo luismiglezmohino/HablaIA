@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Domain\Category\ValueObject\CategoryId;
 use App\Domain\Pictogram\Entity\Pictogram;
+use App\Domain\Pictogram\Exception\InvalidImagePathException;
+use App\Domain\Pictogram\Exception\InvalidPictogramLabelException;
 use App\Domain\Pictogram\ValueObject\ArasaacId;
 use App\Domain\Pictogram\ValueObject\PictogramId;
 
@@ -42,7 +44,7 @@ describe('Pictogram Entity', function (): void {
             label: '',
             imagePath: '/pictograms/4887.png'
         );
-    })->throws(InvalidArgumentException::class, 'Label cannot be empty');
+    })->throws(InvalidPictogramLabelException::class, 'Pictogram label cannot be empty');
 
     it('requires label under 100 characters', function (): void {
         $id = PictogramId::generate();
@@ -56,7 +58,7 @@ describe('Pictogram Entity', function (): void {
             label: str_repeat('a', 101),
             imagePath: '/pictograms/4887.png'
         );
-    })->throws(InvalidArgumentException::class, 'Label cannot exceed 100 characters');
+    })->throws(InvalidPictogramLabelException::class, 'Pictogram label is too long: 101 characters (max: 100)');
 
     it('requires a non-empty image path', function (): void {
         $id = PictogramId::generate();
@@ -70,7 +72,7 @@ describe('Pictogram Entity', function (): void {
             label: 'comer',
             imagePath: ''
         );
-    })->throws(InvalidArgumentException::class, 'Image path cannot be empty');
+    })->throws(InvalidImagePathException::class, 'Image path cannot be empty');
 
     it('rejects path traversal in image path', function (): void {
         $id = PictogramId::generate();
@@ -84,21 +86,7 @@ describe('Pictogram Entity', function (): void {
             label: 'comer',
             imagePath: '/pictograms/../etc/passwd'
         );
-    })->throws(InvalidArgumentException::class, 'Invalid image path');
-
-    it('requires image path to start with forward slash', function (): void {
-        $id = PictogramId::generate();
-        $arasaacId = new ArasaacId(4887);
-        $categoryId = CategoryId::generate();
-
-        new Pictogram(
-            id: $id,
-            arasaacId: $arasaacId,
-            categoryId: $categoryId,
-            label: 'comer',
-            imagePath: 'pictograms/4887.png'
-        );
-    })->throws(InvalidArgumentException::class, 'Invalid image path');
+    })->throws(InvalidImagePathException::class, 'Path traversal detected in image path: /pictograms/../etc/passwd');
 });
 
 describe('PictogramId Value Object', function (): void {

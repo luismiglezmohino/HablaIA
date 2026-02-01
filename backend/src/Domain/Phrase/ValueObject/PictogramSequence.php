@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Phrase\ValueObject;
 
+use App\Domain\Phrase\Exception\InvalidPictogramSequenceException;
 use App\Domain\Pictogram\ValueObject\PictogramId;
-use InvalidArgumentException;
 
 final readonly class PictogramSequence
 {
@@ -52,12 +52,14 @@ final readonly class PictogramSequence
      */
     private function validate(array $pictogramIds): void
     {
-        if (count($pictogramIds) < self::MIN_PICTOGRAMS) {
-            throw new InvalidArgumentException('At least one pictogram is required');
+        $count = count($pictogramIds);
+
+        if ($count < self::MIN_PICTOGRAMS) {
+            throw InvalidPictogramSequenceException::empty();
         }
 
-        if (count($pictogramIds) > self::MAX_PICTOGRAMS) {
-            throw new InvalidArgumentException('Maximum 10 pictograms allowed');
+        if ($count > self::MAX_PICTOGRAMS) {
+            throw InvalidPictogramSequenceException::tooMany($count, self::MAX_PICTOGRAMS);
         }
     }
 }

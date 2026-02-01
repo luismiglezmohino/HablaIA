@@ -150,10 +150,16 @@ classDiagram
 ```mermaid
 graph TB
     subgraph Domain["Domain Layer"]
+        subgraph SharedModule["Shared"]
+            S_Exception[DomainException]
+        end
+
         subgraph PictogramModule["Pictogram"]
             P_Entity[Pictogram]
             P_VO1[PictogramId]
             P_VO2[ArasaacId]
+            P_Exc1[InvalidPictogramLabelException]
+            P_Exc2[InvalidImagePathException]
             P_Repo[PictogramRepository]
             P_Service[PictogramProviderInterface]
         end
@@ -161,6 +167,7 @@ graph TB
         subgraph CategoryModule["Category"]
             C_Entity[Category]
             C_VO[CategoryId]
+            C_Exc[InvalidCategoryNameException]
             C_Repo[CategoryRepository]
         end
 
@@ -168,6 +175,8 @@ graph TB
             Ph_Entity[Phrase]
             Ph_VO1[PhraseId]
             Ph_VO2[PictogramSequence]
+            Ph_Exc1[InvalidPhraseVariationsException]
+            Ph_Exc2[InvalidPictogramSequenceException]
             Ph_Repo[PhraseRepository]
             Ph_Service[PhraseGeneratorInterface]
         end
@@ -177,7 +186,14 @@ graph TB
     Ph_VO2 --> P_VO1
     Ph_Service --> Ph_VO2
 
+    P_Exc1 --> S_Exception
+    P_Exc2 --> S_Exception
+    C_Exc --> S_Exception
+    Ph_Exc1 --> S_Exception
+    Ph_Exc2 --> S_Exception
+
     style Domain fill:#e1f5fe
+    style SharedModule fill:#f3e5f5
     style PictogramModule fill:#fff3e0
     style CategoryModule fill:#e8f5e9
     style PhraseModule fill:#fce4ec
@@ -210,13 +226,76 @@ sequenceDiagram
 
 > **Nota:** LLM Provider implementa `PhraseGeneratorInterface`. Inicialmente OpenAI GPT-4o-mini.
 
+## Diagrama de Excepciones
+
+```mermaid
+classDiagram
+    direction TB
+
+    class DomainException {
+        <<abstract>>
+    }
+
+    class InvalidPictogramLabelException {
+        -int? actualLength
+        -int? maxLength
+        +tooLong(int, int)$ self
+        +empty()$ self
+        +getActualLength() int?
+        +getMaxLength() int?
+    }
+
+    class InvalidImagePathException {
+        -string? path
+        +pathTraversalDetected(string)$ self
+        +empty()$ self
+        +getPath() string?
+    }
+
+    class InvalidCategoryNameException {
+        -int? actualLength
+        -int? maxLength
+        +tooLong(int, int)$ self
+        +empty()$ self
+        +getActualLength() int?
+        +getMaxLength() int?
+    }
+
+    class InvalidPhraseVariationsException {
+        -int? actualCount
+        -int? maxCount
+        -int? index
+        -int? actualLength
+        -int? maxLength
+        +tooMany(int, int)$ self
+        +empty()$ self
+        +variationTooLong(int, int, int)$ self
+    }
+
+    class InvalidPictogramSequenceException {
+        -int? actualCount
+        -int? maxCount
+        +tooMany(int, int)$ self
+        +empty()$ self
+    }
+
+    DomainException <|-- InvalidPictogramLabelException
+    DomainException <|-- InvalidImagePathException
+    DomainException <|-- InvalidCategoryNameException
+    DomainException <|-- InvalidPhraseVariationsException
+    DomainException <|-- InvalidPictogramSequenceException
+```
+
+> **Nota:** Todas las excepciones de dominio extienden `DomainException`, permitiendo captura semántica en Application/Infrastructure.
+
 ## Resumen
 
-| Módulo | Entidad | Value Objects | Repositorio | Servicio |
-|--------|---------|---------------|-------------|----------|
-| **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `PictogramRepository` | `PictogramProviderInterface` |
-| **Category** | `Category` | `CategoryId` | `CategoryRepository` | - |
-| **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `PhraseRepository` | `PhraseGeneratorInterface` |
+| Módulo | Entidad | Value Objects | Excepciones | Repositorio | Servicio |
+|--------|---------|---------------|-------------|-------------|----------|
+| **Shared** | - | - | `DomainException` | - | - |
+| **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `InvalidPictogramLabelException`, `InvalidImagePathException` | `PictogramRepository` | `PictogramProviderInterface` |
+| **Category** | `Category` | `CategoryId` | `InvalidCategoryNameException` | `CategoryRepository` | - |
+| **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `InvalidPhraseVariationsException`, `InvalidPictogramSequenceException` | `PhraseRepository` | `PhraseGeneratorInterface` |
 
 ## Validaciones de Seguridad
 

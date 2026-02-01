@@ -465,19 +465,27 @@ hablaia/
 ```
 backend/src/
 ├── Domain/           # Capa de Dominio (pura, sin dependencias)
-│   ├── Entity/
-│   ├── ValueObject/
-│   ├── Repository/   # Interfaces
-│   └── Service/
-├── Application/      # Casos de Uso
-│   ├── UseCase/
-│   ├── DTO/
-│   └── Service/
-├── Infrastructure/   # Implementaciones
-│   ├── Persistence/
-│   ├── Http/
-│   └── ExternalApi/
-└── Shared/           # Exceptions, Validators
+│   ├── Shared/       # DomainException base
+│   ├── Category/     # Categorías de pictogramas
+│   │   ├── Entity/
+│   │   ├── ValueObject/
+│   │   ├── Exception/
+│   │   └── Repository/
+│   ├── Pictogram/    # Pictogramas ARASAAC
+│   │   ├── Entity/
+│   │   ├── ValueObject/
+│   │   ├── Exception/
+│   │   ├── Repository/
+│   │   └── Service/
+│   └── Phrase/       # Frases generadas por LLM
+│       ├── Entity/
+│       ├── ValueObject/
+│       ├── Exception/
+│       ├── Repository/
+│       └── Service/
+├── Application/      # Casos de Uso (⏳ pendiente)
+├── Infrastructure/   # Implementaciones (⏳ pendiente)
+└── Shared/           # Utils compartidos
 ```
 
 ### Frontend - Clean Architecture
@@ -547,7 +555,8 @@ docs/adrs/
 | Aspecto | Estado | Descripción |
 |---------|--------|-------------|
 | Clean Architecture | 🚧 En progreso | Domain ✅ → Application ⏳ → Infrastructure ⏳ |
-| TDD | 🚧 En progreso | 36 tests Domain (100%), Application ⏳ |
+| TDD | 🚧 En progreso | 52 tests Domain (100%), Application ⏳ |
+| Excepciones de Dominio | ✅ Completado | `DomainException` base + excepciones semánticas por módulo |
 | Docker | ✅ Completado | Contenedores para todos los servicios |
 | CI/CD | ✅ Completado | GitHub Actions + Husky (pre-commit + pre-push) |
 

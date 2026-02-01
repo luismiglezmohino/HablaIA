@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Domain\Category\Entity\Category;
+use App\Domain\Category\Exception\InvalidCategoryNameException;
 use App\Domain\Category\ValueObject\CategoryId;
 
 describe('Category Entity', function (): void {
@@ -42,7 +43,7 @@ describe('Category Entity', function (): void {
             name: '',
             icon: null
         );
-    })->throws(InvalidArgumentException::class, 'Name cannot be empty');
+    })->throws(InvalidCategoryNameException::class, 'Category name cannot be empty');
 
     it('requires name under 50 characters', function (): void {
         $id = CategoryId::generate();
@@ -52,7 +53,7 @@ describe('Category Entity', function (): void {
             name: str_repeat('a', 51),
             icon: null
         );
-    })->throws(InvalidArgumentException::class, 'Name cannot exceed 50 characters');
+    })->throws(InvalidCategoryNameException::class, 'Category name is too long: 51 characters (max: 50)');
 });
 
 describe('CategoryId Value Object', function (): void {

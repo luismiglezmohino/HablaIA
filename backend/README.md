@@ -16,6 +16,7 @@
 ```
 src/
 ├── Domain/                 # Capa de Dominio (pura, sin dependencias)
+│   ├── Shared/             # Código compartido (DomainException base)
 │   ├── Pictogram/          # Pictogramas (ARASAAC inicial)
 │   ├── Category/           # Categorías (Acciones, Emociones, etc.)
 │   └── Phrase/             # Frases cacheadas del LLM
@@ -28,15 +29,18 @@ src/
 
 Ver diagramas completos en [docs/diagrams/domain-layer.md](../docs/diagrams/domain-layer.md)
 
-| Módulo | Entidad | Value Objects | Repositorio | Servicio |
-|--------|---------|---------------|-------------|----------|
-| **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `PictogramRepository` | `PictogramProviderInterface` |
-| **Category** | `Category` | `CategoryId` | `CategoryRepository` | - |
-| **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `PhraseRepository` | `PhraseGeneratorInterface` |
+| Módulo | Entidad | Value Objects | Excepciones | Repositorio | Servicio |
+|--------|---------|---------------|-------------|-------------|----------|
+| **Shared** | - | - | `DomainException` | - | - |
+| **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `InvalidPictogramLabelException`, `InvalidImagePathException` | `PictogramRepository` | `PictogramProviderInterface` |
+| **Category** | `Category` | `CategoryId` | `InvalidCategoryNameException` | `CategoryRepository` | - |
+| **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `InvalidPhraseVariationsException`, `InvalidPictogramSequenceException` | `PhraseRepository` | `PhraseGeneratorInterface` |
 
 > **Nota:** Las interfaces de servicio permiten cambiar proveedores sin modificar el dominio:
 > - `PhraseGeneratorInterface` → OpenAI, Claude, Gemini, etc.
 > - `PictogramProviderInterface` → ARASAAC, Mulberry Symbols, etc.
+>
+> **Excepciones de Dominio:** Todas las excepciones extienden `DomainException` para captura semántica en capas superiores.
 
 ## Instalación
 

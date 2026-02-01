@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Phrase\Entity;
 
+use App\Domain\Phrase\Exception\InvalidPhraseVariationsException;
 use App\Domain\Phrase\ValueObject\PhraseId;
 use App\Domain\Phrase\ValueObject\PictogramSequence;
 use DateTimeImmutable;
-use InvalidArgumentException;
 
 final readonly class Phrase
 {
@@ -60,21 +60,24 @@ final readonly class Phrase
      */
     private function validateVariations(array $variations): void
     {
-        if (count($variations) < self::MIN_VARIATIONS) {
-            throw new InvalidArgumentException('At least one variation is required');
+        $count = count($variations);
+
+        if ($count < self::MIN_VARIATIONS) {
+            throw InvalidPhraseVariationsException::empty();
         }
 
-        if (count($variations) > self::MAX_VARIATIONS) {
-            throw new InvalidArgumentException('Maximum 3 variations allowed');
+        if ($count > self::MAX_VARIATIONS) {
+            throw InvalidPhraseVariationsException::tooMany($count, self::MAX_VARIATIONS);
         }
 
-        foreach ($variations as $variation) {
+        foreach ($variations as $index => $variation) {
             if ($variation === '') {
-                throw new InvalidArgumentException('Variation cannot be empty');
+                throw InvalidPhraseVariationsException::empty();
             }
 
-            if (strlen($variation) > self::MAX_VARIATION_LENGTH) {
-                throw new InvalidArgumentException('Variation cannot exceed 500 characters');
+            $length = strlen($variation);
+            if ($length > self::MAX_VARIATION_LENGTH) {
+                throw InvalidPhraseVariationsException::variationTooLong($index, $length, self::MAX_VARIATION_LENGTH);
             }
         }
     }
