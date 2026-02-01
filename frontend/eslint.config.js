@@ -1,5 +1,6 @@
+import js from '@eslint/js'
 import pluginVue from 'eslint-plugin-vue'
-import tseslint from 'typescript-eslint'
+import vueTsEslintConfig from '@vue/eslint-config-typescript'
 import prettierConfig from 'eslint-config-prettier'
 
 export default [
@@ -13,18 +14,10 @@ export default [
     ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**', '**/node_modules/**'],
   },
 
+  js.configs.recommended,
   ...pluginVue.configs['flat/essential'],
-  ...tseslint.configs.recommended,
+  ...vueTsEslintConfig(),
   prettierConfig,
-
-  {
-    files: ['**/*.vue'],
-    languageOptions: {
-      parserOptions: {
-        parser: tseslint.parser,
-      },
-    },
-  },
 
   {
     rules: {
