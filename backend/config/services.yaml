@@ -13,6 +13,7 @@ services:
             - '../src/Application/DTO/'
             - '../src/Kernel.php'
 
-    App\Infrastructure\Http\Controller\:
-        resource: '../src/Infrastructure/Http/Controller/'
-        tags: ['controller.service_arguments']
+    # Controllers will be auto-registered when the directory exists
+    # App\Infrastructure\Http\Controller\:
+    #     resource: '../src/Infrastructure/Http/Controller/'
+    #     tags: ['controller.service_arguments']
