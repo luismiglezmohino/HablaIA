@@ -35,7 +35,9 @@
 
 ## Roles
 
-Adopt role mindset for each task:
+Adopt role mindset for each task. **IMPORTANTE:** Lee el archivo correspondiente en `agents/` para instrucciones detalladas del rol (protocolos, gates, restricciones fatales).
+
+Ejemplo: Si actúas como @tdd_developer, lee `agents/tdd_developer.md` primero.
 
 **@product_owner:** User Stories with ROI. Format: "Como [rol] quiero [acción] para [beneficio]". Gates: Criterios medibles, valor claro. Mentalidad: "Si no aporta valor, no se construye."
 
@@ -73,7 +75,7 @@ Adopt role mindset for each task:
 
 ## Skills
 
-Load: `skill({name:"skill-name"})` from `skills/` directory
+**IMPORTANTE:** Lee el archivo `skills/{skill-name}/SKILL.md` para instrucciones detalladas antes de implementar.
 
 - `symfony` - Framework patterns, Clean Architecture
 - `symfony-pest` - Testing with PestPHP
