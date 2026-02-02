@@ -10,11 +10,16 @@
     "format:frontend": "cd frontend && npm run format",
     "format:backend": "cd backend && ./vendor/bin/php-cs-fixer fix src --rules=@PSR12",
     "test:frontend": "cd frontend && npm run test",
-    "test:backend": "cd backend && ./vendor/bin/pest"
+    "test:backend": "cd backend && ./vendor/bin/pest",
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "release:first": "standard-version --first-release"
   },
   "devDependencies": {
     "husky": "^9.1.7",
-    "lint-staged": "^15.2.11"
+    "lint-staged": "^15.2.11",
+    "standard-version": "^9.5.0"
   },
   "engines": {
     "node": ">=20.0.0"

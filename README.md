@@ -421,6 +421,24 @@ docker-compose down -v
 docker-compose build --no-cache
 ```
 
+#### Release y CHANGELOG
+
+```bash
+# Generar release patch (0.1.0 → 0.1.1) + CHANGELOG
+npm run release
+
+# Generar release minor (0.1.0 → 0.2.0)
+npm run release:minor
+
+# Generar release major (0.1.0 → 1.0.0)
+npm run release:major
+
+# Primera release (genera CHANGELOG inicial)
+npm run release:first
+```
+
+> Los comandos de release generan automáticamente el CHANGELOG.md a partir de los conventional commits (`feat:`, `fix:`, etc.), actualizan la versión en package.json y crean un tag git.
+
 ### Troubleshooting
 
 #### Error: "Port 5432 already in use"
