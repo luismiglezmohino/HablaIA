@@ -4,35 +4,45 @@
 
 ## Stack
 
-- **Framework:** Symfony 7.2
-- **Lenguaje:** PHP 8.2
+- **Framework:** Symfony 7.4
+- **Lenguaje:** PHP 8.4
 - **Base de datos:** PostgreSQL 16
 - **ORM:** Doctrine
 - **Testing:** PestPHP
-- **Arquitectura:** Clean Architecture
+- **Arquitectura:** Clean Architecture / DDD
 
 ## Estructura
 
 ```
 src/
-├── Domain/           # Capa de Dominio (pura, sin dependencias)
-│   ├── Entity/       # Entidades de negocio
-│   ├── ValueObject/  # Value Objects
-│   ├── Repository/   # Interfaces de repositorios
-│   └── Service/      # Servicios de dominio
-├── Application/      # Casos de uso
-│   ├── UseCase/      # Casos de uso organizados por módulo
-│   ├── DTO/          # Data Transfer Objects
-│   └── Service/      # Servicios de aplicación
-├── Infrastructure/   # Implementaciones técnicas
-│   ├── Persistence/  # Doctrine ORM
-│   ├── Http/         # Controllers API REST
-│   ├── Security/     # Autenticación/Autorización
-│   └── ExternalApi/  # Clientes HTTP (OpenAI, ARASAAC)
-└── Shared/           # Código compartido
-    ├── Exception/    # Excepciones custom
-    └── Validator/    # Validadores
+├── Domain/                 # Capa de Dominio (pura, sin dependencias externas)
+│   ├── Shared/             # Código compartido (DomainException, Uuid)
+│   ├── Pictogram/          # Pictogramas (ARASAAC inicial)
+│   ├── Category/           # Categorías (Acciones, Emociones, etc.)
+│   └── Phrase/             # Frases cacheadas del LLM
+├── Application/            # Casos de uso (⏳ pendiente)
+├── Infrastructure/         # Implementaciones técnicas (⏳ pendiente)
+└── Shared/                 # Código compartido
 ```
+
+## Domain Layer
+
+Ver diagramas completos en [docs/diagrams/domain-layer.md](../docs/diagrams/domain-layer.md)
+
+| Módulo | Entidad | Value Objects | Excepciones | Repositorio | Servicio |
+|--------|---------|---------------|-------------|-------------|----------|
+| **Shared** | - | `Uuid` | `DomainException` | - | `UuidGeneratorInterface` |
+| **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `InvalidPictogramLabelException`, `InvalidImagePathException` | `PictogramRepository` | `PictogramProviderInterface` |
+| **Category** | `Category` | `CategoryId` | `InvalidCategoryNameException` | `CategoryRepository` | - |
+| **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `InvalidPhraseVariationsException`, `InvalidPictogramSequenceException` | `PhraseRepository` | `PhraseGeneratorInterface` |
+
+> **Nota:** Las interfaces de servicio permiten cambiar proveedores sin modificar el dominio:
+> - `PhraseGeneratorInterface` → OpenAI, Claude, Gemini, etc.
+> - `PictogramProviderInterface` → ARASAAC, Mulberry Symbols, etc.
+>
+> **Excepciones de Dominio:** Todas las excepciones extienden `DomainException` para captura semántica en capas superiores.
+>
+> **UUID Puro:** `Uuid` solo valida formatos. La generación se delega a `UuidGeneratorInterface` (implementación en Infrastructure).
 
 ## Instalación
 
@@ -44,10 +54,10 @@ composer install
 cp .env.example .env
 # Editar .env con tus credenciales
 
-# Ejecutar migraciones
+# ⏳ Ejecutar migraciones (pendiente)
 php bin/console doctrine:migrations:migrate
 
-# Sincronizar pictogramas desde ARASAAC
+# ⏳ Sincronizar pictogramas desde ARASAAC (pendiente)
 php bin/console app:sync-arasaac
 ```
 
@@ -66,21 +76,18 @@ composer test:coverage
 # Análisis estático
 composer analyse
 
-# Formateo de código
-composer format
-
 # Limpiar caché
 php bin/console cache:clear
 ```
 
-## API Endpoints
+## API Endpoints (⏳ pendiente)
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| GET | `/api/categories` | Listar categorías |
-| GET | `/api/pictograms?category={id}` | Pictogramas por categoría |
-| POST | `/api/phrases` | Generar frase humanizada |
-| GET | `/api/health` | Health check |
+| Método | Endpoint | Descripción | Estado |
+|--------|----------|-------------|--------|
+| GET | `/api/categories` | Listar categorías | ⏳ |
+| GET | `/api/pictograms?category={id}` | Pictogramas por categoría | ⏳ |
+| POST | `/api/phrases` | Generar frase humanizada | ⏳ |
+| GET | `/api/health` | Health check | ⏳ |
 
 ## Testing
 
