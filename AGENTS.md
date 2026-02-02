@@ -43,16 +43,18 @@ The project uses specialized agents defined in `agents/` (shared across tools vi
 
 ### Agent Workflow
 
-1. **Analysis** → `@product_owner` creates user stories (SAAC context)
-2. **UX Design** → `@ux_designer` designs accessible interfaces (WCAG 2.1 AA)
-3. **Architecture** → `@architect` validates Clean Architecture + `@technical_writer` documents
-4. **Database** → `@database_engineer` creates migrations and schema
-5. **Implementation** → `@tdd_developer` (test first, then code)
-6. **Security Review** → `@security_auditor` checks OWASP compliance + GDPR
-7. **Quality Check** → `@qa_engineer` validates coverage (100/80/0) + accessibility
-8. **Performance** → `@performance_engineer` optimizes (latency < 200ms critical)
-9. **Observability** → `@observability_engineer` adds monitoring (PostHog + Sentry)
-10. **Deploy** → `@devops` handles CI/CD and deployment
+1. **Analysis** → `@product_owner` creates user stories (SAAC context, ROI)
+2. **Design** (paralelo):
+   - `@architect` validates Clean Architecture + `@technical_writer` documents
+   - `@ux_designer` designs accessible interfaces (WCAG 2.1 AA)
+3. **Implementation** → `@tdd_developer` (test first, schema emerges from tests)
+4. **Security Review** → `@security_auditor` checks OWASP compliance + GDPR
+5. **Quality Check** → `@qa_engineer` validates coverage (100/80/0)
+6. **Observability** → `@observability_engineer` adds monitoring (PostHog + Sentry)
+7. **Performance** → `@performance_engineer` optimizes with data (latency < 200ms)
+8. **Deploy** → `@devops` handles CI/CD and release
+
+**Roles transversales:** `@devops` (infra), `@database_engineer` (schema), `@technical_writer` (docs) intervienen cuando se necesitan.
 
 ## Skills Available
 
@@ -242,6 +244,24 @@ it('should [behavior]', () => {
 - **Documentation**: Follow TFM README standard (6 sections)
 - **Observability**: PostHog self-hosted + Sentry Cloud for SAAC context
 - **Git**: Use conventional commits (feat:, fix:, docs:, test:, etc.)
+
+## Sincronizacion de Agentes
+
+Los agentes se definen en `agents/` (formato OpenCode) y se sincronizan:
+
+```
+agents/             ← Fuente (formato OpenCode)
+skills/             ← Fuente (compatible ambos)
+.opencode/agents    → ../agents (enlace simbolico)
+.opencode/skills    → ../skills (enlace simbolico)
+.claude/agents/     ← Generado (formato Claude Code)
+.claude/skills      → ../skills (enlace simbolico)
+```
+
+Despues de modificar un agente en `agents/`, ejecutar:
+```bash
+./sync-to-claude-code.sh
+```
 
 ## Support
 

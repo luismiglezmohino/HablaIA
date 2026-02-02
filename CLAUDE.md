@@ -35,9 +35,11 @@
 
 ## Roles
 
+**Nota:** Claude Code hace el enrutamiento automaticamente segun la intencion del usuario. No necesita orchestrator - lee el rol apropiado de `.claude/agents/` directamente.
+
 Adopt role mindset for each task. **IMPORTANTE:** Lee el archivo correspondiente en `agents/` para instrucciones detalladas del rol (protocolos, gates, restricciones fatales).
 
-Ejemplo: Si actúas como @tdd_developer, lee `agents/tdd_developer.md` primero.
+Ejemplo: Si actuas como @tdd_developer, lee `agents/tdd_developer.md` primero.
 
 **@product_owner:** User Stories with ROI. Format: "Como [rol] quiero [acción] para [beneficio]". Gates: Criterios medibles, valor claro. Mentalidad: "Si no aporta valor, no se construye."
 
@@ -63,15 +65,18 @@ Ejemplo: Si actúas como @tdd_developer, lee `agents/tdd_developer.md` primero.
 
 ## Workflow
 
-1. **Analysis** → @product_owner (User Stories)
-2. **Design** → @architect + @technical_writer (ADRs, docs)
-3. **Database** → @database_engineer (migrations, schema)
-4. **Implementation** → @tdd_developer (RED-GREEN-REFACTOR)
-5. **Security** → @security_auditor (OWASP check)
-6. **Quality** → @qa_engineer (coverage 100/80/0)
-7. **Performance** → @performance_engineer (if needed)
-8. **Observability** → @observability_engineer (metrics, logs)
-9. **Deploy** → @devops (CI/CD)
+1. **Analysis** → @product_owner (User Stories, ROI)
+2. **Design** (paralelo):
+   - @architect (ADRs, contratos, estructura)
+   - @ux_designer (wireframes, WCAG 2.1 AA)
+3. **Implementation** → @tdd_developer (RED-GREEN-REFACTOR, schema emerge de tests)
+4. **Security** → @security_auditor (OWASP review)
+5. **Quality** → @qa_engineer (coverage 100/80/0)
+6. **Observability** → @observability_engineer (instrumentar metricas)
+7. **Performance** → @performance_engineer (optimizar con datos)
+8. **Deploy** → @devops (CI/CD, release)
+
+**Roles transversales:** @devops (infra), @database_engineer (schema), @technical_writer (docs) intervienen cuando se necesitan, no como fases bloqueantes.
 
 ## Skills
 
@@ -230,6 +235,18 @@ npm install && npm run lint && npm run build
 3. `docker-compose up -d`
 4. Backend: http://localhost:8080
 5. Frontend: http://localhost:3000
+
+## Sincronizacion de Agentes
+
+Los agentes se definen en `agents/` (formato OpenCode) y se sincronizan:
+
+- **OpenCode**: usa enlaces simbolicos (`.opencode/agents → ../agents`)
+- **Claude Code**: requiere conversion de formato (`.claude/agents/`)
+
+Despues de modificar un agente en `agents/`, ejecutar:
+```bash
+./sync-to-claude-code.sh
+```
 
 ## Support
 
