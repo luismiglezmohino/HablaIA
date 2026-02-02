@@ -482,8 +482,8 @@ hablaia/
 
 ```
 backend/src/
-├── Domain/           # Capa de Dominio (pura, sin dependencias)
-│   ├── Shared/       # DomainException base
+├── Domain/           # Capa de Dominio (✅ completado)
+│   ├── Shared/       # DomainException base, Uuid, UuidGeneratorInterface
 │   ├── Category/     # Categorías de pictogramas
 │   │   ├── Entity/
 │   │   ├── ValueObject/
@@ -501,7 +501,12 @@ backend/src/
 │       ├── Exception/
 │       ├── Repository/
 │       └── Service/
-├── Application/      # Casos de Uso (⏳ pendiente)
+├── Application/      # Casos de Uso (✅ completado)
+│   ├── Category/     # GetAllCategories
+│   ├── Pictogram/    # GetAllPictograms, GetPictogramsByCategory
+│   ├── Phrase/       # GenerateHumanizedPhrase (core MVP)
+│   ├── DTO/          # CategoryDTO, PictogramDTO, PhraseResponseDTO
+│   └── Exception/    # ApplicationException, *NotFoundException
 ├── Infrastructure/   # Implementaciones (⏳ pendiente)
 └── Shared/           # Utils compartidos
 ```
@@ -572,9 +577,10 @@ docs/adrs/
 
 | Aspecto | Estado | Descripción |
 |---------|--------|-------------|
-| Clean Architecture | 🚧 En progreso | Domain ✅ → Application ⏳ → Infrastructure ⏳ |
-| TDD | 🚧 En progreso | 61 tests Domain (100%), Application ⏳ |
+| Clean Architecture | 🚧 En progreso | Domain ✅ → Application ✅ → Infrastructure ⏳ |
+| TDD | 🚧 En progreso | 92 tests (61 Domain + 31 Application) |
 | Excepciones de Dominio | ✅ Completado | `DomainException` base + excepciones semánticas por módulo |
+| Excepciones de Application | ✅ Completado | `ApplicationException` + `*NotFoundException` |
 | UUID Desacoplado | ✅ Completado | Domain valida (`Uuid`), Infrastructure genera (`UuidGeneratorInterface`) |
 | Docker | ✅ Completado | Contenedores para todos los servicios |
 | CI/CD | ✅ Completado | GitHub Actions + Husky (pre-commit + pre-push) |
