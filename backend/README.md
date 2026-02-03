@@ -15,12 +15,17 @@
 
 ```
 src/
-├── Domain/                 # Capa de Dominio (pura, sin dependencias externas)
+├── Domain/                 # Capa de Dominio (✅ completado)
 │   ├── Shared/             # Código compartido (DomainException, Uuid)
 │   ├── Pictogram/          # Pictogramas (ARASAAC inicial)
 │   ├── Category/           # Categorías (Acciones, Emociones, etc.)
 │   └── Phrase/             # Frases cacheadas del LLM
-├── Application/            # Casos de uso (⏳ pendiente)
+├── Application/            # Casos de uso (✅ implementado)
+│   ├── Category/           # GetAllCategories
+│   ├── Pictogram/          # GetAllPictograms, GetPictogramsByCategory
+│   ├── Phrase/             # GenerateHumanizedPhrase (core MVP)
+│   ├── DTO/                # CategoryDTO, PictogramDTO, PhraseResponseDTO
+│   └── Exception/          # ApplicationException, *NotFoundException
 ├── Infrastructure/         # Implementaciones técnicas (⏳ pendiente)
 └── Shared/                 # Código compartido
 ```
@@ -43,6 +48,44 @@ Ver diagramas completos en [docs/diagrams/domain-layer.md](../docs/diagrams/doma
 > **Excepciones de Dominio:** Todas las excepciones extienden `DomainException` para captura semántica en capas superiores.
 >
 > **UUID Puro:** `Uuid` solo valida formatos. La generación se delega a `UuidGeneratorInterface` (implementación en Infrastructure).
+
+## Application Layer
+
+Ver diagramas completos en [docs/diagrams/application-layer.md](../docs/diagrams/application-layer.md)
+
+| Módulo | Use Cases | DTOs | Excepciones |
+|--------|-----------|------|-------------|
+| **Category** | `GetAllCategories` | `CategoryDTO` | `CategoryNotFoundException` |
+| **Pictogram** | `GetAllPictograms`, `GetPictogramsByCategory` | `PictogramDTO` | `PictogramNotFoundException` |
+| **Phrase** | `GenerateHumanizedPhrase` | `PhraseResponseDTO` | - |
+
+### GenerateHumanizedPhrase (Core MVP)
+
+Caso de uso principal que transforma pictogramas en frases humanizadas:
+
+1. **Valida** que todos los pictogramas existen
+2. **Busca en caché** por hash SHA256 de la secuencia
+3. **Genera con LLM** si no está cacheado (OpenAI, etc.)
+4. **Fallback** a concatenación de labels si LLM falla
+5. **Guarda en caché** para futuras consultas
+
+```php
+// Ejemplo de uso
+$response = $generateHumanizedPhrase(['id-comer', 'id-pan']);
+// PhraseResponseDTO {
+//   variations: ['Quiero comer pan', 'Me gustaría comer pan', 'Deseo comer pan'],
+//   source: 'generated' | 'cache' | 'fallback',
+//   sequenceHash: 'a1b2c3...',
+//   pictogramIds: ['id-comer', 'id-pan']
+// }
+```
+
+> **Principios SOLID aplicados:**
+> - **S:** Cada Use Case hace una sola cosa
+> - **O:** Nuevos generadores sin modificar código existente
+> - **L:** FakePhraseGenerator intercambiable con OpenAI
+> - **I:** Interfaces pequeñas y específicas
+> - **D:** Use Cases dependen de interfaces, no implementaciones
 
 ## Instalación
 
