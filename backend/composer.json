@@ -10,10 +10,11 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-pdo_pgsql": "*",
-        "doctrine/dbal": "^4.0",
-        "doctrine/doctrine-bundle": "^2.12",
-        "doctrine/doctrine-migrations-bundle": "^3.3",
-        "doctrine/orm": "^3.0",
+        "cycle/annotated": "^4.4",
+        "cycle/database": "^2.15",
+        "cycle/migrations": "^4.2",
+        "cycle/orm": "^2.13",
+        "cycle/schema-migrations-generator": "^2.3",
         "nelmio/api-doc-bundle": "^5.9",
         "nelmio/cors-bundle": "^2.4",
         "symfony/console": "7.4.*",
@@ -29,7 +30,6 @@
         "symfony/yaml": "7.4.*"
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "^4.3",
         "pestphp/pest": "^3.0",
         "phpstan/phpstan": "^1.10",
         "phpstan/phpstan-symfony": "^1.3",

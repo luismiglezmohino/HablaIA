@@ -7,7 +7,7 @@
 - **Framework:** Symfony 7.4
 - **Lenguaje:** PHP 8.4
 - **Base de datos:** PostgreSQL 16
-- **ORM:** Doctrine
+- **ORM:** Cycle ORM (ver [ADR-007](../docs/adrs/ADR-007-cycle-orm-over-doctrine.md))
 - **Testing:** PestPHP
 - **Arquitectura:** Clean Architecture / DDD
 
@@ -26,7 +26,9 @@ src/
 │   ├── Phrase/             # GenerateHumanizedPhrase (core MVP)
 │   ├── DTO/                # CategoryDTO, PictogramDTO, PhraseResponseDTO
 │   └── Exception/          # ApplicationException, *NotFoundException
-├── Infrastructure/         # Implementaciones técnicas (⏳ pendiente)
+├── Infrastructure/         # Implementaciones técnicas (🔄 en progreso)
+│   ├── Persistence/Cycle/  # Cycle ORM (entidades, repositorios)
+│   └── Shared/             # UuidGenerator
 └── Shared/                 # Código compartido
 ```
 
@@ -98,7 +100,7 @@ cp .env.example .env
 # Editar .env con tus credenciales
 
 # ⏳ Ejecutar migraciones (pendiente)
-php bin/console doctrine:migrations:migrate
+php bin/console cycle:migrate
 
 # ⏳ Sincronizar pictogramas desde ARASAAC (pendiente)
 php bin/console app:sync-arasaac
