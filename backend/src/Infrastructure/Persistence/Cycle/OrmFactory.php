@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cycle;
 
 use App\Infrastructure\Persistence\Exception\InvalidOrmConfigurationException;
-use Cycle\Annotated\Configurator;
+use Cycle\Annotated\Entities;
+use Cycle\Annotated\Locator\TokenizerEntityLocator;
 use Cycle\Database\DatabaseManager;
 use Cycle\ORM\Factory;
 use Cycle\ORM\ORM;
+use Cycle\ORM\Schema as OrmSchema;
 use Cycle\ORM\SchemaInterface;
 use Cycle\Schema;
 use Spiral\Attributes\AttributeReader;
@@ -91,6 +93,9 @@ final class OrmFactory
         // Tokenizer locates classes in found files
         $classLocator = new ClassLocator($finder);
 
+        // EntityLocator wraps ClassLocator for Cycle ORM
+        $entityLocator = new TokenizerEntityLocator($classLocator);
+
         // AttributeReader parses PHP 8 attributes from classes
         $reader = new AttributeReader();
 
@@ -99,7 +104,7 @@ final class OrmFactory
             new Schema\Registry($dbal),
             [
                 new Schema\Generator\ResetTables(),             // Clear existing
-                new Configurator($classLocator, $reader),       // Read attributes
+                new Entities($entityLocator, $reader),          // Read attributes
                 new Schema\Generator\ValidateEntities(),        // Validate
                 new Schema\Generator\RenderTables(),            // Generate tables
                 new Schema\Generator\RenderRelations(),         // Setup relations
@@ -109,6 +114,6 @@ final class OrmFactory
             ]
         );
 
-        return new Schema\Schema($schemaArray);
+        return new OrmSchema($schemaArray);
     }
 }
