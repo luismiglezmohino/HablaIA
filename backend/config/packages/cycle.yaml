@@ -1,28 +1,82 @@
 # Cycle ORM Service Configuration
 #
 # Since there's no official Symfony bundle for Cycle ORM,
-# we configure services manually.
+# we configure services manually. Only loaded in dev/prod.
 #
 # @see https://cycle-orm.dev/docs
 
-services:
-    # Database Manager - handles database connections
-    # Uses DATABASE_URL from .env (same format as Doctrine)
-    Cycle\Database\DatabaseManager:
-        factory: ['App\Infrastructure\Persistence\Cycle\DatabaseFactory', 'create']
-        arguments:
-            - '%env(DATABASE_URL)%'
+when@dev:
+    services:
+        Cycle\Database\DatabaseManager:
+            factory: ['App\Infrastructure\Persistence\Cycle\DatabaseFactory', 'create']
+            arguments:
+                - '%env(DATABASE_URL)%'
 
-    # ORM Instance - the main entry point for persistence operations
-    # Scans Entity directory for Cycle annotated classes
-    Cycle\ORM\ORM:
-        factory: ['App\Infrastructure\Persistence\Cycle\OrmFactory', 'create']
-        arguments:
-            - '@Cycle\Database\DatabaseManager'
-            - '%kernel.project_dir%/src/Infrastructure/Persistence/Cycle/Entity'
+        Cycle\ORM\ORM:
+            factory: ['App\Infrastructure\Persistence\Cycle\OrmFactory', 'create']
+            arguments:
+                - '@Cycle\Database\DatabaseManager'
+                - '%kernel.project_dir%/src/Infrastructure/Persistence/Cycle/Entity'
 
-    # Entity Manager - handles persist/delete operations
-    Cycle\ORM\EntityManagerInterface:
-        class: Cycle\ORM\EntityManager
-        arguments:
-            - '@Cycle\ORM\ORM'
+        Cycle\ORM\EntityManagerInterface:
+            class: Cycle\ORM\EntityManager
+            arguments:
+                - '@Cycle\ORM\ORM'
+
+        App\Infrastructure\Health\CycleDatabaseHealthChecker:
+            arguments:
+                - '@Cycle\Database\DatabaseManager'
+
+        App\Infrastructure\Health\DatabaseHealthCheckerInterface:
+            alias: App\Infrastructure\Health\CycleDatabaseHealthChecker
+            public: true
+
+        App\Infrastructure\Persistence\Cycle\Repository\CycleCategoryRepository:
+            autowire: true
+            autoconfigure: true
+
+        App\Infrastructure\Persistence\Cycle\Repository\CyclePictogramRepository:
+            autowire: true
+            autoconfigure: true
+
+        App\Infrastructure\Persistence\Cycle\Repository\CyclePhraseRepository:
+            autowire: true
+            autoconfigure: true
+
+when@prod:
+    services:
+        Cycle\Database\DatabaseManager:
+            factory: ['App\Infrastructure\Persistence\Cycle\DatabaseFactory', 'create']
+            arguments:
+                - '%env(DATABASE_URL)%'
+
+        Cycle\ORM\ORM:
+            factory: ['App\Infrastructure\Persistence\Cycle\OrmFactory', 'create']
+            arguments:
+                - '@Cycle\Database\DatabaseManager'
+                - '%kernel.project_dir%/src/Infrastructure/Persistence/Cycle/Entity'
+
+        Cycle\ORM\EntityManagerInterface:
+            class: Cycle\ORM\EntityManager
+            arguments:
+                - '@Cycle\ORM\ORM'
+
+        App\Infrastructure\Health\CycleDatabaseHealthChecker:
+            arguments:
+                - '@Cycle\Database\DatabaseManager'
+
+        App\Infrastructure\Health\DatabaseHealthCheckerInterface:
+            alias: App\Infrastructure\Health\CycleDatabaseHealthChecker
+            public: true
+
+        App\Infrastructure\Persistence\Cycle\Repository\CycleCategoryRepository:
+            autowire: true
+            autoconfigure: true
+
+        App\Infrastructure\Persistence\Cycle\Repository\CyclePictogramRepository:
+            autowire: true
+            autoconfigure: true
+
+        App\Infrastructure\Persistence\Cycle\Repository\CyclePhraseRepository:
+            autowire: true
+            autoconfigure: true

@@ -11,8 +11,14 @@ services:
             - '../src/Domain/Entity/'
             - '../src/Domain/ValueObject/'
             - '../src/Application/DTO/'
+            - '../src/Infrastructure/Persistence/Cycle/'
             - '../src/Kernel.php'
 
     App\Infrastructure\Http\Controller\:
         resource: '../src/Infrastructure/Http/Controller/'
         tags: ['controller.service_arguments']
+
+    # Rate limiter for phrase generation endpoint
+    App\Infrastructure\Http\Controller\PhraseController:
+        arguments:
+            $phraseGeneratorLimiter: '@limiter.phrase_generator'

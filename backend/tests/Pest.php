@@ -1,13 +1,15 @@
 <?php
 
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
 |--------------------------------------------------------------------------
 */
 
-// Uses Symfony test case for feature tests
-// pest()->extend(Tests\TestCase::class)->in('Feature');
+// Functional tests extend Symfony WebTestCase
+pest()->extend(WebTestCase::class)->in('Functional');
 
 /*
 |--------------------------------------------------------------------------
