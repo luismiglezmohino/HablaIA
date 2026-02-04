@@ -1,0 +1,740 @@
+openapi: 3.1.0
+info:
+  title: PictoSpeak AI - Backend API
+  description: |
+    REST API for the PictoSpeak AI SAAC (Augmentative and Alternative Communication)
+    communicator with AI-powered phrase generation.
+
+    ## Features
+    - ARASAAC pictogram management
+    - AI-powered humanized phrase generation (OpenAI GPT-4o-mini)
+    - Pictogram search with ARASAAC API fallback
+    - Health checks for container orchestration
+
+    ## Rate Limiting
+    The `/api/phrases/generate` endpoint is rate-limited to protect OpenAI API costs.
+    - **Limit:** 10 requests per minute per IP
+    - **Window:** 60 seconds (sliding window)
+    - **Response:** HTTP 429 with `Retry-After` header when exceeded
+
+    ## Authentication
+    Currently no authentication required (MVP phase). Future versions will implement JWT.
+  version: 1.0.0
+  contact:
+    name: PictoSpeak AI Team
+    url: https://github.com/your-repo/pictospeak-ai
+  license:
+    name: Source Available
+    url: https://github.com/your-repo/pictospeak-ai/blob/main/LICENSE
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.pictospeak.ai
+    description: Production server (future)
+
+tags:
+  - name: Health
+    description: Health check endpoints for container orchestration (Kubernetes, Docker)
+  - name: Categories
+    description: SAAC category management (Acciones, Emociones, Alimentos, etc.)
+  - name: Pictograms
+    description: ARASAAC pictogram management and search
+  - name: Phrases
+    description: AI-powered humanized phrase generation
+
+paths:
+  /api/health:
+    get:
+      tags:
+        - Health
+      summary: General health check
+      description: |
+        Returns overall system health status with component details.
+        Used for monitoring and alerting systems.
+      operationId: getHealth
+      responses:
+        '200':
+          description: System is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: healthy
+                timestamp: "2024-02-04T15:30:00+00:00"
+                components:
+                  database:
+                    status: up
+                    latency_ms: 2.45
+        '503':
+          description: System is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: unhealthy
+                timestamp: "2024-02-04T15:30:00+00:00"
+                components:
+                  database:
+                    status: down
+                    error: "Connection refused"
+
+  /api/health/live:
+    get:
+      tags:
+        - Health
+      summary: Liveness probe
+      description: |
+        Returns 200 if the PHP process is alive.
+        Used by Kubernetes to determine when to restart the container.
+
+        **Kubernetes configuration:**
+        ```yaml
+        livenessProbe:
+          httpGet:
+            path: /api/health/live
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        ```
+      operationId: getLiveness
+      responses:
+        '200':
+          description: Application is alive
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LivenessResponse'
+              example:
+                status: alive
+
+  /api/health/ready:
+    get:
+      tags:
+        - Health
+      summary: Readiness probe
+      description: |
+        Returns 200 only if all dependencies (database, etc.) are available.
+        Used by Kubernetes to determine when to send traffic to the pod.
+
+        **Kubernetes configuration:**
+        ```yaml
+        readinessProbe:
+          httpGet:
+            path: /api/health/ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        ```
+      operationId: getReadiness
+      responses:
+        '200':
+          description: Application is ready to receive traffic
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessResponse'
+              example:
+                status: ready
+        '503':
+          description: Application is not ready
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessResponse'
+              example:
+                status: not_ready
+                reason: "Database connection failed"
+
+  /api/categories:
+    get:
+      tags:
+        - Categories
+      summary: List all categories
+      description: |
+        Returns all SAAC standard categories for pictogram organization.
+        Categories are predefined and loaded via fixtures.
+
+        **Standard SAAC categories:**
+        - Acciones (actions)
+        - Emociones (emotions)
+        - Alimentos (food)
+        - Personas (people)
+        - Lugares (places)
+        - And more...
+      operationId: listCategories
+      responses:
+        '200':
+          description: List of all categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoryDTO'
+              example:
+                - id: "550e8400-e29b-41d4-a716-446655440001"
+                  name: "Acciones"
+                  icon: "hand-pointer"
+                - id: "550e8400-e29b-41d4-a716-446655440002"
+                  name: "Emociones"
+                  icon: "smile"
+                - id: "550e8400-e29b-41d4-a716-446655440003"
+                  name: "Alimentos"
+                  icon: "utensils"
+
+  /api/categories/{id}:
+    get:
+      tags:
+        - Categories
+      summary: Get category by ID
+      description: Returns a single category by its UUID.
+      operationId: getCategory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the category
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440001"
+      responses:
+        '200':
+          description: Category found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryDTO'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440001"
+                name: "Acciones"
+                icon: "hand-pointer"
+        '400':
+          description: Invalid UUID format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Invalid UUID format"
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Category not found"
+
+  /api/pictograms:
+    get:
+      tags:
+        - Pictograms
+      summary: List pictograms
+      description: |
+        Returns all pictograms, optionally filtered by category.
+        If `categoryId` is provided, returns only pictograms in that category.
+      operationId: listPictograms
+      parameters:
+        - name: categoryId
+          in: query
+          required: false
+          description: Filter by category UUID
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440001"
+      responses:
+        '200':
+          description: List of pictograms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PictogramDTO'
+              example:
+                - id: "660e8400-e29b-41d4-a716-446655440001"
+                  arasaacId: 2345
+                  categoryId: "550e8400-e29b-41d4-a716-446655440001"
+                  label: "comer"
+                  imagePath: "/pictograms/2345.png"
+                - id: "660e8400-e29b-41d4-a716-446655440002"
+                  arasaacId: 3456
+                  categoryId: "550e8400-e29b-41d4-a716-446655440001"
+                  label: "beber"
+                  imagePath: "/pictograms/3456.png"
+        '400':
+          description: Invalid UUID format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Invalid UUID format"
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Category with id '550e8400-...' not found"
+
+  /api/pictograms/search:
+    get:
+      tags:
+        - Pictograms
+      summary: Search pictograms
+      description: |
+        Search pictograms by keyword (label).
+
+        **Search flow:**
+        1. Search in local database by label (LIKE query)
+        2. If local results found, return them
+        3. If NO local results, search in ARASAAC API
+        4. For ARASAAC results:
+           - Check if already exists locally by arasaacId
+           - If not, download image to public/pictograms/
+           - Save to database with local path
+        5. Return pictograms (max 10)
+
+        **Minimum query length:** 2 characters
+      operationId: searchPictograms
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search query (min 2 characters)
+          schema:
+            type: string
+            minLength: 2
+          example: "comer"
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PictogramDTO'
+              example:
+                - id: "660e8400-e29b-41d4-a716-446655440001"
+                  arasaacId: 2345
+                  categoryId: "550e8400-e29b-41d4-a716-446655440001"
+                  label: "comer"
+                  imagePath: "/pictograms/2345.png"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missing_query:
+                  summary: Missing query parameter
+                  value:
+                    error: "Query parameter q is required"
+                query_too_short:
+                  summary: Query too short
+                  value:
+                    error: "Search query must be at least 2 characters"
+
+  /api/pictograms/{id}:
+    get:
+      tags:
+        - Pictograms
+      summary: Get pictogram by ID
+      description: Returns a single pictogram by its UUID.
+      operationId: getPictogram
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the pictogram
+          schema:
+            type: string
+            format: uuid
+          example: "660e8400-e29b-41d4-a716-446655440001"
+      responses:
+        '200':
+          description: Pictogram found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PictogramDTO'
+              example:
+                id: "660e8400-e29b-41d4-a716-446655440001"
+                arasaacId: 2345
+                categoryId: "550e8400-e29b-41d4-a716-446655440001"
+                label: "comer"
+                imagePath: "/pictograms/2345.png"
+        '400':
+          description: Invalid UUID format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Invalid UUID format"
+        '404':
+          description: Pictogram not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Pictogram not found"
+
+  /api/phrases/generate:
+    post:
+      tags:
+        - Phrases
+      summary: Generate humanized phrase
+      description: |
+        Generates humanized phrase variations from a sequence of pictogram IDs.
+
+        **Core MVP feature:** This is the main functionality of PictoSpeak AI.
+
+        **Generation flow:**
+        1. Validate that all pictogram IDs exist
+        2. Calculate SHA256 hash of the sequence
+        3. Search in cache by hash
+        4. If cache hit, return cached variations (source: "cache")
+        5. If cache miss, call OpenAI GPT-4o-mini
+        6. If OpenAI succeeds, save and return (source: "generated")
+        7. If OpenAI fails, concatenate labels (source: "fallback")
+
+        **Rate Limiting:**
+        - 10 requests per minute per IP
+        - HTTP 429 returned when limit exceeded
+        - `Retry-After` header indicates when to retry
+
+        **Pictogram sequence limits:**
+        - Minimum: 1 pictogram
+        - Maximum: 10 pictograms
+      operationId: generatePhrase
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeneratePhraseRequest'
+            example:
+              pictogramIds:
+                - "660e8400-e29b-41d4-a716-446655440001"
+                - "660e8400-e29b-41d4-a716-446655440002"
+      responses:
+        '200':
+          description: Phrase generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhraseResponseDTO'
+              examples:
+                generated:
+                  summary: Generated by AI
+                  value:
+                    variations:
+                      - "Quiero comer pan"
+                      - "Me gustaría comer pan"
+                      - "Deseo comer pan"
+                    source: "generated"
+                    sequenceHash: "a1b2c3d4e5f6..."
+                    pictogramIds:
+                      - "660e8400-e29b-41d4-a716-446655440001"
+                      - "660e8400-e29b-41d4-a716-446655440002"
+                cached:
+                  summary: Retrieved from cache
+                  value:
+                    variations:
+                      - "Quiero comer pan"
+                      - "Me gustaría comer pan"
+                      - "Deseo comer pan"
+                    source: "cache"
+                    sequenceHash: "a1b2c3d4e5f6..."
+                    pictogramIds:
+                      - "660e8400-e29b-41d4-a716-446655440001"
+                      - "660e8400-e29b-41d4-a716-446655440002"
+                fallback:
+                  summary: Fallback (AI failed)
+                  value:
+                    variations:
+                      - "comer pan"
+                    source: "fallback"
+                    sequenceHash: "a1b2c3d4e5f6..."
+                    pictogramIds:
+                      - "660e8400-e29b-41d4-a716-446655440001"
+                      - "660e8400-e29b-41d4-a716-446655440002"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_json:
+                  summary: Invalid JSON body
+                  value:
+                    error: "Invalid JSON body"
+                missing_field:
+                  summary: Missing required field
+                  value:
+                    error: "Missing required field: pictogramIds"
+                not_array:
+                  summary: pictogramIds not an array
+                  value:
+                    error: "pictogramIds must be an array"
+                invalid_uuid:
+                  summary: Invalid UUID in array
+                  value:
+                    error: "Invalid UUID format"
+                empty_sequence:
+                  summary: Empty pictogram sequence
+                  value:
+                    error: "Pictogram sequence cannot be empty"
+                too_many:
+                  summary: Too many pictograms
+                  value:
+                    error: "Pictogram sequence cannot exceed 10 pictograms"
+        '404':
+          description: Pictogram not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Pictograms not found: 660e8400-e29b-41d4-a716-446655440099"
+        '429':
+          description: Rate limit exceeded
+          headers:
+            Retry-After:
+              description: Unix timestamp when the rate limit resets
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitErrorResponse'
+              example:
+                error: "Too many requests"
+                retryAfter: 1707058200
+
+components:
+  schemas:
+    CategoryDTO:
+      type: object
+      description: Data Transfer Object for Category
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier (UUID v4)
+        name:
+          type: string
+          description: Category name
+          maxLength: 50
+        icon:
+          type: string
+          nullable: true
+          description: FontAwesome icon identifier
+      example:
+        id: "550e8400-e29b-41d4-a716-446655440001"
+        name: "Acciones"
+        icon: "hand-pointer"
+
+    PictogramDTO:
+      type: object
+      description: Data Transfer Object for Pictogram
+      required:
+        - id
+        - arasaacId
+        - categoryId
+        - label
+        - imagePath
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier (UUID v4)
+        arasaacId:
+          type: integer
+          description: Original ARASAAC pictogram ID
+          minimum: 1
+        categoryId:
+          type: string
+          format: uuid
+          description: Category this pictogram belongs to
+        label:
+          type: string
+          description: Pictogram label/text
+          maxLength: 100
+        imagePath:
+          type: string
+          description: Local path to pictogram image
+          pattern: "^/pictograms/\\d+\\.png$"
+      example:
+        id: "660e8400-e29b-41d4-a716-446655440001"
+        arasaacId: 2345
+        categoryId: "550e8400-e29b-41d4-a716-446655440001"
+        label: "comer"
+        imagePath: "/pictograms/2345.png"
+
+    PhraseResponseDTO:
+      type: object
+      description: Response for phrase generation
+      required:
+        - variations
+        - source
+        - sequenceHash
+        - pictogramIds
+      properties:
+        variations:
+          type: array
+          description: List of generated phrase variations (1-3)
+          items:
+            type: string
+            maxLength: 500
+          minItems: 1
+          maxItems: 3
+        source:
+          type: string
+          description: Source of the generated phrase
+          enum:
+            - cache
+            - generated
+            - fallback
+        sequenceHash:
+          type: string
+          description: SHA256 hash of the pictogram sequence
+          pattern: "^[a-f0-9]{64}$"
+        pictogramIds:
+          type: array
+          description: Original pictogram IDs in sequence order
+          items:
+            type: string
+            format: uuid
+          minItems: 1
+          maxItems: 10
+      example:
+        variations:
+          - "Quiero comer pan"
+          - "Me gustaría comer pan"
+          - "Deseo comer pan"
+        source: "generated"
+        sequenceHash: "a1b2c3d4e5f6789..."
+        pictogramIds:
+          - "660e8400-e29b-41d4-a716-446655440001"
+          - "660e8400-e29b-41d4-a716-446655440002"
+
+    GeneratePhraseRequest:
+      type: object
+      description: Request body for phrase generation
+      required:
+        - pictogramIds
+      properties:
+        pictogramIds:
+          type: array
+          description: Array of pictogram UUIDs in sequence order
+          items:
+            type: string
+            format: uuid
+          minItems: 1
+          maxItems: 10
+      example:
+        pictogramIds:
+          - "660e8400-e29b-41d4-a716-446655440001"
+          - "660e8400-e29b-41d4-a716-446655440002"
+
+    HealthResponse:
+      type: object
+      description: General health check response
+      required:
+        - status
+        - timestamp
+        - components
+      properties:
+        status:
+          type: string
+          enum:
+            - healthy
+            - unhealthy
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp
+        components:
+          type: object
+          properties:
+            database:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - up
+                    - down
+                latency_ms:
+                  type: number
+                  format: float
+                  description: Database query latency in milliseconds
+                error:
+                  type: string
+                  description: Error message if status is down
+
+    LivenessResponse:
+      type: object
+      description: Liveness probe response
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - alive
+
+    ReadinessResponse:
+      type: object
+      description: Readiness probe response
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - ready
+            - not_ready
+        reason:
+          type: string
+          description: Reason for not_ready status
+
+    ErrorResponse:
+      type: object
+      description: Standard error response
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+
+    RateLimitErrorResponse:
+      type: object
+      description: Rate limit error response
+      required:
+        - error
+        - retryAfter
+      properties:
+        error:
+          type: string
+          description: Error message
+        retryAfter:
+          type: integer
+          description: Unix timestamp when rate limit resets

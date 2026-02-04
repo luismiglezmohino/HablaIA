@@ -188,7 +188,7 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 - **Framework:** Symfony 7.4
 - **Lenguaje:** PHP 8.4
 - **Base de Datos:** PostgreSQL 16
-- **ORM:** Doctrine ORM
+- **ORM:** Cycle ORM
 - **Testing:** PestPHP
 - **Validación:** Symfony Validator Component
 - **Arquitectura:** Clean Architecture (Domain-Application-Infrastructure)
@@ -358,11 +358,17 @@ composer analyse
 # Limpiar caché
 php bin/console cache:clear
 
-# ⏳ Sincronizar pictogramas desde ARASAAC (pendiente)
-php bin/console app:sync-arasaac
+# Cargar categorías SAAC (7 categorías base)
+php bin/console app:fixtures:load
 
-# ⏳ Formateo de código (pendiente)
-composer format
+# Sincronizar pictogramas desde ARASAAC (197 palabras core vocabulary)
+php bin/console app:arasaac:sync --all
+
+# Sincronizar keywords específicos
+php bin/console app:arasaac:sync comer beber dormir --category=Acciones
+
+# Ver qué se sincronizaría (sin ejecutar)
+php bin/console app:arasaac:sync --all --dry-run
 ```
 
 #### Frontend (Vue + TypeScript)
@@ -503,11 +509,19 @@ backend/src/
 │       └── Service/
 ├── Application/      # Casos de Uso (✅ completado)
 │   ├── Category/     # GetAllCategories
-│   ├── Pictogram/    # GetAllPictograms, GetPictogramsByCategory
+│   ├── Pictogram/    # GetAllPictograms, GetPictogramsByCategory, SearchPictogram
 │   ├── Phrase/       # GenerateHumanizedPhrase (core MVP)
 │   ├── DTO/          # CategoryDTO, PictogramDTO, PhraseResponseDTO
 │   └── Exception/    # ApplicationException, *NotFoundException
-├── Infrastructure/   # Implementaciones (⏳ pendiente)
+├── Infrastructure/   # Implementaciones (✅ completado)
+│   ├── Console/      # LoadFixturesCommand, SyncArasaacCommand
+│   ├── DataFixtures/ # CategoryFixtures (7 categorías SAAC)
+│   ├── ExternalApi/  # ArasaacApiClient, OpenAIPhraseGenerator
+│   ├── Health/       # DatabaseHealthChecker
+│   ├── Http/         # Controllers (Category, Pictogram, Phrase, Health)
+│   ├── Persistence/  # Cycle ORM (Entities, Mappers, Repositories)
+│   ├── Service/      # VocabularyLoader, ImageDownloader
+│   └── Shared/       # SymfonyUuidGenerator
 └── Shared/           # Utils compartidos
 ```
 
@@ -565,25 +579,27 @@ docs/adrs/
 
 | Funcionalidad | Estado | Descripción |
 |---------------|--------|-------------|
-| Grid de pictogramas | 🔲 Pendiente | Categorías: Acciones, Emociones, Personas, Objetos |
-| Selección multi-pictograma | 🔲 Pendiente | Construir frases seleccionando pictogramas |
-| Generación IA | 🔲 Pendiente | 3 variaciones humanizadas con LLM (OpenAI inicial) |
-| Text-to-Speech | 🔲 Pendiente | Web Speech API (voz nativa del navegador) |
-| Caché de frases | 🔲 Pendiente | PostgreSQL para reducir llamadas al LLM |
-| Sincronización ARASAAC | 🔲 Pendiente | Descarga de pictogramas desde API |
-| Accesibilidad WCAG 2.1 AA | 🔲 Pendiente | Navegación por teclado, ARIA labels, contraste |
+| Grid de pictogramas | ✅ Backend | API: GET /api/pictograms, GET /api/categories |
+| Búsqueda de pictogramas | ✅ Backend | API: GET /api/pictograms/search?q= (con fallback ARASAAC) |
+| Generación IA | ✅ Backend | API: POST /api/phrases/generate (3 variaciones) |
+| Caché de frases | ✅ Backend | PostgreSQL + Cycle ORM |
+| Sincronización ARASAAC | ✅ Backend | Comando: app:arasaac:sync (197 palabras core vocabulary) |
+| Health checks | ✅ Backend | API: /api/health, /api/health/live, /api/health/ready |
+| Text-to-Speech | 🔲 Frontend | Web Speech API (pendiente frontend) |
+| Accesibilidad WCAG 2.1 AA | 🔲 Frontend | Pendiente frontend |
 
 ### Objetivos Técnicos 🛠️
 
 | Aspecto | Estado | Descripción |
 |---------|--------|-------------|
-| Clean Architecture | 🚧 En progreso | Domain ✅ → Application ✅ → Infrastructure ⏳ |
-| TDD | 🚧 En progreso | 92 tests (61 Domain + 31 Application) |
+| Clean Architecture | ✅ Completado | Domain ✅ → Application ✅ → Infrastructure ✅ |
+| TDD | ✅ Completado | 294 tests (769 assertions) |
 | Excepciones de Dominio | ✅ Completado | `DomainException` base + excepciones semánticas por módulo |
 | Excepciones de Application | ✅ Completado | `ApplicationException` + `*NotFoundException` |
 | UUID Desacoplado | ✅ Completado | Domain valida (`Uuid`), Infrastructure genera (`UuidGeneratorInterface`) |
 | Docker | ✅ Completado | Contenedores para todos los servicios |
 | CI/CD | ✅ Completado | GitHub Actions + Husky (pre-commit + pre-push) |
+| Seguridad | ✅ Completado | SSRF protection, Path Traversal, MIME validation, Rate limiting |
 
 **Leyenda:** 🔲 Pendiente | 🚧 En progreso | ✅ Completado
 
@@ -604,10 +620,13 @@ docs/adrs/
 
 ## 📚 Documentación Adicional
 
+- **[OpenAPI Specification](docs/openapi.yaml):** Especificación completa de la API REST
 - **[Architecture Decision Records](docs/adrs/):** Decisiones de arquitectura documentadas
-- **[API Documentation](http://localhost:8080/api/doc):** Especificación OpenAPI 3.0
-- **[Testing Guide](docs/guides/testing-guide.md):** Estrategias de testing
-- **[Deployment Guide](docs/guides/deployment-guide.md):** Despliegue en producción
+- **[Domain Layer Diagram](docs/diagrams/domain-layer.md):** Entidades, Value Objects, Repositorios
+- **[Application Layer Diagram](docs/diagrams/application-layer.md):** Use Cases, DTOs
+- **[Infrastructure Layer Diagram](docs/diagrams/infrastructure-layer.md):** Controllers, Persistence, External APIs
+- **[API Flow Diagram](docs/diagrams/api-flow.md):** Flujos de las APIs principales
+- **[Roadmap](docs/ROADMAP.md):** Plan de desarrollo en 6 fases
 
 ---
 
