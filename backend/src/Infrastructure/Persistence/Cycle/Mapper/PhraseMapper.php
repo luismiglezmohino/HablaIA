@@ -23,7 +23,7 @@ final class PhraseMapper
             PhraseId::fromString($entity->id),
             new PictogramSequence($pictogramIds),
             $entity->variations,
-            $entity->createdAt
+            $entity->createdAt ?? new \DateTimeImmutable()
         );
     }
 

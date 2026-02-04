@@ -58,7 +58,7 @@ final class DatabaseFactory
             throw InvalidDatabaseConfigurationException::missingUser();
         }
 
-        if ($pass === null) {
+        if ($pass === null || $pass === '') {
             throw InvalidDatabaseConfigurationException::missingPassword();
         }
 
