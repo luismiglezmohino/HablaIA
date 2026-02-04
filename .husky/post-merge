@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# =============================================================================
+# HablaIA - Post-merge Hook
+# =============================================================================
+# Auto-installs dependencies when lock files change after a merge/pull
+
+CHANGED_FILES=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)
+
+# Root dependencies
+if echo "$CHANGED_FILES" | grep -q "^package-lock.json$"; then
+    echo "📦 package-lock.json changed. Running npm install..."
+    npm install
+fi
+
+# Frontend dependencies
+if echo "$CHANGED_FILES" | grep -q "^frontend/package-lock.json$"; then
+    echo "📦 frontend/package-lock.json changed. Running npm install..."
+    cd frontend && npm install && cd ..
+fi
+
+# Backend dependencies
+if echo "$CHANGED_FILES" | grep -q "^backend/composer.lock$"; then
+    echo "🐘 composer.lock changed. Running composer install..."
+    cd backend && composer install && cd ..
+fi

@@ -17,6 +17,8 @@
     "release:first": "standard-version --first-release"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.4.1",
+    "@commitlint/config-conventional": "^20.4.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.11",
     "standard-version": "^9.5.0"
