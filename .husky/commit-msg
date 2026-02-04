@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# =============================================================================
+# HablaIA - Commit Message Hook
+# =============================================================================
+# Validates commit messages follow Conventional Commits format
+# Format: type(scope): description
+# Types: feat, fix, docs, test, refactor, chore, style, perf, ci, build, revert
+
+npx --no -- commitlint --edit $1

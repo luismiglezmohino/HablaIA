@@ -22,8 +22,20 @@ module.exports = {
   },
 
   // Backend: PHPStan static analysis (requires full context)
-  'backend/src/**/*.php': () => {
+  'backend/src/**/*.php': (absolutePaths) => {
+    const commands = []
+
+    // Check for debug functions in staged files
+    const debugCheck = absolutePaths
+      .map((p) => `"${p}"`)
+      .join(' ')
+    commands.push(
+      `grep -rn --include="*.php" -E "\\b(var_dump|dd|dump|print_r|die)\\s*\\(" ${debugCheck} && echo "\\n❌ Debug functions found in staged files!" && exit 1 || true`
+    )
+
     // PHPStan needs full project context for accurate analysis
-    return 'cd backend && ./vendor/bin/phpstan analyse src --level=8'
+    commands.push('cd backend && ./vendor/bin/phpstan analyse src --level=8')
+
+    return commands
   },
 }
