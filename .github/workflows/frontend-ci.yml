@@ -16,6 +16,10 @@ on:
     paths:
       - 'frontend/**'
 
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: true
+
 defaults:
   run:
     working-directory: frontend
@@ -46,6 +50,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Security audit
+        run: npm audit --omit=dev
+
       - name: Lint
         run: npm run lint
 
@@ -57,12 +64,6 @@ jobs:
 
       - name: Build
         run: npm run build
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        with:
-          files: coverage/lcov.info
-          flags: frontend
 
   # ---------------------------------------------------------------------------
   # Accesibilidad
