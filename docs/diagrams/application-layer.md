@@ -29,6 +29,18 @@ classDiagram
         +__invoke(string categoryId) array~PictogramDTO~
     }
 
+    class SearchPictogram {
+        <<use case>>
+        -PictogramRepository repository
+        -PictogramProviderInterface pictogramProvider
+        -ImageDownloaderInterface imageDownloader
+        -UuidGeneratorInterface uuidGenerator
+        -string pictogramsBasePath
+        +__invoke(string query) array~PictogramDTO~
+        -sanitizeQuery(string) string
+        -downloadAndSavePictogram(Pictogram) Pictogram?
+    }
+
     %% Use Cases - Phrase (Core MVP)
     class GenerateHumanizedPhrase {
         <<use case>>
@@ -54,12 +66,17 @@ classDiagram
     class PhraseGeneratorInterface {
         <<interface>>
     }
+    class PictogramProviderInterface {
+        <<interface>>
+    }
 
     %% Dependencies
     GetAllCategories --> CategoryRepository
     GetAllPictograms --> PictogramRepository
     GetPictogramsByCategory --> PictogramRepository
     GetPictogramsByCategory --> CategoryRepository
+    SearchPictogram --> PictogramRepository
+    SearchPictogram --> PictogramProviderInterface
     GenerateHumanizedPhrase --> PictogramRepository
     GenerateHumanizedPhrase --> PhraseRepository
     GenerateHumanizedPhrase --> PhraseGeneratorInterface
@@ -240,15 +257,67 @@ sequenceDiagram
     end
 ```
 
+## Flujo de SearchPictogram
+
+```mermaid
+flowchart TB
+    Start([Usuario busca pictograma]) --> Sanitize
+
+    subgraph Sanitize["1. Sanitizar Query"]
+        S1[Recibir query string]
+        S2{Length >= 2?}
+        S1 --> S2
+        S2 -->|No| ErrShort[InvalidArgumentException]
+        S2 -->|Si| SanitizeOK[Query sanitizada]
+    end
+
+    Sanitize --> SearchLocal
+
+    subgraph SearchLocal["2. Buscar Localmente"]
+        L1[findByLabelLike query, 10]
+        L2{Resultados locales?}
+        L1 --> L2
+    end
+
+    L2 -->|Si| ReturnLocal[Retornar DTOs locales]
+    L2 -->|No| SearchARASAAC
+
+    subgraph SearchARASAAC["3. Buscar en ARASAAC API"]
+        A1[searchByKeyword query, es]
+        A2{Resultados ARASAAC?}
+        A1 --> A2
+    end
+
+    A2 -->|No| ReturnEmpty[Retornar array vacio]
+    A2 -->|Si| ProcessResults
+
+    subgraph ProcessResults["4. Procesar Resultados max 10"]
+        P1[Para cada pictograma ARASAAC]
+        P2{Existe localmente por arasaacId?}
+        P1 --> P2
+        P2 -->|Si| UseExisting[Usar existente]
+        P2 -->|No| Download
+        Download[Descargar imagen]
+        Download --> SaveDB[Guardar en DB]
+    end
+
+    ProcessResults --> ReturnMixed[Retornar DTOs]
+
+    style SearchLocal fill:#e8f5e9
+    style SearchARASAAC fill:#fff3e0
+    style ProcessResults fill:#e3f2fd
+```
+
 ## Arquitectura de Capas
 
 ```mermaid
 graph TB
-    subgraph Infrastructure["Infrastructure Layer (futuro)"]
+    subgraph Infrastructure["Infrastructure Layer"]
         Ctrl[Controllers]
-        DoctrineRepo[Doctrine Repositories]
+        CycleRepo[Cycle ORM Repositories]
         OpenAI[OpenAI Adapter]
-        RamseyUuid[Ramsey UUID]
+        ARASAAC[ARASAAC Adapter]
+        SymfonyUuid[Symfony UUID]
     end
 
     subgraph Application["Application Layer"]
@@ -256,7 +325,8 @@ graph TB
             UC1[GetAllCategories]
             UC2[GetAllPictograms]
             UC3[GetPictogramsByCategory]
-            UC4[GenerateHumanizedPhrase]
+            UC4[SearchPictogram]
+            UC5[GenerateHumanizedPhrase]
         end
 
         subgraph DTOs["DTOs"]
@@ -284,9 +354,10 @@ graph TB
     UseCases --> DTOs
     UseCases --> Repositories
     UseCases --> Services
-    DoctrineRepo -.-> Repositories
+    CycleRepo -.-> Repositories
     OpenAI -.-> Services
-    RamseyUuid -.-> Services
+    ARASAAC -.-> Services
+    SymfonyUuid -.-> Services
 
     style Application fill:#e3f2fd
     style Domain fill:#e8f5e9
@@ -295,10 +366,10 @@ graph TB
 
 ## Resumen de Componentes
 
-| Módulo | Use Cases | DTOs | Excepciones |
+| Modulo | Use Cases | DTOs | Excepciones |
 |--------|-----------|------|-------------|
 | **Category** | `GetAllCategories` | `CategoryDTO` | `CategoryNotFoundException` |
-| **Pictogram** | `GetAllPictograms`, `GetPictogramsByCategory` | `PictogramDTO` | `PictogramNotFoundException` |
+| **Pictogram** | `GetAllPictograms`, `GetPictogramsByCategory`, `SearchPictogram` | `PictogramDTO` | `PictogramNotFoundException` |
 | **Phrase** | `GenerateHumanizedPhrase` | `PhraseResponseDTO` | - |
 
 ## Principios SOLID Aplicados
@@ -360,7 +431,8 @@ graph LR
 | `GetAllCategories` | 2 | 6 |
 | `GetAllPictograms` | 7 | 35 |
 | `GetPictogramsByCategory` | 8 | 40 |
+| `SearchPictogram` | 10+ | 50+ |
 | `GenerateHumanizedPhrase` | 14 | 27 |
-| **Total** | **31** | **108+** |
+| **Total** | **41+** | **158+** |
 
-> **Cobertura objetivo:** 80% Application Layer (cumplido con 31 tests)
+> **Cobertura objetivo:** 80% Application Layer
