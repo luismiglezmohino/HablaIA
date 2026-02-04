@@ -26,3 +26,14 @@
 # PHP
 *.cache
 *.log
+
+# Docker local overrides
+compose.override.yaml
+docker-compose.override.yaml
+
+# Environment files with potential secrets
+.env.dev
+.env.test
+
+# Generated binaries
+bin/phpunit
