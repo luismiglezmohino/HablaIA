@@ -39,6 +39,30 @@ final class InMemoryPictogramRepository implements PictogramRepository
         return array_values($this->pictograms);
     }
 
+    /** @return array<Pictogram> */
+    public function findByLabelLike(string $query, int $limit = 10): array
+    {
+        $normalizedQuery = mb_strtolower(trim($query));
+
+        $results = array_filter(
+            $this->pictograms,
+            fn(Pictogram $p) => str_contains(mb_strtolower($p->label()), $normalizedQuery)
+        );
+
+        return array_slice(array_values($results), 0, $limit);
+    }
+
+    public function findByArasaacId(int $arasaacId): ?Pictogram
+    {
+        foreach ($this->pictograms as $pictogram) {
+            if ($pictogram->arasaacId()->value() === $arasaacId) {
+                return $pictogram;
+            }
+        }
+
+        return null;
+    }
+
     public function save(Pictogram $pictogram): void
     {
         $this->pictograms[$pictogram->id()->value()] = $pictogram;

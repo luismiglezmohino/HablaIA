@@ -158,4 +158,39 @@ describe('CyclePictogramRepository', function (): void {
             $repository->save($pictogram);
         });
     });
+
+    describe('findByArasaacId', function (): void {
+        it('returns null when pictogram not found by ARASAAC ID', function (): void {
+            $ormRepository = $this->createMock(Repository::class);
+            $ormRepository->method('findOne')->willReturn(null);
+
+            $em = $this->createMock(EntityManagerInterface::class);
+
+            $repository = new CyclePictogramRepository($ormRepository, $em);
+            $result = $repository->findByArasaacId(99999);
+
+            expect($result)->toBeNull();
+        });
+
+        it('returns Pictogram when found by ARASAAC ID', function (): void {
+            $entity = new PictogramEntity();
+            $entity->id = '550e8400-e29b-41d4-a716-446655440001';
+            $entity->arasaacId = 12345;
+            $entity->categoryId = '550e8400-e29b-41d4-a716-446655440000';
+            $entity->label = 'comer';
+            $entity->imagePath = '/images/12345.png';
+
+            $ormRepository = $this->createMock(Repository::class);
+            $ormRepository->method('findOne')->willReturn($entity);
+
+            $em = $this->createMock(EntityManagerInterface::class);
+
+            $repository = new CyclePictogramRepository($ormRepository, $em);
+            $result = $repository->findByArasaacId(12345);
+
+            expect($result)->toBeInstanceOf(Pictogram::class);
+            expect($result->arasaacId()->value())->toBe(12345);
+            expect($result->label())->toBe('comer');
+        });
+    });
 });

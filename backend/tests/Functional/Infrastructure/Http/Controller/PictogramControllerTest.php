@@ -2,17 +2,26 @@
 
 declare(strict_types=1);
 
+use App\Application\Pictogram\SearchPictogram;
 use App\Domain\Category\Entity\Category;
 use App\Domain\Category\Repository\CategoryRepository;
 use App\Domain\Category\ValueObject\CategoryId;
 use App\Domain\Pictogram\Entity\Pictogram;
 use App\Domain\Pictogram\Repository\PictogramRepository;
+use App\Domain\Pictogram\Service\PictogramProviderInterface;
 use App\Domain\Pictogram\ValueObject\ArasaacId;
 use App\Domain\Pictogram\ValueObject\PictogramId;
+use App\Domain\Shared\Service\UuidGeneratorInterface;
+use App\Infrastructure\Service\ImageDownloaderInterface;
+use Tests\Shared\FakeUuidGenerator;
+use Tests\Shared\InMemoryPictogramRepository;
 
 beforeEach(function (): void {
     $this->pictogramRepository = $this->createMock(PictogramRepository::class);
     $this->categoryRepository = $this->createMock(CategoryRepository::class);
+    $this->pictogramProvider = $this->createMock(PictogramProviderInterface::class);
+    $this->imageDownloader = $this->createMock(ImageDownloaderInterface::class);
+    $this->uuidGenerator = new FakeUuidGenerator();
 });
 
 describe('PictogramController', function (): void {
@@ -33,6 +42,9 @@ describe('PictogramController', function (): void {
 
             self::getContainer()->set(PictogramRepository::class, $this->pictogramRepository);
             self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
 
             $client->request('GET', '/api/pictograms');
 
@@ -69,6 +81,9 @@ describe('PictogramController', function (): void {
 
             self::getContainer()->set(PictogramRepository::class, $this->pictogramRepository);
             self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
 
             $client->request('GET', '/api/pictograms');
 
@@ -83,6 +98,9 @@ describe('PictogramController', function (): void {
 
             self::getContainer()->set(PictogramRepository::class, $this->pictogramRepository);
             self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
 
             $client->request('GET', '/api/pictograms');
 
@@ -107,6 +125,9 @@ describe('PictogramController', function (): void {
 
             self::getContainer()->set(PictogramRepository::class, $this->pictogramRepository);
             self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
 
             $client->request('GET', '/api/pictograms');
 
@@ -132,6 +153,9 @@ describe('PictogramController', function (): void {
 
             self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
             self::getContainer()->set(PictogramRepository::class, $this->pictogramRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
 
             $client->request('GET', '/api/pictograms?categoryId=550e8400-e29b-41d4-a716-446655440001');
 
@@ -148,6 +172,9 @@ describe('PictogramController', function (): void {
 
             self::getContainer()->set(PictogramRepository::class, $this->pictogramRepository);
             self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
 
             $client->request('GET', '/api/pictograms?categoryId=550e8400-e29b-41d4-a716-446655440099');
 
@@ -161,6 +188,9 @@ describe('PictogramController', function (): void {
 
             self::getContainer()->set(PictogramRepository::class, $this->pictogramRepository);
             self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
 
             $client->request('GET', '/api/pictograms?categoryId=invalid-uuid');
 
@@ -176,6 +206,9 @@ describe('PictogramController', function (): void {
 
             self::getContainer()->set(PictogramRepository::class, $this->pictogramRepository);
             self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
 
             $client->request('GET', '/api/pictograms');
 
@@ -217,6 +250,9 @@ describe('PictogramController', function (): void {
 
             self::getContainer()->set(PictogramRepository::class, $this->pictogramRepository);
             self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
 
             $client->request('GET', '/api/pictograms/550e8400-e29b-41d4-a716-446655440010');
 
@@ -234,6 +270,9 @@ describe('PictogramController', function (): void {
 
             self::getContainer()->set(PictogramRepository::class, $this->pictogramRepository);
             self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
 
             $client->request('GET', '/api/pictograms/550e8400-e29b-41d4-a716-446655440099');
 
@@ -247,6 +286,9 @@ describe('PictogramController', function (): void {
 
             self::getContainer()->set(PictogramRepository::class, $this->pictogramRepository);
             self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
 
             $client->request('GET', '/api/pictograms/invalid-uuid');
 
@@ -254,5 +296,145 @@ describe('PictogramController', function (): void {
             $data = json_decode($client->getResponse()->getContent(), true);
             expect($data['error'])->toBe('Invalid UUID format');
         });
+    });
+
+    describe('GET /api/pictograms/search', function (): void {
+
+        it('returns 400 when query parameter q is missing', function (): void {
+            $client = static::createClient();
+
+            $pictogramRepo = new InMemoryPictogramRepository();
+
+            self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
+            self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
+
+            $client->request('GET', '/api/pictograms/search');
+
+            expect($client->getResponse()->getStatusCode())->toBe(400);
+            $data = json_decode($client->getResponse()->getContent(), true);
+            expect($data['error'])->toBe('Query parameter q is required');
+        });
+
+        it('returns 400 when query is too short', function (): void {
+            $client = static::createClient();
+
+            $pictogramRepo = new InMemoryPictogramRepository();
+
+            self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
+            self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
+
+            $client->request('GET', '/api/pictograms/search?q=a');
+
+            expect($client->getResponse()->getStatusCode())->toBe(400);
+            $data = json_decode($client->getResponse()->getContent(), true);
+            expect($data['error'])->toBe('Search query must be at least 2 characters');
+        });
+
+        it('returns empty array when no pictograms found', function (): void {
+            $client = static::createClient();
+
+            $pictogramRepo = new InMemoryPictogramRepository();
+            $this->pictogramProvider->method('searchByKeyword')->willReturn([]);
+
+            self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
+            self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
+
+            $client->request('GET', '/api/pictograms/search?q=dinosaurio');
+
+            expect($client->getResponse()->getStatusCode())->toBe(200);
+            $data = json_decode($client->getResponse()->getContent(), true);
+            expect($data)->toBeEmpty();
+        });
+
+        it('returns pictograms found in local database', function (): void {
+            $client = static::createClient();
+
+            $pictogramRepo = new InMemoryPictogramRepository();
+
+            // Add pictogram to repository
+            $pictogram = new Pictogram(
+                PictogramId::fromString($this->uuidGenerator->generate()),
+                new ArasaacId(12345),
+                CategoryId::fromString('550e8400-e29b-41d4-a716-446655440001'),
+                'dinosaurio',
+                '/pictograms/dinosaurio.png'
+            );
+            $pictogramRepo->save($pictogram);
+
+            self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
+            self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
+
+            $client->request('GET', '/api/pictograms/search?q=dino');
+
+            expect($client->getResponse()->getStatusCode())->toBe(200);
+            $data = json_decode($client->getResponse()->getContent(), true);
+            expect($data)->toHaveCount(1);
+            expect($data[0]['label'])->toBe('dinosaurio');
+        });
+
+        it('returns correct JSON structure', function (): void {
+            $client = static::createClient();
+
+            $pictogramRepo = new InMemoryPictogramRepository();
+
+            $pictogram = new Pictogram(
+                PictogramId::fromString($this->uuidGenerator->generate()),
+                new ArasaacId(12345),
+                CategoryId::fromString('550e8400-e29b-41d4-a716-446655440001'),
+                'perro',
+                '/pictograms/perro.png'
+            );
+            $pictogramRepo->save($pictogram);
+
+            self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
+            self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
+
+            $client->request('GET', '/api/pictograms/search?q=perro');
+
+            $data = json_decode($client->getResponse()->getContent(), true);
+            expect($data[0])->toHaveKeys(['id', 'arasaacId', 'categoryId', 'label', 'imagePath']);
+        });
+
+        it('rejects POST method', function (): void {
+            $client = static::createClient();
+
+            $client->request('POST', '/api/pictograms/search?q=test');
+
+            expect($client->getResponse()->getStatusCode())->toBe(405);
+        });
+
+        it('returns valid JSON', function (): void {
+            $client = static::createClient();
+
+            $pictogramRepo = new InMemoryPictogramRepository();
+            $this->pictogramProvider->method('searchByKeyword')->willReturn([]);
+
+            self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
+            self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
+
+            $client->request('GET', '/api/pictograms/search?q=test');
+
+            json_decode($client->getResponse()->getContent(), true);
+            expect(json_last_error())->toBe(JSON_ERROR_NONE);
+        });
+
     });
 });
