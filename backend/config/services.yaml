@@ -22,3 +22,29 @@ services:
     App\Infrastructure\Http\Controller\PhraseController:
         arguments:
             $phraseGeneratorLimiter: '@limiter.phrase_generator'
+
+    # Vocabulary Loader for ARASAAC sync command
+    App\Infrastructure\Service\VocabularyLoaderInterface:
+        class: App\Infrastructure\Service\YamlVocabularyLoader
+        arguments:
+            $vocabularyFilePath: '%kernel.project_dir%/config/vocabulary/core_vocabulary.yaml'
+
+    # Image Downloader for ARASAAC sync command
+    App\Infrastructure\Service\ImageDownloaderInterface:
+        class: App\Infrastructure\Service\HttpImageDownloader
+        arguments:
+            $baseDirectory: '%kernel.project_dir%/public/pictograms'
+
+    # ARASAAC Sync Command configuration
+    App\Infrastructure\Console\SyncArasaacCommand:
+        arguments:
+            $pictogramsDirectory: '%kernel.project_dir%/public/pictograms'
+
+    # Pictogram Provider configuration (ARASAAC API)
+    App\Domain\Pictogram\Service\PictogramProviderInterface:
+        class: App\Infrastructure\ExternalApi\Arasaac\ArasaacApiClient
+
+    # SearchPictogram Use Case configuration
+    App\Application\Pictogram\SearchPictogram:
+        arguments:
+            $pictogramsBasePath: '%kernel.project_dir%/public/pictograms'

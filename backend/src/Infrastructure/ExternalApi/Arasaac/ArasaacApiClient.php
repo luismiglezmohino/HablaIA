@@ -50,10 +50,18 @@ final class ArasaacApiClient implements PictogramProviderInterface
 
         $data = $response->toArray();
 
-        return array_map(
-            fn (array $item) => $this->mapToPictogram($item),
-            $data
+        // Prefer AAC pictograms, but fallback to all if none have aac: true
+        $aacOnly = array_filter(
+            $data,
+            fn (array $item): bool => ($item['aac'] ?? false) === true
         );
+
+        $results = !empty($aacOnly) ? $aacOnly : $data;
+
+        return array_values(array_map(
+            fn (array $item) => $this->mapToPictogram($item),
+            $results
+        ));
     }
 
     public function fetchById(int $providerId): ?Pictogram

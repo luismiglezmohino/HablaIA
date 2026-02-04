@@ -22,5 +22,19 @@ interface PictogramRepository
      */
     public function findAll(): array;
 
+    /**
+     * Search pictograms by label using LIKE query (case insensitive).
+     *
+     * @param string $query The search term
+     * @param int $limit Maximum number of results
+     * @return array<Pictogram>
+     */
+    public function findByLabelLike(string $query, int $limit = 10): array;
+
+    /**
+     * Find a pictogram by its ARASAAC ID.
+     */
+    public function findByArasaacId(int $arasaacId): ?Pictogram;
+
     public function save(Pictogram $pictogram): void;
 }

@@ -7,6 +7,7 @@ namespace App\Infrastructure\Http\Controller;
 use App\Application\Exception\CategoryNotFoundException;
 use App\Application\Pictogram\GetAllPictograms;
 use App\Application\Pictogram\GetPictogramsByCategory;
+use App\Application\Pictogram\SearchPictogram;
 use App\Domain\Pictogram\Repository\PictogramRepository;
 use App\Domain\Pictogram\ValueObject\PictogramId;
 use InvalidArgumentException;
@@ -21,7 +22,8 @@ final class PictogramController
     public function __construct(
         private readonly GetAllPictograms $getAllPictograms,
         private readonly GetPictogramsByCategory $getPictogramsByCategory,
-        private readonly PictogramRepository $pictogramRepository
+        private readonly PictogramRepository $pictogramRepository,
+        private readonly SearchPictogram $searchPictogram
     ) {
     }
 
@@ -44,6 +46,39 @@ final class PictogramController
         } catch (InvalidArgumentException) {
             return new JsonResponse(
                 ['error' => 'Invalid UUID format'],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        return new JsonResponse(
+            array_map(fn ($dto) => [
+                'id' => $dto->id,
+                'arasaacId' => $dto->arasaacId,
+                'categoryId' => $dto->categoryId,
+                'label' => $dto->label,
+                'imagePath' => $dto->imagePath,
+            ], $pictograms),
+            Response::HTTP_OK
+        );
+    }
+
+    #[Route('/search', name: 'search', methods: ['GET'])]
+    public function search(Request $request): JsonResponse
+    {
+        $query = $request->query->get('q');
+
+        if ($query === null || $query === '') {
+            return new JsonResponse(
+                ['error' => 'Query parameter q is required'],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        try {
+            $pictograms = ($this->searchPictogram)($query);
+        } catch (InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
                 Response::HTTP_BAD_REQUEST
             );
         }

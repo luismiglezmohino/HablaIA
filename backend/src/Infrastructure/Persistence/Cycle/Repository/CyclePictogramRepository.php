@@ -63,6 +63,38 @@ final class CyclePictogramRepository implements PictogramRepository
         );
     }
 
+    /**
+     * @return array<Pictogram>
+     */
+    public function findByLabelLike(string $query, int $limit = 10): array
+    {
+        $normalizedQuery = mb_strtolower(trim($query));
+
+        /** @var array<PictogramEntity> $entities */
+        $entities = $this->repository
+            ->select()
+            ->where('LOWER(label)', 'LIKE', "%{$normalizedQuery}%")
+            ->limit($limit)
+            ->fetchAll();
+
+        return array_map(
+            fn (PictogramEntity $entity) => PictogramMapper::toDomain($entity),
+            $entities
+        );
+    }
+
+    public function findByArasaacId(int $arasaacId): ?Pictogram
+    {
+        /** @var PictogramEntity|null $entity */
+        $entity = $this->repository->findOne(['arasaacId' => $arasaacId]);
+
+        if ($entity === null) {
+            return null;
+        }
+
+        return PictogramMapper::toDomain($entity);
+    }
+
     public function save(Pictogram $pictogram): void
     {
         $entity = PictogramMapper::toEntity($pictogram);

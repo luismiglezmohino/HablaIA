@@ -1,0 +1,258 @@
+# Core Vocabulary SAAC - ~150 palabras que cubren el 80% del uso diario
+# Basado en estudios de core vocabulary de ARASAAC y literatura SAAC
+#
+# Estructura:
+#   categoria:
+#     - keyword1
+#     - keyword2
+#
+# El comando app:arasaac:sync --all lee este archivo y sincroniza todos los pictogramas
+
+Personas:
+  # Pronombres
+  - yo
+  - tú
+  - él
+  - ella
+  - nosotros
+  # Familia
+  - mamá
+  - papá
+  - hermano
+  - hermana
+  - abuelo
+  - abuela
+  - bebé
+  - familia
+  # Relaciones
+  - amigo
+  - amiga
+  - profesor
+  - profesora
+  - médico
+  - niño
+  - niña
+  - persona
+
+Acciones:
+  # Necesidades básicas
+  - querer
+  - necesitar
+  - poder
+  - tener
+  # Movimiento
+  - ir
+  - venir
+  - subir
+  - bajar
+  - andar
+  - correr
+  - saltar
+  - parar
+  # Alimentación
+  - comer
+  - beber
+  - cocinar
+  # Higiene
+  - lavar
+  - bañar
+  - cepillar
+  # Descanso
+  - dormir
+  - despertar
+  - descansar
+  # Comunicación
+  - hablar
+  - escuchar
+  - mirar
+  - leer
+  - escribir
+  - cantar
+  # Interacción
+  - jugar
+  - ayudar
+  - dar
+  - coger
+  - poner
+  - abrir
+  - cerrar
+  - buscar
+  - encontrar
+  - esperar
+  # Estado
+  - estar
+  - ser
+  - gustar
+  - doler
+
+Emociones:
+  - feliz
+  - contento
+  - triste
+  - enfadado
+  - asustado
+  - miedo
+  - sorprendido
+  - cansado
+  - aburrido
+  - nervioso
+  - tranquilo
+  - amor
+  - llorar
+  - reír
+  - preocupado
+
+Lugares:
+  - casa
+  - habitación
+  - cocina
+  - baño
+  - salón
+  - colegio
+  - clase
+  - parque
+  - hospital
+  - tienda
+  - supermercado
+  - calle
+  - playa
+  - piscina
+  - restaurante
+
+Objetos:
+  # Tecnología
+  - teléfono
+  - televisión
+  - ordenador
+  - tablet
+  # Juguetes
+  - juguete
+  - pelota
+  - muñeco
+  # Ropa
+  - ropa
+  - zapatos
+  - camiseta
+  - pantalón
+  # Hogar
+  - cama
+  - mesa
+  - silla
+  - puerta
+  - ventana
+  # Educación
+  - libro
+  - lápiz
+  - papel
+  # Otros
+  - bolsa
+  - llave
+  - reloj
+  - gafas
+  - dinero
+
+Comida:
+  # Bebidas
+  - agua
+  - leche
+  - zumo
+  # Alimentos básicos
+  - pan
+  - arroz
+  - pasta
+  - carne
+  - pescado
+  - huevo
+  # Frutas
+  - fruta
+  - manzana
+  - plátano
+  - naranja
+  # Lácteos
+  - queso
+  - yogur
+  # Dulces
+  - galleta
+  - chocolate
+  - helado
+  - caramelo
+  # Verduras
+  - verdura
+  - tomate
+  - patata
+  # Comidas
+  - desayuno
+  - comida
+  - cena
+
+Transporte:
+  - coche
+  - autobús
+  - tren
+  - avión
+  - bicicleta
+  - moto
+  - barco
+  - ambulancia
+  - taxi
+
+Social:
+  # Saludos
+  - hola
+  - adiós
+  - buenos días
+  - buenas noches
+  # Cortesía
+  - gracias
+  - por favor
+  - perdón
+  - de nada
+  # Respuestas
+  - sí
+  - no
+  - vale
+  - bien
+  - mal
+  # Preguntas
+  - qué
+  - dónde
+  - cuándo
+  - quién
+  - cómo
+  - por qué
+  - cuánto
+
+Tiempo:
+  - ahora
+  - después
+  - antes
+  - hoy
+  - mañana
+  - ayer
+  - siempre
+  - nunca
+  - día
+  - noche
+
+Descriptivos:
+  # Tamaño
+  - grande
+  - pequeño
+  # Cantidad
+  - mucho
+  - poco
+  - más
+  - menos
+  - todo
+  - nada
+  # Cualidad
+  - bueno
+  - malo
+  - nuevo
+  - bonito
+  - feo
+  # Estado
+  - caliente
+  - frío
+  - limpio
+  - sucio

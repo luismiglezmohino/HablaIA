@@ -42,12 +42,14 @@ describe('ArasaacApiClient', function (): void {
             $response->method('toArray')->willReturn([
                 [
                     '_id' => 12345,
+                    'aac' => true,
                     'keywords' => [
                         ['keyword' => 'comer'],
                     ],
                 ],
                 [
                     '_id' => 12346,
+                    'aac' => true,
                     'keywords' => [
                         ['keyword' => 'comida'],
                     ],
@@ -135,6 +137,67 @@ describe('ArasaacApiClient', function (): void {
 
             $client = new ArasaacApiClient($httpClient);
             $client->searchByKeyword('niño', 'es');
+        });
+
+        it('filters results to only return pictograms with aac true', function (): void {
+            $response = $this->createMock(ResponseInterface::class);
+            $response->method('getStatusCode')->willReturn(200);
+            $response->method('toArray')->willReturn([
+                [
+                    '_id' => 6456,
+                    'aac' => true,
+                    'keywords' => [['keyword' => 'comer']],
+                ],
+                [
+                    '_id' => 2349,
+                    'aac' => false,
+                    'keywords' => [['keyword' => 'comer']],
+                ],
+                [
+                    '_id' => 9999,
+                    'aac' => true,
+                    'keywords' => [['keyword' => 'comer']],
+                ],
+            ]);
+
+            $httpClient = $this->createMock(HttpClientInterface::class);
+            $httpClient->method('request')->willReturn($response);
+
+            $client = new ArasaacApiClient($httpClient);
+
+            $result = $client->searchByKeyword('comer');
+
+            expect($result)->toHaveCount(2);
+            expect($result[0]->arasaacId()->value())->toBe(6456);
+            expect($result[1]->arasaacId()->value())->toBe(9999);
+        });
+
+        it('returns all pictograms as fallback when none have aac true', function (): void {
+            $response = $this->createMock(ResponseInterface::class);
+            $response->method('getStatusCode')->willReturn(200);
+            $response->method('toArray')->willReturn([
+                [
+                    '_id' => 1111,
+                    'aac' => false,
+                    'keywords' => [['keyword' => 'comer']],
+                ],
+                [
+                    '_id' => 2222,
+                    'aac' => false,
+                    'keywords' => [['keyword' => 'comer']],
+                ],
+            ]);
+
+            $httpClient = $this->createMock(HttpClientInterface::class);
+            $httpClient->method('request')->willReturn($response);
+
+            $client = new ArasaacApiClient($httpClient);
+
+            $result = $client->searchByKeyword('comer');
+
+            expect($result)->toHaveCount(2);
+            expect($result[0]->arasaacId()->value())->toBe(1111);
+            expect($result[1]->arasaacId()->value())->toBe(2222);
         });
     });
 
@@ -228,6 +291,7 @@ describe('ArasaacApiClient', function (): void {
             $response->method('toArray')->willReturn([
                 [
                     '_id' => 12345,
+                    'aac' => true,
                     'keywords' => [['keyword' => 'comer']],
                 ],
             ]);

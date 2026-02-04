@@ -20,10 +20,26 @@ services:
         synthetic: true
         public: true
 
+    App\Domain\Pictogram\Service\PictogramProviderInterface:
+        synthetic: true
+        public: true
+
     Cycle\Database\DatabaseManager:
         synthetic: true
         public: true
 
     App\Infrastructure\Health\DatabaseHealthCheckerInterface:
+        synthetic: true
+        public: true
+
+    App\Infrastructure\Service\VocabularyLoaderInterface:
+        synthetic: true
+        public: true
+
+    App\Infrastructure\Service\ImageDownloaderInterface:
+        synthetic: true
+        public: true
+
+    App\Application\Pictogram\SearchPictogram:
         synthetic: true
         public: true
