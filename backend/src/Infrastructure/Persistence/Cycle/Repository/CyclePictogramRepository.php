@@ -15,6 +15,9 @@ use Cycle\ORM\Select\Repository;
 
 final class CyclePictogramRepository implements PictogramRepository
 {
+    /**
+     * @param Repository<PictogramEntity> $repository
+     */
     public function __construct(
         private readonly Repository $repository,
         private readonly EntityManagerInterface $entityManager
@@ -25,7 +28,7 @@ final class CyclePictogramRepository implements PictogramRepository
     {
         $entity = $this->repository->findByPK($id->value());
 
-        if ($entity === null) {
+        if (!$entity instanceof PictogramEntity) {
             return null;
         }
 
@@ -38,7 +41,7 @@ final class CyclePictogramRepository implements PictogramRepository
     public function findByCategoryId(CategoryId $categoryId): array
     {
         /** @var array<PictogramEntity> $entities */
-        $entities = $this->repository->findAll(['categoryId' => $categoryId->value()]);
+        $entities = iterator_to_array($this->repository->findAll(['categoryId' => $categoryId->value()]));
 
         return array_map(
             fn (PictogramEntity $entity) => PictogramMapper::toDomain($entity),
@@ -51,7 +54,8 @@ final class CyclePictogramRepository implements PictogramRepository
      */
     public function findAll(): array
     {
-        $entities = $this->repository->findAll();
+        /** @var array<PictogramEntity> $entities */
+        $entities = iterator_to_array($this->repository->findAll());
 
         return array_map(
             fn (PictogramEntity $entity) => PictogramMapper::toDomain($entity),

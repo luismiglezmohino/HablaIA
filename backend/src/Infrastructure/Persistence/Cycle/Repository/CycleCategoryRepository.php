@@ -14,6 +14,9 @@ use Cycle\ORM\Select\Repository;
 
 final class CycleCategoryRepository implements CategoryRepository
 {
+    /**
+     * @param Repository<CategoryEntity> $repository
+     */
     public function __construct(
         private readonly Repository $repository,
         private readonly EntityManagerInterface $entityManager
@@ -24,7 +27,7 @@ final class CycleCategoryRepository implements CategoryRepository
     {
         $entity = $this->repository->findByPK($id->value());
 
-        if ($entity === null) {
+        if (!$entity instanceof CategoryEntity) {
             return null;
         }
 
@@ -35,7 +38,7 @@ final class CycleCategoryRepository implements CategoryRepository
     {
         $entity = $this->repository->findOne(['name' => $name]);
 
-        if ($entity === null) {
+        if (!$entity instanceof CategoryEntity) {
             return null;
         }
 
@@ -47,7 +50,8 @@ final class CycleCategoryRepository implements CategoryRepository
      */
     public function findAll(): array
     {
-        $entities = $this->repository->findAll();
+        /** @var array<CategoryEntity> $entities */
+        $entities = iterator_to_array($this->repository->findAll());
 
         return array_map(
             fn (CategoryEntity $entity) => CategoryMapper::toDomain($entity),

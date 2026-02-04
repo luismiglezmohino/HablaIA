@@ -14,6 +14,9 @@ use Cycle\ORM\Select\Repository;
 
 final class CyclePhraseRepository implements PhraseRepository
 {
+    /**
+     * @param Repository<PhraseEntity> $repository
+     */
     public function __construct(
         private readonly Repository $repository,
         private readonly EntityManagerInterface $entityManager
@@ -24,7 +27,7 @@ final class CyclePhraseRepository implements PhraseRepository
     {
         $entity = $this->repository->findByPK($id->value());
 
-        if ($entity === null) {
+        if (!$entity instanceof PhraseEntity) {
             return null;
         }
 
@@ -35,7 +38,7 @@ final class CyclePhraseRepository implements PhraseRepository
     {
         $entity = $this->repository->findOne(['sequenceHash' => $hash]);
 
-        if ($entity === null) {
+        if (!$entity instanceof PhraseEntity) {
             return null;
         }
 
