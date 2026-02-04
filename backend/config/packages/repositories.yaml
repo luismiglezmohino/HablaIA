@@ -1,0 +1,46 @@
+# Repository aliases - Domain interfaces → Infrastructure implementations
+# Only loaded in dev/prod (tests use mocks)
+
+when@dev:
+    services:
+        App\Domain\Category\Repository\CategoryRepository:
+            alias: App\Infrastructure\Persistence\Cycle\Repository\CycleCategoryRepository
+            public: true
+
+        App\Domain\Pictogram\Repository\PictogramRepository:
+            alias: App\Infrastructure\Persistence\Cycle\Repository\CyclePictogramRepository
+            public: true
+
+        App\Domain\Phrase\Repository\PhraseRepository:
+            alias: App\Infrastructure\Persistence\Cycle\Repository\CyclePhraseRepository
+            public: true
+
+        App\Domain\Shared\Service\UuidGeneratorInterface:
+            alias: App\Infrastructure\Shared\SymfonyUuidGenerator
+            public: true
+
+        App\Domain\Phrase\Service\PhraseGeneratorInterface:
+            alias: App\Infrastructure\ExternalApi\OpenAI\FakeOpenAIPhraseGenerator
+            public: true
+
+when@prod:
+    services:
+        App\Domain\Category\Repository\CategoryRepository:
+            alias: App\Infrastructure\Persistence\Cycle\Repository\CycleCategoryRepository
+            public: true
+
+        App\Domain\Pictogram\Repository\PictogramRepository:
+            alias: App\Infrastructure\Persistence\Cycle\Repository\CyclePictogramRepository
+            public: true
+
+        App\Domain\Phrase\Repository\PhraseRepository:
+            alias: App\Infrastructure\Persistence\Cycle\Repository\CyclePhraseRepository
+            public: true
+
+        App\Domain\Shared\Service\UuidGeneratorInterface:
+            alias: App\Infrastructure\Shared\SymfonyUuidGenerator
+            public: true
+
+        App\Domain\Phrase\Service\PhraseGeneratorInterface:
+            alias: App\Infrastructure\ExternalApi\OpenAI\FakeOpenAIPhraseGenerator
+            public: true

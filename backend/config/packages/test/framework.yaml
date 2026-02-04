@@ -1,0 +1,12 @@
+# Test environment framework configuration
+framework:
+    test: true
+    session:
+        storage_factory_id: session.storage.factory.mock_file
+
+    # High rate limit for tests to avoid blocking
+    rate_limiter:
+        phrase_generator:
+            policy: 'sliding_window'
+            limit: 1000
+            interval: '60 seconds'

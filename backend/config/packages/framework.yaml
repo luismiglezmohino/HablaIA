@@ -17,6 +17,13 @@ framework:
         default_uuid_version: 7
         time_based_uuid_version: 7
 
+    # Rate limiter for API endpoints
+    rate_limiter:
+        phrase_generator:
+            policy: 'sliding_window'
+            limit: '%env(int:PHRASE_RATE_LIMIT)%'
+            interval: '%env(PHRASE_RATE_INTERVAL)% seconds'
+
 when@test:
     framework:
         test: true

@@ -1,0 +1,29 @@
+# Test environment - synthetic services for mocking
+services:
+    App\Domain\Category\Repository\CategoryRepository:
+        synthetic: true
+        public: true
+
+    App\Domain\Pictogram\Repository\PictogramRepository:
+        synthetic: true
+        public: true
+
+    App\Domain\Phrase\Repository\PhraseRepository:
+        synthetic: true
+        public: true
+
+    App\Domain\Shared\Service\UuidGeneratorInterface:
+        synthetic: true
+        public: true
+
+    App\Domain\Phrase\Service\PhraseGeneratorInterface:
+        synthetic: true
+        public: true
+
+    Cycle\Database\DatabaseManager:
+        synthetic: true
+        public: true
+
+    App\Infrastructure\Health\DatabaseHealthCheckerInterface:
+        synthetic: true
+        public: true
