@@ -31,7 +31,9 @@ src/
     ├── DataFixtures/           # CategoryFixtures (7 categorias SAAC, colores Fitzgerald Key)
     ├── ExternalApi/            # Clientes externos
     │   ├── Arasaac/            # ArasaacApiClient (PictogramProviderInterface)
-    │   └── OpenAI/             # OpenAIPhraseGenerator (PhraseGeneratorInterface)
+    │   ├── Gemini/             # GeminiPhraseGenerator (PhraseGeneratorInterface)
+    │   ├── OpenAI/             # OpenAIPhraseGenerator (PhraseGeneratorInterface)
+    │   └── Shared/             # PhrasePrompt (constantes compartidas)
     ├── Health/                 # Health checks (DB status)
     ├── Http/Controller/        # CategoryController, PictogramController, PhraseController, HealthController
     ├── Persistence/Cycle/      # Cycle ORM (entidades, mappers, repositorios)
@@ -115,8 +117,10 @@ Ver diagramas completos en [docs/diagrams/infrastructure-layer.md](../docs/diagr
 | Cliente | Interfaz | Descripcion |
 |---------|----------|-------------|
 | `ArasaacApiClient` | `PictogramProviderInterface` | Cliente para ARASAAC API (busqueda y descarga de pictogramas) |
+| `GeminiPhraseGenerator` | `PhraseGeneratorInterface` | Generador de frases con Gemini 2.5 Flash Lite (default, free tier) |
 | `RealOpenAIPhraseGenerator` | `PhraseGeneratorInterface` | Generador de frases con OpenAI GPT-4o-mini |
 | `FakeOpenAIPhraseGenerator` | `PhraseGeneratorInterface` | Fake para desarrollo/testing (no requiere API key) |
+| `PhraseGeneratorFactory` | - | Factory que crea el generador segun `PHRASE_PROVIDER` env var |
 
 ### Console Commands
 
@@ -201,9 +205,9 @@ Ver especificacion completa en [docs/openapi.yaml](../docs/openapi.yaml)
 
 ### Rate Limiting
 
-El endpoint `/api/phrases/generate` tiene rate limiting para proteger costes de OpenAI API:
-- **Limite:** 10 requests por minuto por IP
-- **Ventana:** 60 segundos (sliding window)
+El endpoint `/api/phrases/generate` tiene rate limiting para proteger costes de LLM API:
+- **Limite:** 30 requests por minuto por IP (configurable via `PHRASE_RATE_LIMIT`)
+- **Ventana:** 60 segundos (configurable via `PHRASE_RATE_INTERVAL`)
 - **Respuesta:** HTTP 429 con header `Retry-After` cuando se excede
 
 ## Testing
@@ -253,10 +257,15 @@ Domain <- Application <- Infrastructure
 # Base de datos
 DATABASE_URL="postgresql://user:pass@localhost:5432/pictospeak?serverVersion=16&charset=utf8"
 
+# Rate Limiting
+PHRASE_RATE_LIMIT="30"
+PHRASE_RATE_INTERVAL="60"
+
 # LLM Phrase Generator (gemini | openai | fake)
 PHRASE_PROVIDER="gemini"
 PHRASE_TEMPERATURE="0.7"
 PHRASE_MAX_TOKENS="256"
+PHRASE_TIMEOUT="10"
 
 # Gemini (default - free tier)
 GEMINI_API_URL="https://generativelanguage.googleapis.com/v1beta/models"
@@ -278,3 +287,4 @@ PICTOGRAMS_DIRECTORY="%kernel.project_dir%/public/pictograms"
 - [ADR-003: Infrastructure Layer](../docs/adrs/ADR-003-infrastructure-layer.md)
 - [ADR-007: Cycle ORM over Doctrine](../docs/adrs/ADR-007-cycle-orm-over-doctrine.md)
 - [ADR-008: Modified Fitzgerald Key Color Coding](../docs/adrs/ADR-008-fitzgerald-key-color-coding.md)
+- [ADR-009: Multi-provider LLM (OpenAI + Gemini)](../docs/adrs/ADR-009-multi-provider-llm.md)

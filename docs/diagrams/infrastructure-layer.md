@@ -21,8 +21,11 @@ graph TB
 
         subgraph ExternalApi["External APIs"]
             AAC[ArasaacApiClient]
-            OAI[OpenAIPhraseGenerator]
+            GPG[GeminiPhraseGenerator]
+            OAI[RealOpenAIPhraseGenerator]
             FOAI[FakeOpenAIPhraseGenerator]
+            PGF[PhraseGeneratorFactory]
+            PP[PhrasePrompt]
         end
 
         subgraph Persistence["Persistence (Cycle ORM)"]
@@ -77,6 +80,7 @@ graph TB
     subgraph External["External Services"]
         DB[(PostgreSQL)]
         ARASAAC[ARASAAC API]
+        Gemini[Gemini API]
         OpenAI[OpenAI API]
     end
 
@@ -103,6 +107,7 @@ graph TB
     CPR -.-> PicRepo
     CPhR -.-> PhrRepo
     AAC -.-> PPI
+    GPG -.-> PGI
     OAI -.-> PGI
     FOAI -.-> PGI
     UG -.-> UGI
@@ -114,6 +119,7 @@ graph TB
 
     %% External API -> External Services
     AAC --> ARASAAC
+    GPG --> Gemini
     OAI --> OpenAI
 
     %% Health Check -> Database
@@ -228,15 +234,56 @@ classDiagram
         +generate(PictogramSequence) array~string~
     }
 
-    class OpenAIPhraseGeneratorFactory {
-        +create(array labels) PhraseGeneratorInterface
+    class GeminiPhraseGenerator {
+        -HttpClientInterface httpClient
+        -string apiUrl
+        -string apiKey
+        -string model
+        -float temperature
+        -int maxTokens
+        -int timeout
+        -array~string~ currentLabels
+        +generate(PictogramSequence) array~string~
+        -buildRequestBody() array
+        -buildPrompt() string
+        -sanitizeLabel(string label) string
+        -handleResponse(mixed response) array~string~
+        -parseResponse(array data) array~string~
+        -parseVariations(string content) array~string~
+    }
+
+    class PhraseGeneratorFactory {
+        -HttpClientInterface httpClient
+        -string provider
+        -string geminiApiUrl
+        -string geminiApiKey
+        -string geminiModel
+        -float temperature
+        -int maxTokens
+        -int timeout
+        -string openaiApiUrl
+        -string openaiApiKey
+        -string openaiModel
+        +create() PhraseGeneratorInterface
+    }
+
+    class PhrasePrompt {
+        <<constants>>
+        +SYSTEM string
+        +USER_TEMPLATE string
+        +MAX_LABEL_LENGTH int
+        +VARIATIONS_COUNT int
     }
 
     PictogramProviderInterface <|.. ArasaacApiClient
+    PhraseGeneratorInterface <|.. GeminiPhraseGenerator
     PhraseGeneratorInterface <|.. RealOpenAIPhraseGenerator
     PhraseGeneratorInterface <|.. FakeOpenAIPhraseGenerator
-    OpenAIPhraseGeneratorFactory --> RealOpenAIPhraseGenerator
-    OpenAIPhraseGeneratorFactory --> FakeOpenAIPhraseGenerator
+    PhraseGeneratorFactory --> GeminiPhraseGenerator
+    PhraseGeneratorFactory --> RealOpenAIPhraseGenerator
+    PhraseGeneratorFactory --> FakeOpenAIPhraseGenerator
+    GeminiPhraseGenerator ..> PhrasePrompt
+    RealOpenAIPhraseGenerator ..> PhrasePrompt
 ```
 
 ## Diagrama de Persistence (Cycle ORM)
@@ -520,8 +567,11 @@ sequenceDiagram
 | **Console** | `LoadFixturesCommand` | Carga de categorias SAAC |
 | **Console** | `SyncArasaacCommand` | Sincronizacion con ARASAAC |
 | **ExternalApi** | `ArasaacApiClient` | Cliente ARASAAC API |
+| **ExternalApi** | `GeminiPhraseGenerator` | Generador con Gemini (default) |
 | **ExternalApi** | `RealOpenAIPhraseGenerator` | Generador con OpenAI |
 | **ExternalApi** | `FakeOpenAIPhraseGenerator` | Fake para desarrollo |
+| **ExternalApi** | `PhraseGeneratorFactory` | Factory multi-proveedor |
+| **ExternalApi** | `PhrasePrompt` | Constantes de prompt compartidas |
 | **Persistence** | `CycleCategoryRepository` | Persistencia de categorias |
 | **Persistence** | `CyclePictogramRepository` | Persistencia de pictogramas |
 | **Persistence** | `CyclePhraseRepository` | Persistencia de frases (cache) |
@@ -537,5 +587,5 @@ sequenceDiagram
 | **Dependency Inversion** | Controllers dependen de Use Cases, no de Repositories |
 | **Interface Segregation** | Interfaces especificas: `ImageDownloaderInterface`, `VocabularyLoaderInterface` |
 | **Single Responsibility** | Cada servicio tiene una unica responsabilidad |
-| **Open/Closed** | Nuevos proveedores (Claude, Gemini) sin modificar Use Cases |
+| **Open/Closed** | Gemini añadido sin modificar Domain/Application (validado) |
 | **Liskov Substitution** | `FakeOpenAIPhraseGenerator` intercambiable con `RealOpenAIPhraseGenerator` |

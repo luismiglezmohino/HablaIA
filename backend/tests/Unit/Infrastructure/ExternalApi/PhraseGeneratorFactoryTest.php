@@ -9,7 +9,6 @@ use App\Infrastructure\ExternalApi\Gemini\GeminiPhraseGenerator;
 use App\Infrastructure\ExternalApi\OpenAI\FakeOpenAIPhraseGenerator;
 use App\Infrastructure\ExternalApi\OpenAI\RealOpenAIPhraseGenerator;
 use App\Infrastructure\ExternalApi\PhraseGeneratorFactory;
-use InvalidArgumentException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 describe('PhraseGeneratorFactory', function (): void {
@@ -82,7 +81,7 @@ describe('PhraseGeneratorFactory', function (): void {
         expect($generator)->toBeInstanceOf(FakeOpenAIPhraseGenerator::class);
     });
 
-    it('throws InvalidArgumentException for unknown provider', function (): void {
+    it('falls back to FakeOpenAIPhraseGenerator for unknown provider', function (): void {
         $httpClient = $this->createMock(HttpClientInterface::class);
 
         $factory = new PhraseGeneratorFactory(
@@ -99,8 +98,10 @@ describe('PhraseGeneratorFactory', function (): void {
             'gpt-4o-mini'
         );
 
-        expect(fn () => $factory->create())
-            ->toThrow(InvalidArgumentException::class, 'Unknown phrase provider "unknown". Supported: gemini, openai, fake');
+        $generator = $factory->create();
+
+        expect($generator)->toBeInstanceOf(PhraseGeneratorInterface::class);
+        expect($generator)->toBeInstanceOf(FakeOpenAIPhraseGenerator::class);
     });
 
     it('passes correct parameters to Gemini generator', function (): void {
