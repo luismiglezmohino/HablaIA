@@ -35,5 +35,8 @@ docker-compose.override.yaml
 .env.dev
 .env.test
 
+# ARASAAC pictograms (downloaded via app:arasaac:sync)
+/public/pictograms/
+
 # Generated binaries
 bin/phpunit
