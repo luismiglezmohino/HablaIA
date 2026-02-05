@@ -7,35 +7,22 @@ namespace App\Infrastructure\ExternalApi\OpenAI;
 use App\Domain\Phrase\Service\PhraseGeneratorInterface;
 use App\Domain\Phrase\ValueObject\PictogramSequence;
 use App\Infrastructure\ExternalApi\OpenAI\Exception\OpenAIException;
+use App\Infrastructure\ExternalApi\Shared\PhrasePrompt;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class RealOpenAIPhraseGenerator implements PhraseGeneratorInterface
 {
-    private const string API_URL = 'https://api.openai.com/v1/chat/completions';
-    private const int TIMEOUT_SECONDS = 7;
-    private const int VARIATIONS_COUNT = 3;
-    private const int MAX_LABEL_LENGTH = 50;
-
-    private const string SYSTEM_PROMPT = <<<PROMPT
-Eres un asistente especializado en comunicación aumentativa y alternativa (SAAC).
-Tu tarea es convertir palabras clave de pictogramas en frases naturales en español.
-Genera exactamente 3 variaciones de la frase.
-Las frases deben ser naturales, gramaticalmente correctas y apropiadas para usuarios de SAAC.
-Responde SOLO con un JSON válido con este formato exacto:
-{"variations": ["frase 1", "frase 2", "frase 3"]}
-PROMPT;
-
-    private const string USER_PROMPT_TEMPLATE = 'Genera 3 variaciones de frase natural para las siguientes palabras: %s';
-
     /** @var array<string> */
     private array $currentLabels = [];
 
     public function __construct(
         private readonly HttpClientInterface $httpClient,
+        private readonly string $apiUrl,
         private readonly string $apiKey,
         private readonly string $model,
         private readonly float $temperature,
         private readonly int $maxTokens,
+        private readonly int $timeout,
     ) {
     }
 
@@ -46,13 +33,13 @@ PROMPT;
     {
         $this->currentLabels = $labels;
 
-        $response = $this->httpClient->request('POST', self::API_URL, [
+        $response = $this->httpClient->request('POST', $this->apiUrl, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
             ],
             'json' => $this->buildRequestBody(),
-            'timeout' => self::TIMEOUT_SECONDS,
+            'timeout' => $this->timeout,
         ]);
 
         return $this->handleResponse($response);
@@ -68,7 +55,7 @@ PROMPT;
             'messages' => [
                 [
                     'role' => 'system',
-                    'content' => self::SYSTEM_PROMPT,
+                    'content' => PhrasePrompt::SYSTEM,
                 ],
                 [
                     'role' => 'user',
@@ -89,7 +76,7 @@ PROMPT;
 
         $labelsText = empty($sanitizedLabels) ? 'pictogramas' : implode(', ', $sanitizedLabels);
 
-        return sprintf(self::USER_PROMPT_TEMPLATE, $labelsText);
+        return sprintf(PhrasePrompt::USER_TEMPLATE, $labelsText);
     }
 
     /**
@@ -102,8 +89,8 @@ PROMPT;
         $sanitized = trim($sanitized ?? '');
 
         // Limit length
-        if (mb_strlen($sanitized) > self::MAX_LABEL_LENGTH) {
-            $sanitized = mb_substr($sanitized, 0, self::MAX_LABEL_LENGTH);
+        if (mb_strlen($sanitized) > PhrasePrompt::MAX_LABEL_LENGTH) {
+            $sanitized = mb_substr($sanitized, 0, PhrasePrompt::MAX_LABEL_LENGTH);
         }
 
         return $sanitized ?: 'elemento';
@@ -160,7 +147,7 @@ PROMPT;
         $decoded = json_decode($content, true);
 
         if (json_last_error() === JSON_ERROR_NONE && isset($decoded['variations']) && is_array($decoded['variations'])) {
-            return array_slice($decoded['variations'], 0, self::VARIATIONS_COUNT);
+            return array_slice($decoded['variations'], 0, PhrasePrompt::VARIATIONS_COUNT);
         }
 
         // Fallback: parse numbered lines (for backwards compatibility)
@@ -180,7 +167,7 @@ PROMPT;
             }
         }
 
-        return array_slice($variations, 0, self::VARIATIONS_COUNT);
+        return array_slice($variations, 0, PhrasePrompt::VARIATIONS_COUNT);
     }
 }
 
