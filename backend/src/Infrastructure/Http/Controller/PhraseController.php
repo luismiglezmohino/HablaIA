@@ -63,6 +63,17 @@ final class PhraseController
             return new JsonResponse(['error' => 'pictogramIds must be an array'], Response::HTTP_BAD_REQUEST);
         }
 
+        if (count($data['pictogramIds']) === 0 || count($data['pictogramIds']) > 10) {
+            return new JsonResponse(['error' => 'pictogramIds must contain between 1 and 10 elements'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $uuidPattern = '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i';
+        foreach ($data['pictogramIds'] as $id) {
+            if (!is_string($id) || preg_match($uuidPattern, $id) !== 1) {
+                return new JsonResponse(['error' => 'Each pictogramId must be a valid UUID v4'], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
         // 3. Execute use case
         try {
             $response = ($this->generateHumanizedPhrase)($data['pictogramIds']);

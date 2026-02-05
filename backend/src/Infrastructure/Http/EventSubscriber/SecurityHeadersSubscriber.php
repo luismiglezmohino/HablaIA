@@ -29,6 +29,12 @@ final class SecurityHeadersSubscriber implements EventSubscriberInterface
 
         // Desactiva el filtro XSS legacy del navegador (deprecated, pero valor 0 es el safe default)
         'X-XSS-Protection' => '0',
+
+        // Restringe los orígenes de contenido permitidos (API pura: ninguno)
+        'Content-Security-Policy' => "default-src 'none'; frame-ancestors 'none'",
+
+        // Deshabilita APIs del navegador innecesarias para una API REST
+        'Permissions-Policy' => 'camera=(), microphone=(), geolocation=()',
     ];
 
     public static function getSubscribedEvents(): array

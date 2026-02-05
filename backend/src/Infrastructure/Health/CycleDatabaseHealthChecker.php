@@ -30,10 +30,10 @@ final class CycleDatabaseHealthChecker implements DatabaseHealthCheckerInterface
                 'status' => 'up',
                 'latency_ms' => round($latency, 2),
             ];
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             return [
                 'status' => 'down',
-                'error' => $e->getMessage(),
+                'error' => 'Database unavailable',
             ];
         }
     }

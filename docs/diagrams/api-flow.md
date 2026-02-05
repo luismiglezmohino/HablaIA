@@ -1,10 +1,10 @@
 # API Flow - Diagramas
 
-> Diagramas de flujo de las APIs principales de PictoSpeak AI
+> Diagramas de flujo de las APIs principales de HablaIA
 
 ## Flujo de Generacion de Frase (POST /api/phrases/generate)
 
-Este es el **Core MVP feature** de PictoSpeak AI.
+Este es el **Core MVP feature** de HablaIA.
 
 ### Diagrama de Secuencia Completo
 

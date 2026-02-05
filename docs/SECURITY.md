@@ -1,62 +1,86 @@
-# Security Audit - HablaIA Backend
+# Security - HablaIA Backend
 
-**Fecha:** 2026-02-05
-**Scope:** Backend Symfony 7 + Cycle ORM + PostgreSQL
-**Fase:** MVP (sin autenticación)
+> Resumen de postura de seguridad. Informe detallado en [`docs/audits/phase1-security-audit.md`](audits/phase1-security-audit.md)
+
+**Ultima revision:** 5 de febrero de 2026
+**Scope:** Backend Symfony 7.4 + Cycle ORM + PostgreSQL 16
+**Fase:** Phase 1 MVP (sin autenticacion)
 
 ---
 
 ## Resumen OWASP Top 10
 
-| Categoría | Estado | Notas |
+| Categoria | Estado | Notas |
 |---|---|---|
-| A01 Broken Access Control | 🟡 Sin auth (razonable en MVP) | Rate limiting en generación de frases |
-| A02 Cryptographic Failures | 🟢 OK | `.env` usa placeholders. `imagePath` es ruta relativa web |
-| A03 Injection | 🟢 OK | Cycle ORM parametrizado. UUIDs validados. Query sanitizada (2-100 chars) |
-| A04 Insecure Design | 🟢 OK para MVP | Sin paginación en listados (~300 registros, aceptable) |
-| A05 Security Misconfiguration | 🟢 OK | Cabeceras OWASP en todas las respuestas. CORS restringido a GET/POST |
-| A06 Vulnerable Components | 🟢 OK | `composer audit` limpio |
-| A07 Auth Failures | 🟡 Sin auth (razonable en MVP) | Se implementará JWT en fase posterior |
-| A08 Software Integrity | 🟢 OK | `composer.lock` commitado |
-| A09 Logging Failures | 🟡 Pendiente | Monolog JSON configurado pero sin logging a nivel de aplicación |
-| A10 SSRF | 🟢 OK | Whitelist de dominios, validación MIME y path traversal |
+| A01 Broken Access Control | 🟡 Sin auth (por diseno en Phase 1) | Rate limiting en generacion de frases. Auth planificada para Phase 3 |
+| A02 Cryptographic Failures | 🟢 OK | `.env` no trackeado en git. Solo placeholders en `.env.example` |
+| A03 Injection | 🟢 OK | Cycle ORM parametrizado. UUIDs validados. Query sanitizada. Prompt injection mitigado |
+| A04 Insecure Design | 🟢 OK | Clean Architecture. Validacion en 3 capas (Controller, Application, Domain) |
+| A05 Security Misconfiguration | 🟢 OK | 6 cabeceras OWASP. CORS restringido. Container non-root. Trusted proxies configurado |
+| A06 Vulnerable Components | 🟢 OK | `composer audit`: 0 vulnerabilidades |
+| A07 Auth Failures | 🟡 N/A en Phase 1 | Se implementara en Phase 3 (perfiles de usuario) |
+| A08 Software Integrity | 🟢 OK | `composer.lock` commitado. Validacion MIME en descargas |
+| A09 Logging | 🟢 OK | Monolog JSON en dev y prod. `fingers_crossed` en produccion. `X-Correlation-Id` en CORS |
+| A10 SSRF | 🟢 OK | Allowlist de dominios ARASAAC. Validacion MIME y path traversal |
 
 ---
 
 ## Protecciones implementadas
 
 ### Cabeceras de seguridad (SecurityHeadersSubscriber)
-Interceptor Symfony (`kernel.response`) que añade a todas las respuestas:
-- `X-Content-Type-Options: nosniff`
-- `X-Frame-Options: DENY`
-- `Referrer-Policy: strict-origin-when-cross-origin`
-- `X-XSS-Protection: 0`
 
-### Validación de inputs
-- **UUIDs:** Validados en Value Objects (`CategoryId`, `PictogramId`, `PhraseId`)
-- **Search query:** Mínimo 2 chars, máximo 100 chars, sanitizada contra SQL injection
-- **Pictogram sequence:** Máximo 10 pictogramas por petición
-- **LLM labels:** Sanitizados contra prompt injection (solo letras, números, espacios) en todos los proveedores
+Interceptor Symfony (`kernel.response`) que anade a todas las respuestas:
+
+| Header | Valor |
+|--------|-------|
+| `X-Content-Type-Options` | `nosniff` |
+| `X-Frame-Options` | `DENY` |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` |
+| `X-XSS-Protection` | `0` |
+| `Content-Security-Policy` | `default-src 'none'; frame-ancestors 'none'` |
+| `Permissions-Policy` | `camera=(), microphone=(), geolocation=()` |
+
+### Validacion de inputs
+
+- **UUIDs:** Validados en Value Objects (`CategoryId`, `PictogramId`, `PhraseId`) + validacion UUID v4 en controller
+- **Search query:** Minimo 2 chars, maximo 100 chars, sanitizada contra SQL injection
+- **Pictogram sequence:** Entre 1 y 10 pictogramas por peticion (validado en controller y dominio)
+- **LLM labels:** Sanitizados contra prompt injection (solo letras, numeros, espacios, guiones) en todos los proveedores
 
 ### SSRF (HttpImageDownloader)
-- Whitelist de dominios: solo `static.arasaac.org` y `api.arasaac.org`
-- Validación de path traversal con `realpath()`
-- Validación de MIME type (solo `image/png`, `image/jpeg`, `image/gif`)
+
+- Allowlist de dominios: solo `static.arasaac.org` y `api.arasaac.org`
+- Validacion de path traversal con normalizacion de ruta
+- Validacion de MIME type (solo `image/png`, `image/jpeg`, `image/gif`)
 - Permisos de directorio `0755`
 
 ### CORS
+
 - Origen restringido por regex (configurable via `CORS_ALLOW_ORIGIN`)
-- Métodos limitados a `GET` y `POST`
+- Metodos limitados a `GET` y `POST`
 
 ### Rate limiting
+
 - `POST /api/phrases/generate`: configurable via `PHRASE_RATE_LIMIT` / `PHRASE_RATE_INTERVAL` (default: 30 req/60s, sliding window, por IP)
+
+### Trusted Proxies (Docker/Nginx)
+
+- `TRUSTED_PROXIES=REMOTE_ADDR` para que el rate limiter use la IP real del cliente detras de Nginx
+- Solo headers `x-forwarded-for` y `x-forwarded-proto` confiados
+- Documentacion visual en [`docs/diagrams/docker-infrastructure.md`](diagrams/docker-infrastructure.md)
+
+### Gestion de secretos
+
+- Archivos `.env` en `.gitignore` (0 trackeados en git)
+- Solo `.env.example` con placeholders commitado
+- Errores de BD devuelven mensaje generico (`'Database unavailable'`)
+- Container Docker ejecuta como non-root (`appuser`, UID 1000)
 
 ---
 
 ## Pendiente para fases posteriores
 
-- **Autenticación JWT**
-- **Rate limiting en búsqueda** (`GET /api/pictograms/search`)
-- **Paginación** en endpoints de listado
-- **Logging de aplicación** con correlationId
-- **HSTS** cuando se configure HTTPS
+- **Autenticacion JWT** (Phase 3)
+- **Rate limiting en busqueda** (`GET /api/pictograms/search`) - a nivel de Nginx si necesario
+- **Paginacion** en endpoints de listado
+- **HSTS** via Nginx cuando se configure HTTPS en produccion

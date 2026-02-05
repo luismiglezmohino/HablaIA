@@ -621,7 +621,7 @@ docs/adrs/
 | Aspecto | Estado | Descripción |
 |---------|--------|-------------|
 | Clean Architecture | ✅ Completado | Domain ✅ → Application ✅ → Infrastructure ✅ |
-| TDD | ✅ Completado | 332 tests |
+| TDD | ✅ Completado | 389 tests |
 | Excepciones de Dominio | ✅ Completado | `DomainException` base + excepciones semánticas por módulo |
 | Excepciones de Application | ✅ Completado | `ApplicationException` + `*NotFoundException` |
 | UUID Desacoplado | ✅ Completado | Domain valida (`Uuid`), Infrastructure genera (`UuidGeneratorInterface`) |
@@ -654,6 +654,7 @@ docs/adrs/
 - **[Application Layer Diagram](docs/diagrams/application-layer.md):** Use Cases, DTOs
 - **[Infrastructure Layer Diagram](docs/diagrams/infrastructure-layer.md):** Controllers, Persistence, External APIs
 - **[API Flow Diagram](docs/diagrams/api-flow.md):** Flujos de las APIs principales
+- **[Docker Infrastructure](docs/diagrams/docker-infrastructure.md):** Contenedores, red, trusted proxies
 - **[Roadmap](docs/ROADMAP.md):** Plan de desarrollo en 6 fases
 
 ---
