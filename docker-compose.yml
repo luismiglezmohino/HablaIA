@@ -65,6 +65,23 @@ services:
     networks:
       - hablaia_network
 
+  # =============================================================================
+  # Swagger UI - Documentación interactiva de la API
+  # =============================================================================
+  swagger:
+    profiles: ["dev"]
+    image: swaggerapi/swagger-ui:latest
+    container_name: hablaia_swagger
+    environment:
+      SWAGGER_JSON: /openapi/openapi.yaml
+      BASE_URL: /swagger
+    volumes:
+      - ./docs:/openapi:ro
+    ports:
+      - "8081:8080"
+    networks:
+      - hablaia_network
+
 # =============================================================================
 # Volumes - Persistencia de datos
 # =============================================================================
