@@ -58,3 +58,31 @@ services:
             $temperature: '%env(float:PHRASE_TEMPERATURE)%'
             $maxTokens: '%env(int:PHRASE_MAX_TOKENS)%'
             $timeout: '%env(int:PHRASE_TIMEOUT)%'
+
+    # Gemini Phrase Generator configuration
+    App\Infrastructure\ExternalApi\Gemini\GeminiPhraseGenerator:
+        arguments:
+            $apiUrl: '%env(GEMINI_API_URL)%'
+            $apiKey: '%env(GEMINI_API_KEY)%'
+            $model: '%env(GEMINI_MODEL)%'
+            $temperature: '%env(float:PHRASE_TEMPERATURE)%'
+            $maxTokens: '%env(int:PHRASE_MAX_TOKENS)%'
+            $timeout: '%env(int:PHRASE_TIMEOUT)%'
+
+    # Phrase Generator Factory (multi-provider)
+    App\Infrastructure\ExternalApi\PhraseGeneratorFactory:
+        arguments:
+            $provider: '%env(PHRASE_PROVIDER)%'
+            $geminiApiUrl: '%env(GEMINI_API_URL)%'
+            $geminiApiKey: '%env(GEMINI_API_KEY)%'
+            $geminiModel: '%env(GEMINI_MODEL)%'
+            $temperature: '%env(float:PHRASE_TEMPERATURE)%'
+            $maxTokens: '%env(int:PHRASE_MAX_TOKENS)%'
+            $timeout: '%env(int:PHRASE_TIMEOUT)%'
+            $openaiApiUrl: '%env(OPENAI_API_URL)%'
+            $openaiApiKey: '%env(OPENAI_API_KEY)%'
+            $openaiModel: '%env(OPENAI_MODEL)%'
+
+    # PhraseGeneratorInterface uses factory
+    App\Domain\Phrase\Service\PhraseGeneratorInterface:
+        factory: ['@App\Infrastructure\ExternalApi\PhraseGeneratorFactory', 'create']

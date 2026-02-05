@@ -35,9 +35,21 @@ services:
       - ./backend:/var/www
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER:-hablaia_user}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hablaia}?serverVersion=16&charset=utf8"
-      OPENAI_API_KEY: ${OPENAI_API_KEY:?Set OPENAI_API_KEY in .env}
       APP_ENV: ${APP_ENV:-dev}
       APP_SECRET: ${APP_SECRET:?Set APP_SECRET in .env}
+      # Phrase Generation
+      PHRASE_PROVIDER: ${PHRASE_PROVIDER:-gemini}
+      PHRASE_TEMPERATURE: ${PHRASE_TEMPERATURE:-0.7}
+      PHRASE_MAX_TOKENS: ${PHRASE_MAX_TOKENS:-256}
+      PHRASE_TIMEOUT: ${PHRASE_TIMEOUT:-10}
+      # Gemini (default - free tier)
+      GEMINI_API_URL: ${GEMINI_API_URL:-https://generativelanguage.googleapis.com/v1beta/models}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash-lite}
+      # OpenAI (alternative)
+      OPENAI_API_URL: ${OPENAI_API_URL:-https://api.openai.com/v1/chat/completions}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
     ports:
       - "8080:8000"
     depends_on:

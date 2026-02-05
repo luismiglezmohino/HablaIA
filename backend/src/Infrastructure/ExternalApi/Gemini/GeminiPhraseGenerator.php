@@ -1,0 +1,172 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Infrastructure\ExternalApi\Gemini;
+
+use App\Domain\Phrase\Service\PhraseGeneratorInterface;
+use App\Domain\Phrase\ValueObject\PictogramSequence;
+use App\Infrastructure\ExternalApi\Gemini\Exception\GeminiException;
+use App\Infrastructure\ExternalApi\Shared\PhrasePrompt;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
+final class GeminiPhraseGenerator implements PhraseGeneratorInterface
+{
+    /** @var array<string> */
+    private array $currentLabels = [];
+
+    public function __construct(
+        private readonly HttpClientInterface $httpClient,
+        private readonly string $apiUrl,
+        private readonly string $apiKey,
+        private readonly string $model,
+        private readonly float $temperature,
+        private readonly int $maxTokens,
+        private readonly int $timeout,
+    ) {
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function generate(PictogramSequence $sequence, array $labels): array
+    {
+        $this->currentLabels = $labels;
+
+        $url = sprintf('%s/%s:generateContent?key=%s', $this->apiUrl, $this->model, $this->apiKey);
+
+        $response = $this->httpClient->request('POST', $url, [
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+            'json' => $this->buildRequestBody(),
+            'timeout' => $this->timeout,
+        ]);
+
+        return $this->handleResponse($response);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildRequestBody(): array
+    {
+        return [
+            'contents' => [
+                [
+                    'parts' => [
+                        ['text' => $this->buildPrompt()],
+                    ],
+                ],
+            ],
+            'generationConfig' => [
+                'temperature' => $this->temperature,
+                'maxOutputTokens' => $this->maxTokens,
+                'responseMimeType' => 'application/json',
+            ],
+        ];
+    }
+
+    private function buildPrompt(): string
+    {
+        $sanitizedLabels = array_map(
+            fn (string $label) => $this->sanitizeLabel($label),
+            $this->currentLabels
+        );
+
+        $labelsText = empty($sanitizedLabels) ? 'pictogramas' : implode(', ', $sanitizedLabels);
+        $userPrompt = sprintf(PhrasePrompt::USER_TEMPLATE, $labelsText);
+
+        return PhrasePrompt::SYSTEM . "\n\n" . $userPrompt;
+    }
+
+    /**
+     * Sanitize label to prevent prompt injection.
+     */
+    private function sanitizeLabel(string $label): string
+    {
+        // Remove potentially dangerous characters for prompt injection
+        $sanitized = preg_replace('/[^\p{L}\p{N}\s\-]/u', '', $label);
+        $sanitized = trim($sanitized ?? '');
+
+        // Limit length
+        if (mb_strlen($sanitized) > PhrasePrompt::MAX_LABEL_LENGTH) {
+            $sanitized = mb_substr($sanitized, 0, PhrasePrompt::MAX_LABEL_LENGTH);
+        }
+
+        return $sanitized ?: 'elemento';
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function handleResponse(mixed $response): array
+    {
+        $statusCode = $response->getStatusCode();
+
+        if ($statusCode === 429) {
+            throw GeminiException::rateLimitExceeded();
+        }
+
+        if ($statusCode !== 200) {
+            throw GeminiException::apiError('Phrase generation request failed', $statusCode);
+        }
+
+        return $this->parseResponse($response->toArray());
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @return array<string>
+     */
+    private function parseResponse(array $data): array
+    {
+        if (!isset($data['candidates']) || !is_array($data['candidates'])) {
+            throw GeminiException::invalidResponse('Missing candidates');
+        }
+
+        if (empty($data['candidates'])) {
+            throw GeminiException::invalidResponse('Empty candidates array');
+        }
+
+        $content = $data['candidates'][0]['content']['parts'][0]['text'] ?? '';
+
+        if (empty($content)) {
+            throw GeminiException::invalidResponse('Empty content');
+        }
+
+        return $this->parseVariations($content);
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function parseVariations(string $content): array
+    {
+        // Parse JSON response
+        $decoded = json_decode($content, true);
+
+        if (json_last_error() === JSON_ERROR_NONE && isset($decoded['variations']) && is_array($decoded['variations'])) {
+            return array_slice($decoded['variations'], 0, PhrasePrompt::VARIATIONS_COUNT);
+        }
+
+        // Fallback: parse numbered lines (for backwards compatibility)
+        $lines = explode("\n", $content);
+        $variations = [];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (empty($line)) {
+                continue;
+            }
+
+            // Remove numbering (e.g., "1. ", "2. ", "3. ")
+            $cleaned = preg_replace('/^\d+\.\s*/', '', $line);
+            if ($cleaned !== null && $cleaned !== '') {
+                $variations[] = $cleaned;
+            }
+        }
+
+        return array_slice($variations, 0, PhrasePrompt::VARIATIONS_COUNT);
+    }
+}
