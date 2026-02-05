@@ -12,13 +12,13 @@ use App\Domain\Shared\Service\UuidGeneratorInterface;
 final readonly class CategoryFixtures implements CategoryFixturesInterface
 {
     private const array SAAC_CATEGORIES = [
-        ['name' => 'Personas', 'icon' => 'users'],
-        ['name' => 'Acciones', 'icon' => 'play'],
-        ['name' => 'Emociones', 'icon' => 'heart'],
-        ['name' => 'Lugares', 'icon' => 'map-pin'],
-        ['name' => 'Objetos', 'icon' => 'box'],
-        ['name' => 'Comida', 'icon' => 'utensils'],
-        ['name' => 'Transporte', 'icon' => 'car'],
+        ['name' => 'Personas', 'icon' => 'users', 'colorHex' => '#FBBF24', 'displayOrder' => 1],
+        ['name' => 'Acciones', 'icon' => 'play', 'colorHex' => '#22C55E', 'displayOrder' => 2],
+        ['name' => 'Emociones', 'icon' => 'heart', 'colorHex' => '#3B82F6', 'displayOrder' => 3],
+        ['name' => 'Lugares', 'icon' => 'map-pin', 'colorHex' => '#F97316', 'displayOrder' => 4],
+        ['name' => 'Objetos', 'icon' => 'box', 'colorHex' => '#FB923C', 'displayOrder' => 5],
+        ['name' => 'Comida', 'icon' => 'utensils', 'colorHex' => '#EA580C', 'displayOrder' => 6],
+        ['name' => 'Transporte', 'icon' => 'car', 'colorHex' => '#F59E0B', 'displayOrder' => 7],
     ];
 
     public function __construct(
@@ -28,7 +28,7 @@ final readonly class CategoryFixtures implements CategoryFixturesInterface
     }
 
     /**
-     * @return array<array{name: string, icon: string}>
+     * @return array<array{name: string, icon: string, colorHex: string, displayOrder: int}>
      */
     public static function getCategories(): array
     {
@@ -54,7 +54,9 @@ final readonly class CategoryFixtures implements CategoryFixturesInterface
             $category = new Category(
                 CategoryId::fromString($this->uuidGenerator->generate()),
                 $categoryData['name'],
-                $categoryData['icon']
+                $categoryData['icon'],
+                $categoryData['colorHex'],
+                $categoryData['displayOrder']
             );
 
             $this->categoryRepository->save($category);

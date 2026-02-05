@@ -11,7 +11,9 @@ final readonly class CategoryDTO
     public function __construct(
         public string $id,
         public string $name,
-        public ?string $icon
+        public ?string $icon,
+        public string $colorHex,
+        public int $displayOrder
     ) {}
 
     public static function fromEntity(Category $category): self
@@ -19,7 +21,9 @@ final readonly class CategoryDTO
         return new self(
             id: $category->id()->value(),
             name: $category->name(),
-            icon: $category->icon()
+            icon: $category->icon(),
+            colorHex: $category->colorHex(),
+            displayOrder: $category->displayOrder()
         );
     }
 }
