@@ -82,8 +82,13 @@ final readonly class GenerateHumanizedPhrase
 
         // Paso 4: Cache miss - intentar generar con el LLM.
         try {
-            // Llamar al generador de frases (implementación real usa OpenAI, etc.)
-            $variations = $this->phraseGenerator->generate($sequence);
+            // Extraer labels de los pictogramas para construir frases contextuales.
+            $labels = array_map(
+                fn (Pictogram $pictogram): string => $pictogram->label(),
+                $pictograms
+            );
+
+            $variations = $this->phraseGenerator->generate($sequence, $labels);
             $source = PhraseResponseDTO::SOURCE_GENERATED;
         } catch (Throwable) {
             // Paso 5: Fallback si el LLM falla (timeout, error de API, etc.)

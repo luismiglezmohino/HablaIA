@@ -42,5 +42,5 @@ when@prod:
             public: true
 
         App\Domain\Phrase\Service\PhraseGeneratorInterface:
-            alias: App\Infrastructure\ExternalApi\OpenAI\FakeOpenAIPhraseGenerator
+            alias: App\Infrastructure\ExternalApi\OpenAI\RealOpenAIPhraseGenerator
             public: true

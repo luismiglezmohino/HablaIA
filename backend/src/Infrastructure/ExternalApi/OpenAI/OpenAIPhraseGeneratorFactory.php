@@ -27,16 +27,8 @@ final class OpenAIPhraseGeneratorFactory
 
     public function create(): PhraseGeneratorInterface
     {
-        return $this->createWithLabels([]);
-    }
-
-    /**
-     * @param array<string> $labels Pictogram labels to generate phrases from
-     */
-    public function createWithLabels(array $labels): PhraseGeneratorInterface
-    {
         if (!$this->enabled) {
-            return new FakeOpenAIPhraseGenerator($labels);
+            return new FakeOpenAIPhraseGenerator();
         }
 
         return new RealOpenAIPhraseGenerator(
@@ -45,7 +37,6 @@ final class OpenAIPhraseGeneratorFactory
             $this->model,
             $this->temperature,
             $this->maxTokens,
-            $labels
         );
     }
 }

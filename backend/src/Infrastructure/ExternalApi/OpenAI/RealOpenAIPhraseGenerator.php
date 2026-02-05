@@ -27,24 +27,25 @@ PROMPT;
 
     private const string USER_PROMPT_TEMPLATE = 'Genera 3 variaciones de frase natural para las siguientes palabras: %s';
 
-    /**
-     * @param array<string> $labels
-     */
+    /** @var array<string> */
+    private array $currentLabels = [];
+
     public function __construct(
         private readonly HttpClientInterface $httpClient,
         private readonly string $apiKey,
         private readonly string $model,
         private readonly float $temperature,
         private readonly int $maxTokens,
-        private readonly array $labels = []
     ) {
     }
 
     /**
      * @return array<string>
      */
-    public function generate(PictogramSequence $sequence): array
+    public function generate(PictogramSequence $sequence, array $labels): array
     {
+        $this->currentLabels = $labels;
+
         $response = $this->httpClient->request('POST', self::API_URL, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->apiKey,
@@ -83,7 +84,7 @@ PROMPT;
     {
         $sanitizedLabels = array_map(
             fn (string $label) => $this->sanitizeLabel($label),
-            $this->labels
+            $this->currentLabels
         );
 
         $labelsText = empty($sanitizedLabels) ? 'pictogramas' : implode(', ', $sanitizedLabels);

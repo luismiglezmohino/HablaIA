@@ -35,7 +35,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 'choices' => [
                     [
                         'message' => [
-                            'content' => "1. Quiero comer pan\n2. Me gustaría comer pan\n3. Necesito comer pan",
+                            'content' => '{"variations": ["Quiero comer pan", "Me gustaría comer pan", "Necesito comer pan"]}',
                         ],
                     ],
                 ],
@@ -70,7 +70,48 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
 
-            $generator->generate($sequence);
+            $generator->generate($sequence, ['comer', 'pan']);
+        });
+
+        it('includes labels in the prompt sent to OpenAI', function (): void {
+            $response = $this->createMock(ResponseInterface::class);
+            $response->method('getStatusCode')->willReturn(200);
+            $response->method('toArray')->willReturn([
+                'choices' => [
+                    [
+                        'message' => [
+                            'content' => '{"variations": ["Quiero comer", "Me gustaría comer", "Necesito comer"]}',
+                        ],
+                    ],
+                ],
+            ]);
+
+            $httpClient = $this->createMock(HttpClientInterface::class);
+            $httpClient->expects($this->once())
+                ->method('request')
+                ->with(
+                    'POST',
+                    $this->anything(),
+                    $this->callback(function (array $options): bool {
+                        $userMessage = $options['json']['messages'][1]['content'] ?? '';
+                        return str_contains($userMessage, 'comer');
+                    })
+                )
+                ->willReturn($response);
+
+            $generator = new RealOpenAIPhraseGenerator(
+                $httpClient,
+                'sk-test-key',
+                'gpt-4o-mini',
+                0.7,
+                150
+            );
+
+            $sequence = new PictogramSequence([
+                PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
+            ]);
+
+            $generator->generate($sequence, ['comer']);
         });
 
         it('returns parsed variations from JSON API response', function (): void {
@@ -94,8 +135,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 'sk-test-key',
                 'gpt-4o-mini',
                 0.7,
-                150,
-                ['comer', 'pan']
+                150
             );
 
             $sequence = new PictogramSequence([
@@ -103,7 +143,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440002'),
             ]);
 
-            $result = $generator->generate($sequence);
+            $result = $generator->generate($sequence, ['comer', 'pan']);
 
             expect($result)->toHaveCount(3);
             expect($result[0])->toBe('Quiero comer pan');
@@ -132,8 +172,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 'sk-test-key',
                 'gpt-4o-mini',
                 0.7,
-                150,
-                ['comer', 'pan']
+                150
             );
 
             $sequence = new PictogramSequence([
@@ -141,7 +180,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440002'),
             ]);
 
-            $result = $generator->generate($sequence);
+            $result = $generator->generate($sequence, ['comer', 'pan']);
 
             expect($result)->toHaveCount(3);
             expect($result[0])->toBe('Quiero comer pan');
@@ -171,7 +210,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
 
-            expect(fn () => $generator->generate($sequence))
+            expect(fn () => $generator->generate($sequence, ['comer']))
                 ->toThrow(OpenAIException::class);
         });
 
@@ -199,7 +238,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
 
-            expect(fn () => $generator->generate($sequence))
+            expect(fn () => $generator->generate($sequence, ['comer']))
                 ->toThrow(OpenAIException::class);
         });
 
@@ -231,7 +270,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
             $generator = new RealOpenAIPhraseGenerator(
                 $httpClient,
                 'sk-test-key',
-                'gpt-4o', // Different model
+                'gpt-4o',
                 0.7,
                 150
             );
@@ -240,7 +279,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
 
-            $generator->generate($sequence);
+            $generator->generate($sequence, ['comer']);
         });
 
         it('uses configured temperature', function (): void {
@@ -272,7 +311,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 $httpClient,
                 'sk-test-key',
                 'gpt-4o-mini',
-                0.5, // Different temperature
+                0.5,
                 150
             );
 
@@ -280,7 +319,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
 
-            $generator->generate($sequence);
+            $generator->generate($sequence, ['comer']);
         });
 
         it('throws OpenAIException on server error (500)', function (): void {
@@ -307,7 +346,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
 
-            expect(fn () => $generator->generate($sequence))
+            expect(fn () => $generator->generate($sequence, ['comer']))
                 ->toThrow(OpenAIException::class);
         });
 
@@ -316,7 +355,6 @@ describe('RealOpenAIPhraseGenerator', function (): void {
             $response->method('getStatusCode')->willReturn(200);
             $response->method('toArray')->willReturn([
                 'id' => 'chatcmpl-123',
-                // Missing 'choices' key
             ]);
 
             $httpClient = $this->createMock(HttpClientInterface::class);
@@ -334,7 +372,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
 
-            expect(fn () => $generator->generate($sequence))
+            expect(fn () => $generator->generate($sequence, ['comer']))
                 ->toThrow(OpenAIException::class);
         });
 
@@ -360,7 +398,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
 
-            expect(fn () => $generator->generate($sequence))
+            expect(fn () => $generator->generate($sequence, ['comer']))
                 ->toThrow(OpenAIException::class);
         });
 
@@ -401,7 +439,7 @@ describe('RealOpenAIPhraseGenerator', function (): void {
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
 
-            $generator->generate($sequence);
+            $generator->generate($sequence, ['comer']);
         });
     });
 });

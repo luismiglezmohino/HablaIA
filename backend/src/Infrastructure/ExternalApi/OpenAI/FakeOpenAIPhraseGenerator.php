@@ -29,19 +29,11 @@ final class FakeOpenAIPhraseGenerator implements PhraseGeneratorInterface
     ];
 
     /**
-     * @param array<string> $labels
-     */
-    public function __construct(
-        private readonly array $labels = []
-    ) {
-    }
-
-    /**
      * @return array<string>
      */
-    public function generate(PictogramSequence $sequence): array
+    public function generate(PictogramSequence $sequence, array $labels): array
     {
-        $labelsText = $this->buildLabelsText();
+        $labelsText = $this->buildLabelsText($labels);
 
         // Seleccionar 3 templates diferentes
         $selectedTemplates = $this->selectTemplates(3);
@@ -52,13 +44,16 @@ final class FakeOpenAIPhraseGenerator implements PhraseGeneratorInterface
         );
     }
 
-    private function buildLabelsText(): string
+    /**
+     * @param array<string> $labels
+     */
+    private function buildLabelsText(array $labels): string
     {
-        if (empty($this->labels)) {
+        if (empty($labels)) {
             return 'esto';
         }
 
-        return implode(' ', $this->labels);
+        return implode(' ', $labels);
     }
 
     /**
