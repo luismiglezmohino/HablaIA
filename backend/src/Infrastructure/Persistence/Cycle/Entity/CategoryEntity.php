@@ -19,9 +19,9 @@ class CategoryEntity
     #[Column(type: 'string(255)', nullable: true)]
     public ?string $icon = null;
 
-    #[Column(type: 'string(7)')]
+    #[Column(type: 'string(7)', default: '#6B7280')]
     public string $colorHex = '#6B7280';
 
-    #[Column(type: 'integer')]
+    #[Column(type: 'integer', default: 0)]
     public int $displayOrder = 0;
 }

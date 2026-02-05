@@ -18,11 +18,11 @@ class PhraseEntity
     public string $sequenceHash = '';
 
     /** @var array<string> */
-    #[Column(type: 'json')]
+    #[Column(type: 'json', typecast: 'json')]
     public array $pictogramIds = [];
 
     /** @var array<string> */
-    #[Column(type: 'json')]
+    #[Column(type: 'json', typecast: 'json')]
     public array $variations = [];
 
     #[Column(type: 'datetime')]

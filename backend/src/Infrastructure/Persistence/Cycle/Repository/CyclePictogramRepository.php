@@ -10,6 +10,7 @@ use App\Domain\Pictogram\Repository\PictogramRepository;
 use App\Domain\Pictogram\ValueObject\PictogramId;
 use App\Infrastructure\Persistence\Cycle\Entity\PictogramEntity;
 use App\Infrastructure\Persistence\Cycle\Mapper\PictogramMapper;
+use Cycle\Database\Injection\Fragment;
 use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\Select\Repository;
 
@@ -73,7 +74,7 @@ final class CyclePictogramRepository implements PictogramRepository
         /** @var array<PictogramEntity> $entities */
         $entities = $this->repository
             ->select()
-            ->where('LOWER(label)', 'LIKE', "%{$normalizedQuery}%")
+            ->where(new Fragment('LOWER("label") LIKE ?', "%{$normalizedQuery}%"))
             ->limit($limit)
             ->fetchAll();
 
