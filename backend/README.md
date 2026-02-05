@@ -18,7 +18,7 @@ src/
 ├── Domain/                     # Capa de Dominio (pura, sin dependencias externas)
 │   ├── Shared/                 # Codigo compartido (DomainException, Uuid, UuidGeneratorInterface)
 │   ├── Pictogram/              # Pictogramas (Entity, ValueObjects, Repository, Provider)
-│   ├── Category/               # Categorias (Acciones, Emociones, etc.)
+│   ├── Category/               # Categorias SAAC (colorHex Fitzgerald Key, displayOrder)
 │   └── Phrase/                 # Frases cacheadas del LLM
 ├── Application/                # Casos de uso
 │   ├── Category/               # GetAllCategories
@@ -28,7 +28,7 @@ src/
 │   └── Exception/              # ApplicationException, *NotFoundException
 └── Infrastructure/             # Implementaciones tecnicas
     ├── Console/                # Comandos CLI (app:fixtures:load, app:arasaac:sync)
-    ├── DataFixtures/           # CategoryFixtures para carga inicial
+    ├── DataFixtures/           # CategoryFixtures (7 categorias SAAC, colores Fitzgerald Key)
     ├── ExternalApi/            # Clientes externos
     │   ├── Arasaac/            # ArasaacApiClient (PictogramProviderInterface)
     │   └── OpenAI/             # OpenAIPhraseGenerator (PhraseGeneratorInterface)
@@ -47,7 +47,7 @@ Ver diagramas completos en [docs/diagrams/domain-layer.md](../docs/diagrams/doma
 |--------|---------|---------------|-------------|-------------|----------|
 | **Shared** | - | `Uuid` | `DomainException` | - | `UuidGeneratorInterface` |
 | **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `InvalidPictogramLabelException`, `InvalidImagePathException` | `PictogramRepository` | `PictogramProviderInterface` |
-| **Category** | `Category` | `CategoryId` | `InvalidCategoryNameException` | `CategoryRepository` | - |
+| **Category** | `Category` | `CategoryId` | `InvalidCategoryNameException`, `InvalidCategoryColorException`, `InvalidCategoryDisplayOrderException` | `CategoryRepository` | - |
 | **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `InvalidPhraseVariationsException`, `InvalidPictogramSequenceException` | `PhraseRepository` | `PhraseGeneratorInterface` |
 
 > **Nota:** Las interfaces de servicio permiten cambiar proveedores sin modificar el dominio:
@@ -268,3 +268,4 @@ PICTOGRAMS_DIRECTORY="%kernel.project_dir%/public/pictograms"
 - [ADR-001: Clean Architecture](../docs/adrs/ADR-001-clean-architecture.md)
 - [ADR-003: Infrastructure Layer](../docs/adrs/ADR-003-infrastructure-layer.md)
 - [ADR-007: Cycle ORM over Doctrine](../docs/adrs/ADR-007-cycle-orm-over-doctrine.md)
+- [ADR-008: Modified Fitzgerald Key Color Coding](../docs/adrs/ADR-008-fitzgerald-key-color-coding.md)

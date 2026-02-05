@@ -30,7 +30,7 @@ module.exports = {
       .map((p) => `"${p}"`)
       .join(' ')
     commands.push(
-      `grep -rn --include="*.php" -E "\\b(var_dump|dd|dump|print_r|die)\\s*\\(" ${debugCheck} && echo "\\n❌ Debug functions found in staged files!" && exit 1 || true`
+      `bash -c '! grep -rn --include="*.php" -E "\\b(var_dump|dd|dump|print_r|die)\\s*\\(" ${debugCheck}'`
     )
 
     // PHPStan needs full project context for accurate analysis

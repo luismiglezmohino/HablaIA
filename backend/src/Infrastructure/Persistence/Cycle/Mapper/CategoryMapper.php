@@ -15,7 +15,9 @@ final class CategoryMapper
         return new Category(
             CategoryId::fromString($entity->id),
             $entity->name,
-            $entity->icon
+            $entity->icon,
+            $entity->colorHex,
+            $entity->displayOrder
         );
     }
 
@@ -25,6 +27,8 @@ final class CategoryMapper
         $entity->id = $domain->id()->value();
         $entity->name = $domain->name();
         $entity->icon = $domain->icon();
+        $entity->colorHex = $domain->colorHex();
+        $entity->displayOrder = $domain->displayOrder();
 
         return $entity;
     }

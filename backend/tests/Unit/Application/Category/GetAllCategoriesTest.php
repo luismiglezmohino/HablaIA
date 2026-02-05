@@ -31,12 +31,16 @@ describe('GetAllCategories', function (): void {
         $category1 = new Category(
             CategoryId::fromString($id1),
             'Acciones',
-            'actions-icon'
+            'actions-icon',
+            '#22C55E',
+            2
         );
         $category2 = new Category(
             CategoryId::fromString($id2),
             'Emociones',
-            null
+            null,
+            '#3B82F6',
+            3
         );
         $this->repository->save($category1);
         $this->repository->save($category2);
@@ -50,9 +54,13 @@ describe('GetAllCategories', function (): void {
         expect($result[0]->id)->toBe($id1);
         expect($result[0]->name)->toBe('Acciones');
         expect($result[0]->icon)->toBe('actions-icon');
+        expect($result[0]->colorHex)->toBe('#22C55E');
+        expect($result[0]->displayOrder)->toBe(2);
         expect($result[1]->id)->toBe($id2);
         expect($result[1]->name)->toBe('Emociones');
         expect($result[1]->icon)->toBeNull();
+        expect($result[1]->colorHex)->toBe('#3B82F6');
+        expect($result[1]->displayOrder)->toBe(3);
     });
 
 });

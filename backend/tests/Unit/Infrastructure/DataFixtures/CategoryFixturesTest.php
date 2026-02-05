@@ -18,46 +18,68 @@ describe('CategoryFixtures', function (): void {
             expect($categories)->toHaveCount(7);
         });
 
-        it('contains Personas category with users icon', function (): void {
+        it('contains Personas category with Fitzgerald color', function (): void {
             $categories = CategoryFixtures::getCategories();
 
-            expect($categories)->toContain(['name' => 'Personas', 'icon' => 'users']);
+            expect($categories[0])->toBe([
+                'name' => 'Personas', 'icon' => 'users', 'colorHex' => '#FBBF24', 'displayOrder' => 1,
+            ]);
         });
 
-        it('contains Acciones category with play icon', function (): void {
+        it('contains Acciones category with Fitzgerald color', function (): void {
             $categories = CategoryFixtures::getCategories();
 
-            expect($categories)->toContain(['name' => 'Acciones', 'icon' => 'play']);
+            expect($categories[1])->toBe([
+                'name' => 'Acciones', 'icon' => 'play', 'colorHex' => '#22C55E', 'displayOrder' => 2,
+            ]);
         });
 
-        it('contains Emociones category with heart icon', function (): void {
+        it('contains Emociones category with Fitzgerald color', function (): void {
             $categories = CategoryFixtures::getCategories();
 
-            expect($categories)->toContain(['name' => 'Emociones', 'icon' => 'heart']);
+            expect($categories[2])->toBe([
+                'name' => 'Emociones', 'icon' => 'heart', 'colorHex' => '#3B82F6', 'displayOrder' => 3,
+            ]);
         });
 
-        it('contains Lugares category with map-pin icon', function (): void {
+        it('contains Lugares category with Fitzgerald color', function (): void {
             $categories = CategoryFixtures::getCategories();
 
-            expect($categories)->toContain(['name' => 'Lugares', 'icon' => 'map-pin']);
+            expect($categories[3])->toBe([
+                'name' => 'Lugares', 'icon' => 'map-pin', 'colorHex' => '#F97316', 'displayOrder' => 4,
+            ]);
         });
 
-        it('contains Objetos category with box icon', function (): void {
+        it('contains Objetos category with Fitzgerald color', function (): void {
             $categories = CategoryFixtures::getCategories();
 
-            expect($categories)->toContain(['name' => 'Objetos', 'icon' => 'box']);
+            expect($categories[4])->toBe([
+                'name' => 'Objetos', 'icon' => 'box', 'colorHex' => '#FB923C', 'displayOrder' => 5,
+            ]);
         });
 
-        it('contains Comida category with utensils icon', function (): void {
+        it('contains Comida category with Fitzgerald color', function (): void {
             $categories = CategoryFixtures::getCategories();
 
-            expect($categories)->toContain(['name' => 'Comida', 'icon' => 'utensils']);
+            expect($categories[5])->toBe([
+                'name' => 'Comida', 'icon' => 'utensils', 'colorHex' => '#EA580C', 'displayOrder' => 6,
+            ]);
         });
 
-        it('contains Transporte category with car icon', function (): void {
+        it('contains Transporte category with Fitzgerald color', function (): void {
             $categories = CategoryFixtures::getCategories();
 
-            expect($categories)->toContain(['name' => 'Transporte', 'icon' => 'car']);
+            expect($categories[6])->toBe([
+                'name' => 'Transporte', 'icon' => 'car', 'colorHex' => '#F59E0B', 'displayOrder' => 7,
+            ]);
+        });
+
+        it('has categories ordered by displayOrder', function (): void {
+            $categories = CategoryFixtures::getCategories();
+
+            for ($i = 0; $i < count($categories) - 1; $i++) {
+                expect($categories[$i]['displayOrder'])->toBeLessThan($categories[$i + 1]['displayOrder']);
+            }
         });
     });
 
@@ -99,13 +121,17 @@ describe('CategoryFixtures', function (): void {
             $existingCategory = new Category(
                 \App\Domain\Category\ValueObject\CategoryId::fromString('550e8400-e29b-41d4-a716-446655440000'),
                 'Personas',
-                'users'
+                'users',
+                '#FBBF24',
+                1
             );
 
             $existingCategory2 = new Category(
                 \App\Domain\Category\ValueObject\CategoryId::fromString('550e8400-e29b-41d4-a716-446655440099'),
                 'Acciones',
-                'play'
+                'play',
+                '#22C55E',
+                2
             );
 
             $repository = $this->createMock(CategoryRepository::class);
@@ -132,7 +158,9 @@ describe('CategoryFixtures', function (): void {
             $existingCategory = new Category(
                 \App\Domain\Category\ValueObject\CategoryId::fromString('550e8400-e29b-41d4-a716-446655440000'),
                 'SomeCategory',
-                'icon'
+                'icon',
+                '#3B82F6',
+                1
             );
 
             $repository = $this->createMock(CategoryRepository::class);

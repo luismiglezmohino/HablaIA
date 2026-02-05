@@ -14,7 +14,9 @@ describe('CategoryController', function (): void {
             $category = new Category(
                 CategoryId::fromString('550e8400-e29b-41d4-a716-446655440001'),
                 'Acciones',
-                'running'
+                'running',
+                '#22C55E',
+                2
             );
 
             $repository = $this->createMock(CategoryRepository::class);
@@ -30,15 +32,17 @@ describe('CategoryController', function (): void {
             $data = json_decode($client->getResponse()->getContent(), true);
             expect($data)->toHaveCount(1);
             expect($data[0]['name'])->toBe('Acciones');
+            expect($data[0]['colorHex'])->toBe('#22C55E');
+            expect($data[0]['displayOrder'])->toBe(2);
         });
 
         it('returns multiple categories', function (): void {
             $client = static::createClient();
 
             $categories = [
-                new Category(CategoryId::fromString('550e8400-e29b-41d4-a716-446655440001'), 'Acciones', 'running'),
-                new Category(CategoryId::fromString('550e8400-e29b-41d4-a716-446655440002'), 'Emociones', 'smile'),
-                new Category(CategoryId::fromString('550e8400-e29b-41d4-a716-446655440003'), 'Personas', 'users'),
+                new Category(CategoryId::fromString('550e8400-e29b-41d4-a716-446655440001'), 'Acciones', 'running', '#22C55E', 2),
+                new Category(CategoryId::fromString('550e8400-e29b-41d4-a716-446655440002'), 'Emociones', 'smile', '#3B82F6', 3),
+                new Category(CategoryId::fromString('550e8400-e29b-41d4-a716-446655440003'), 'Personas', 'users', '#FBBF24', 1),
             ];
 
             $repository = $this->createMock(CategoryRepository::class);
@@ -73,7 +77,9 @@ describe('CategoryController', function (): void {
             $category = new Category(
                 CategoryId::fromString('550e8400-e29b-41d4-a716-446655440001'),
                 'Emociones',
-                'smile'
+                'smile',
+                '#3B82F6',
+                3
             );
 
             $repository = $this->createMock(CategoryRepository::class);
@@ -84,7 +90,7 @@ describe('CategoryController', function (): void {
             $client->request('GET', '/api/categories');
 
             $data = json_decode($client->getResponse()->getContent(), true);
-            expect($data[0])->toHaveKeys(['id', 'name', 'icon']);
+            expect($data[0])->toHaveKeys(['id', 'name', 'icon', 'colorHex', 'displayOrder']);
         });
 
         it('handles category with null icon', function (): void {
@@ -93,7 +99,9 @@ describe('CategoryController', function (): void {
             $category = new Category(
                 CategoryId::fromString('550e8400-e29b-41d4-a716-446655440001'),
                 'Otros',
-                null
+                null,
+                '#F97316',
+                4
             );
 
             $repository = $this->createMock(CategoryRepository::class);
@@ -146,7 +154,9 @@ describe('CategoryController', function (): void {
             $category = new Category(
                 CategoryId::fromString('550e8400-e29b-41d4-a716-446655440001'),
                 'Acciones',
-                'running'
+                'running',
+                '#22C55E',
+                2
             );
 
             $repository = $this->createMock(CategoryRepository::class);
@@ -160,6 +170,8 @@ describe('CategoryController', function (): void {
             $data = json_decode($client->getResponse()->getContent(), true);
             expect($data['id'])->toBe('550e8400-e29b-41d4-a716-446655440001');
             expect($data['name'])->toBe('Acciones');
+            expect($data['colorHex'])->toBe('#22C55E');
+            expect($data['displayOrder'])->toBe(2);
         });
 
         it('returns 404 when category not found', function (): void {

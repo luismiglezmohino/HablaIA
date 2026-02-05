@@ -158,7 +158,7 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 ### Alcance del MVP (Fases 1-2)
 
 **Fase 1 - Core Funcional:**
-- Grid de pictogramas organizados por categorías (Acciones, Emociones, Personas, Objetos)
+- Grid de pictogramas organizados por 7 categorías SAAC (Personas, Acciones, Emociones, Lugares, Objetos, Comida, Transporte) con colores Modified Fitzgerald Key
 - Selección multi-pictograma para construir frases
 - Integración LLM (OpenAI inicial) para generar 3 variaciones humanizadas
 - Text-to-Speech con Web Speech API
@@ -515,7 +515,7 @@ backend/src/
 │   └── Exception/    # ApplicationException, *NotFoundException
 ├── Infrastructure/   # Implementaciones (✅ completado)
 │   ├── Console/      # LoadFixturesCommand, SyncArasaacCommand
-│   ├── DataFixtures/ # CategoryFixtures (7 categorías SAAC)
+│   ├── DataFixtures/ # CategoryFixtures (7 categorías SAAC, colores Fitzgerald Key)
 │   ├── ExternalApi/  # ArasaacApiClient, OpenAIPhraseGenerator
 │   ├── Health/       # DatabaseHealthChecker
 │   ├── Http/         # Controllers (Category, Pictogram, Phrase, Health)
@@ -565,7 +565,12 @@ Documentan las decisiones arquitectónicas del proyecto:
 docs/adrs/
 ├── ADR-001-clean-architecture.md
 ├── ADR-002-openai-integration.md
-└── ...
+├── ADR-003-arasaac-pictograms.md
+├── ADR-004-tts-strategy.md
+├── ADR-005-phrase-caching.md
+├── ADR-006-uuid-agnostic-domain.md
+├── ADR-007-cycle-orm-over-doctrine.md
+└── ADR-008-fitzgerald-key-color-coding.md
 ```
 
 ---
@@ -579,7 +584,7 @@ docs/adrs/
 
 | Funcionalidad | Estado | Descripción |
 |---------------|--------|-------------|
-| Grid de pictogramas | ✅ Backend | API: GET /api/pictograms, GET /api/categories |
+| Grid de pictogramas | ✅ Backend | API: GET /api/pictograms, GET /api/categories (7 categorías SAAC con colores Modified Fitzgerald Key) |
 | Búsqueda de pictogramas | ✅ Backend | API: GET /api/pictograms/search?q= (con fallback ARASAAC) |
 | Generación IA | ✅ Backend | API: POST /api/phrases/generate (3 variaciones) |
 | Caché de frases | ✅ Backend | PostgreSQL + Cycle ORM |
@@ -593,12 +598,12 @@ docs/adrs/
 | Aspecto | Estado | Descripción |
 |---------|--------|-------------|
 | Clean Architecture | ✅ Completado | Domain ✅ → Application ✅ → Infrastructure ✅ |
-| TDD | ✅ Completado | 294 tests (769 assertions) |
+| TDD | ✅ Completado | 303 tests (803 assertions) |
 | Excepciones de Dominio | ✅ Completado | `DomainException` base + excepciones semánticas por módulo |
 | Excepciones de Application | ✅ Completado | `ApplicationException` + `*NotFoundException` |
 | UUID Desacoplado | ✅ Completado | Domain valida (`Uuid`), Infrastructure genera (`UuidGeneratorInterface`) |
 | Docker | ✅ Completado | Contenedores para todos los servicios |
-| CI/CD | ✅ Completado | GitHub Actions + Husky (pre-commit + pre-push) |
+| CI/CD | ✅ Completado | GitHub Actions + Husky (pre-commit, commit-msg, post-merge) + commitlint |
 | Seguridad | ✅ Completado | SSRF protection, Path Traversal, MIME validation, Rate limiting |
 
 **Leyenda:** 🔲 Pendiente | 🚧 En progreso | ✅ Completado

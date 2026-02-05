@@ -31,6 +31,8 @@ final class CategoryController
                 'id' => $dto->id,
                 'name' => $dto->name,
                 'icon' => $dto->icon,
+                'colorHex' => $dto->colorHex,
+                'displayOrder' => $dto->displayOrder,
             ], $categories),
             Response::HTTP_OK
         );
@@ -61,6 +63,8 @@ final class CategoryController
             'id' => $category->id()->value(),
             'name' => $category->name(),
             'icon' => $category->icon(),
+            'colorHex' => $category->colorHex(),
+            'displayOrder' => $category->displayOrder(),
         ], Response::HTTP_OK);
     }
 }
