@@ -1,4 +1,4 @@
-# Security Audit - PictoSpeak AI Backend
+# Security Audit - HablaIA Backend
 
 **Fecha:** 2026-02-05
 **Scope:** Backend Symfony 7 + Cycle ORM + PostgreSQL
