@@ -31,17 +31,40 @@ when@dev:
             alias: App\Infrastructure\Health\CycleDatabaseHealthChecker
             public: true
 
+        # Cycle ORM Select\Repository instances (created dynamically from ORM)
+        cycle.repository.category:
+            class: Cycle\ORM\Select\Repository
+            factory: ['@Cycle\ORM\ORM', 'getRepository']
+            arguments:
+                - App\Infrastructure\Persistence\Cycle\Entity\CategoryEntity
+
+        cycle.repository.pictogram:
+            class: Cycle\ORM\Select\Repository
+            factory: ['@Cycle\ORM\ORM', 'getRepository']
+            arguments:
+                - App\Infrastructure\Persistence\Cycle\Entity\PictogramEntity
+
+        cycle.repository.phrase:
+            class: Cycle\ORM\Select\Repository
+            factory: ['@Cycle\ORM\ORM', 'getRepository']
+            arguments:
+                - App\Infrastructure\Persistence\Cycle\Entity\PhraseEntity
+
+        # Application repositories (inject Cycle repositories + EntityManager)
         App\Infrastructure\Persistence\Cycle\Repository\CycleCategoryRepository:
-            autowire: true
-            autoconfigure: true
+            arguments:
+                $repository: '@cycle.repository.category'
+                $entityManager: '@Cycle\ORM\EntityManagerInterface'
 
         App\Infrastructure\Persistence\Cycle\Repository\CyclePictogramRepository:
-            autowire: true
-            autoconfigure: true
+            arguments:
+                $repository: '@cycle.repository.pictogram'
+                $entityManager: '@Cycle\ORM\EntityManagerInterface'
 
         App\Infrastructure\Persistence\Cycle\Repository\CyclePhraseRepository:
-            autowire: true
-            autoconfigure: true
+            arguments:
+                $repository: '@cycle.repository.phrase'
+                $entityManager: '@Cycle\ORM\EntityManagerInterface'
 
 when@prod:
     services:
@@ -69,14 +92,37 @@ when@prod:
             alias: App\Infrastructure\Health\CycleDatabaseHealthChecker
             public: true
 
+        # Cycle ORM Select\Repository instances (created dynamically from ORM)
+        cycle.repository.category:
+            class: Cycle\ORM\Select\Repository
+            factory: ['@Cycle\ORM\ORM', 'getRepository']
+            arguments:
+                - App\Infrastructure\Persistence\Cycle\Entity\CategoryEntity
+
+        cycle.repository.pictogram:
+            class: Cycle\ORM\Select\Repository
+            factory: ['@Cycle\ORM\ORM', 'getRepository']
+            arguments:
+                - App\Infrastructure\Persistence\Cycle\Entity\PictogramEntity
+
+        cycle.repository.phrase:
+            class: Cycle\ORM\Select\Repository
+            factory: ['@Cycle\ORM\ORM', 'getRepository']
+            arguments:
+                - App\Infrastructure\Persistence\Cycle\Entity\PhraseEntity
+
+        # Application repositories (inject Cycle repositories + EntityManager)
         App\Infrastructure\Persistence\Cycle\Repository\CycleCategoryRepository:
-            autowire: true
-            autoconfigure: true
+            arguments:
+                $repository: '@cycle.repository.category'
+                $entityManager: '@Cycle\ORM\EntityManagerInterface'
 
         App\Infrastructure\Persistence\Cycle\Repository\CyclePictogramRepository:
-            autowire: true
-            autoconfigure: true
+            arguments:
+                $repository: '@cycle.repository.pictogram'
+                $entityManager: '@Cycle\ORM\EntityManagerInterface'
 
         App\Infrastructure\Persistence\Cycle\Repository\CyclePhraseRepository:
-            autowire: true
-            autoconfigure: true
+            arguments:
+                $repository: '@cycle.repository.phrase'
+                $entityManager: '@Cycle\ORM\EntityManagerInterface'
