@@ -22,7 +22,7 @@ final class FakePhraseGenerator implements PhraseGeneratorInterface
         'Deseo comer pan',
     ];
 
-    public function generate(PictogramSequence $sequence): array
+    public function generate(PictogramSequence $sequence, array $labels): array
     {
         if ($this->shouldFail) {
             throw new RuntimeException('Generator failure');

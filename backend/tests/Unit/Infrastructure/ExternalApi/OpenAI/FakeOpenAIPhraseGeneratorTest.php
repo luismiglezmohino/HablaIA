@@ -23,7 +23,7 @@ describe('FakeOpenAIPhraseGenerator', function (): void {
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
 
-            $result = $generator->generate($sequence);
+            $result = $generator->generate($sequence, ['comer']);
 
             expect($result)->toHaveCount(3);
         });
@@ -34,7 +34,7 @@ describe('FakeOpenAIPhraseGenerator', function (): void {
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
 
-            $result = $generator->generate($sequence);
+            $result = $generator->generate($sequence, ['comer']);
 
             foreach ($result as $phrase) {
                 expect($phrase)->toBeString();
@@ -42,27 +42,26 @@ describe('FakeOpenAIPhraseGenerator', function (): void {
         });
 
         it('generates variations with single label', function (): void {
-            $generator = new FakeOpenAIPhraseGenerator(['comer']);
+            $generator = new FakeOpenAIPhraseGenerator();
             $sequence = new PictogramSequence([
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
 
-            $result = $generator->generate($sequence);
+            $result = $generator->generate($sequence, ['comer']);
 
             expect($result[0])->toContain('comer');
         });
 
         it('generates variations with multiple labels', function (): void {
-            $generator = new FakeOpenAIPhraseGenerator(['quiero', 'comer', 'pan']);
+            $generator = new FakeOpenAIPhraseGenerator();
             $sequence = new PictogramSequence([
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440002'),
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440003'),
             ]);
 
-            $result = $generator->generate($sequence);
+            $result = $generator->generate($sequence, ['quiero', 'comer', 'pan']);
 
-            // Al menos una variación debe contener las palabras
             $hasLabels = false;
             foreach ($result as $phrase) {
                 if (str_contains($phrase, 'comer') && str_contains($phrase, 'pan')) {
@@ -74,14 +73,13 @@ describe('FakeOpenAIPhraseGenerator', function (): void {
         });
 
         it('uses predefined templates', function (): void {
-            $generator = new FakeOpenAIPhraseGenerator(['agua']);
+            $generator = new FakeOpenAIPhraseGenerator();
             $sequence = new PictogramSequence([
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
 
-            $result = $generator->generate($sequence);
+            $result = $generator->generate($sequence, ['agua']);
 
-            // Debe usar uno de los templates predefinidos
             $knownPrefixes = ['Quiero', 'Me gustaría', 'Necesito'];
             $usesKnownPrefix = false;
             foreach ($result as $phrase) {
@@ -96,41 +94,27 @@ describe('FakeOpenAIPhraseGenerator', function (): void {
         });
 
         it('generates different variations', function (): void {
-            $generator = new FakeOpenAIPhraseGenerator(['comer']);
-            $sequence = new PictogramSequence([
-                PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
-            ]);
-
-            $result = $generator->generate($sequence);
-
-            // Las 3 variaciones deben ser diferentes
-            expect($result)->toHaveCount(3);
-            expect(array_unique($result))->toHaveCount(3);
-        });
-
-        it('works with empty labels array', function (): void {
-            $generator = new FakeOpenAIPhraseGenerator([]);
-            $sequence = new PictogramSequence([
-                PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
-            ]);
-
-            $result = $generator->generate($sequence);
-
-            expect($result)->toHaveCount(3);
-            foreach ($result as $phrase) {
-                expect($phrase)->toBeString();
-            }
-        });
-
-        it('works without labels constructor argument', function (): void {
             $generator = new FakeOpenAIPhraseGenerator();
             $sequence = new PictogramSequence([
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
 
-            $result = $generator->generate($sequence);
+            $result = $generator->generate($sequence, ['comer']);
 
             expect($result)->toHaveCount(3);
+            expect(array_unique($result))->toHaveCount(3);
+        });
+
+        it('falls back to "esto" with empty labels', function (): void {
+            $generator = new FakeOpenAIPhraseGenerator();
+            $sequence = new PictogramSequence([
+                PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
+            ]);
+
+            $result = $generator->generate($sequence, []);
+
+            expect($result)->toHaveCount(3);
+            expect($result[0])->toContain('esto');
         });
     });
 });
