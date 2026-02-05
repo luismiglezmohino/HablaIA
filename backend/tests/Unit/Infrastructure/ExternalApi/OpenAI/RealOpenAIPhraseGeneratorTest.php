@@ -18,10 +18,12 @@ describe('RealOpenAIPhraseGenerator', function (): void {
 
         $generator = new RealOpenAIPhraseGenerator(
             $httpClient,
+            'https://api.openai.com/v1/chat/completions',
             'sk-test-key',
             'gpt-4o-mini',
             0.7,
-            150
+            150,
+            10
         );
 
         expect($generator)->toBeInstanceOf(PhraseGeneratorInterface::class);
@@ -60,10 +62,12 @@ describe('RealOpenAIPhraseGenerator', function (): void {
 
             $generator = new RealOpenAIPhraseGenerator(
                 $httpClient,
+                'https://api.openai.com/v1/chat/completions',
                 'sk-test-key',
                 'gpt-4o-mini',
                 0.7,
-                150
+                150,
+                10
             );
 
             $sequence = new PictogramSequence([
@@ -101,10 +105,12 @@ describe('RealOpenAIPhraseGenerator', function (): void {
 
             $generator = new RealOpenAIPhraseGenerator(
                 $httpClient,
+                'https://api.openai.com/v1/chat/completions',
                 'sk-test-key',
                 'gpt-4o-mini',
                 0.7,
-                150
+                150,
+                10
             );
 
             $sequence = new PictogramSequence([
@@ -132,10 +138,12 @@ describe('RealOpenAIPhraseGenerator', function (): void {
 
             $generator = new RealOpenAIPhraseGenerator(
                 $httpClient,
+                'https://api.openai.com/v1/chat/completions',
                 'sk-test-key',
                 'gpt-4o-mini',
                 0.7,
-                150
+                150,
+                10
             );
 
             $sequence = new PictogramSequence([
@@ -169,10 +177,12 @@ describe('RealOpenAIPhraseGenerator', function (): void {
 
             $generator = new RealOpenAIPhraseGenerator(
                 $httpClient,
+                'https://api.openai.com/v1/chat/completions',
                 'sk-test-key',
                 'gpt-4o-mini',
                 0.7,
-                150
+                150,
+                10
             );
 
             $sequence = new PictogramSequence([
@@ -200,10 +210,12 @@ describe('RealOpenAIPhraseGenerator', function (): void {
 
             $generator = new RealOpenAIPhraseGenerator(
                 $httpClient,
+                'https://api.openai.com/v1/chat/completions',
                 'sk-invalid-key',
                 'gpt-4o-mini',
                 0.7,
-                150
+                150,
+                10
             );
 
             $sequence = new PictogramSequence([
@@ -228,10 +240,12 @@ describe('RealOpenAIPhraseGenerator', function (): void {
 
             $generator = new RealOpenAIPhraseGenerator(
                 $httpClient,
+                'https://api.openai.com/v1/chat/completions',
                 'sk-test-key',
                 'gpt-4o-mini',
                 0.7,
-                150
+                150,
+                10
             );
 
             $sequence = new PictogramSequence([
@@ -269,10 +283,12 @@ describe('RealOpenAIPhraseGenerator', function (): void {
 
             $generator = new RealOpenAIPhraseGenerator(
                 $httpClient,
+                'https://api.openai.com/v1/chat/completions',
                 'sk-test-key',
                 'gpt-4o',
                 0.7,
-                150
+                150,
+                10
             );
 
             $sequence = new PictogramSequence([
@@ -309,10 +325,12 @@ describe('RealOpenAIPhraseGenerator', function (): void {
 
             $generator = new RealOpenAIPhraseGenerator(
                 $httpClient,
+                'https://api.openai.com/v1/chat/completions',
                 'sk-test-key',
                 'gpt-4o-mini',
                 0.5,
-                150
+                150,
+                10
             );
 
             $sequence = new PictogramSequence([
@@ -336,10 +354,12 @@ describe('RealOpenAIPhraseGenerator', function (): void {
 
             $generator = new RealOpenAIPhraseGenerator(
                 $httpClient,
+                'https://api.openai.com/v1/chat/completions',
                 'sk-test-key',
                 'gpt-4o-mini',
                 0.7,
-                150
+                150,
+                10
             );
 
             $sequence = new PictogramSequence([
@@ -362,10 +382,12 @@ describe('RealOpenAIPhraseGenerator', function (): void {
 
             $generator = new RealOpenAIPhraseGenerator(
                 $httpClient,
+                'https://api.openai.com/v1/chat/completions',
                 'sk-test-key',
                 'gpt-4o-mini',
                 0.7,
-                150
+                150,
+                10
             );
 
             $sequence = new PictogramSequence([
@@ -388,10 +410,12 @@ describe('RealOpenAIPhraseGenerator', function (): void {
 
             $generator = new RealOpenAIPhraseGenerator(
                 $httpClient,
+                'https://api.openai.com/v1/chat/completions',
                 'sk-test-key',
                 'gpt-4o-mini',
                 0.7,
-                150
+                150,
+                10
             );
 
             $sequence = new PictogramSequence([
@@ -429,10 +453,12 @@ describe('RealOpenAIPhraseGenerator', function (): void {
 
             $generator = new RealOpenAIPhraseGenerator(
                 $httpClient,
+                'https://api.openai.com/v1/chat/completions',
                 'sk-test-key',
                 'gpt-4o-mini',
                 0.7,
-                150
+                150,
+                10
             );
 
             $sequence = new PictogramSequence([

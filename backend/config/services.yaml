@@ -48,3 +48,13 @@ services:
     App\Application\Pictogram\SearchPictogram:
         arguments:
             $pictogramsBasePath: '%kernel.project_dir%/public/pictograms'
+
+    # OpenAI Phrase Generator configuration
+    App\Infrastructure\ExternalApi\OpenAI\RealOpenAIPhraseGenerator:
+        arguments:
+            $apiUrl: '%env(OPENAI_API_URL)%'
+            $apiKey: '%env(OPENAI_API_KEY)%'
+            $model: '%env(OPENAI_MODEL)%'
+            $temperature: '%env(float:PHRASE_TEMPERATURE)%'
+            $maxTokens: '%env(int:PHRASE_MAX_TOKENS)%'
+            $timeout: '%env(int:PHRASE_TIMEOUT)%'

@@ -253,11 +253,20 @@ Domain <- Application <- Infrastructure
 # Base de datos
 DATABASE_URL="postgresql://user:pass@localhost:5432/pictospeak?serverVersion=16&charset=utf8"
 
-# OpenAI API (para generacion de frases)
+# LLM Phrase Generator (gemini | openai | fake)
+PHRASE_PROVIDER="gemini"
+PHRASE_TEMPERATURE="0.7"
+PHRASE_MAX_TOKENS="256"
+
+# Gemini (default - free tier)
+GEMINI_API_URL="https://generativelanguage.googleapis.com/v1beta/models"
+GEMINI_API_KEY="..."
+GEMINI_MODEL="gemini-2.5-flash-lite"
+
+# OpenAI (alternative)
+OPENAI_API_URL="https://api.openai.com/v1/chat/completions"
 OPENAI_API_KEY="sk-..."
 OPENAI_MODEL="gpt-4o-mini"
-OPENAI_TEMPERATURE="0.7"
-OPENAI_MAX_TOKENS="150"
 
 # Directorio de pictogramas
 PICTOGRAMS_DIRECTORY="%kernel.project_dir%/public/pictograms"
