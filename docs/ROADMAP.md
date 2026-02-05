@@ -19,23 +19,31 @@
 
 **Objetivo:** MVP funcional con las capacidades básicas del comunicador.
 
-**Funcionalidades:**
-- ✅ Grid de pictogramas por categorías (Acciones, Emociones, Personas, Objetos)
-- ✅ Selección multi-pictograma para construir frases
-- ✅ Integración OpenAI GPT-4o-mini para generar 3 variaciones humanizadas
-- ✅ Text-to-Speech con Web Speech API (síntesis de voz nativa del navegador)
-- ✅ Caché de frases en PostgreSQL
-- ✅ Sincronización automática con ARASAAC API
-- ✅ Interfaz accesible (WCAG 2.1 AA)
-- ✅ Tests unitarios (100% Domain, 80% Application)
+### Backend (✅ Completado)
+- ✅ API REST con Symfony 7 + Cycle ORM + PostgreSQL
+- ✅ Grid de pictogramas por categorías (7 categorías SAAC, colores Fitzgerald Key)
+- ✅ Integración LLM multi-proveedor (`PHRASE_PROVIDER`: gemini, openai, fake)
+- ✅ Caché de frases en PostgreSQL (SHA256 hash de secuencia)
+- ✅ Sincronización automática con ARASAAC API (197 palabras core vocabulary)
+- ✅ Health checks para Kubernetes (liveness, readiness)
+- ✅ Rate limiting configurable en generación de frases
+- ✅ Tests unitarios: 332 tests, PHPStan level 8
+
+### Frontend (🔲 Pendiente)
+- 🔲 SPA responsiva (Vue 3 + TypeScript + Tailwind)
+- 🔲 Componentes: PictogramCard, CategorySelector, PhraseBar, PictogramGrid
+- 🔲 Text-to-Speech con Web Speech API
+- 🔲 Interfaz accesible (WCAG 2.1 AA)
+- 🔲 Pinia stores para estado
+- 🔲 Tests unitarios con Vitest
 
 **Entregables técnicos:**
-- Clean Architecture implementada (3 capas: Domain/Application/Infrastructure)
-- API REST funcional (Symfony 7)
-- SPA responsiva (Vue 3 + TypeScript)
-- Docker Compose con todos los servicios
-- CI/CD con GitHub Actions
-- Documentación completa (ADRs, guías de desarrollo)
+- ✅ Clean Architecture backend (Domain/Application/Infrastructure)
+- ✅ API REST funcional (Symfony 7)
+- 🔲 SPA responsiva (Vue 3 + TypeScript)
+- ✅ Docker Compose con todos los servicios
+- ✅ CI/CD con GitHub Actions
+- ✅ Documentación completa (ADRs, guías de desarrollo)
 
 ---
 
@@ -186,4 +194,4 @@
 - Las métricas se actualizarán con datos reales conforme se complete cada fase
 - El orden de las fases puede alterarse según prioridades del proyecto
 
-**Última actualización:** 31 de enero de 2026
+**Última actualización:** 5 de febrero de 2026

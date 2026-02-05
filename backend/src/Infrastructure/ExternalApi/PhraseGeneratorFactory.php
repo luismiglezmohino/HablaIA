@@ -8,7 +8,6 @@ use App\Domain\Phrase\Service\PhraseGeneratorInterface;
 use App\Infrastructure\ExternalApi\Gemini\GeminiPhraseGenerator;
 use App\Infrastructure\ExternalApi\OpenAI\FakeOpenAIPhraseGenerator;
 use App\Infrastructure\ExternalApi\OpenAI\RealOpenAIPhraseGenerator;
-use InvalidArgumentException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class PhraseGeneratorFactory
@@ -50,9 +49,7 @@ final class PhraseGeneratorFactory
                 $this->timeout,
             ),
             'fake' => new FakeOpenAIPhraseGenerator(),
-            default => throw new InvalidArgumentException(
-                sprintf('Unknown phrase provider "%s". Supported: gemini, openai, fake', $this->provider)
-            ),
+            default => new FakeOpenAIPhraseGenerator(), // Fallback seguro para valores inválidos
         };
     }
 }

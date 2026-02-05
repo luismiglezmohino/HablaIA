@@ -147,7 +147,7 @@ Los comunicadores SAAC tradicionales (Tobii Dynavox, Proloquo2Go) ofrecen pictog
 
 ### Solución: HablaIA
 
-HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia Artificial contextual** (OpenAI GPT-4o-mini inicialmente, arquitectura agnóstica de proveedor) y **síntesis de voz progresiva** para crear un comunicador que:
+HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia Artificial contextual** (multi-proveedor configurable via `PHRASE_PROVIDER`: Gemini, OpenAI, Fake) y **síntesis de voz progresiva** para crear un comunicador que:
 
 1. **Permite seleccionar pictogramas** de forma visual e intuitiva
 2. **Genera 3 variaciones de frase humanizada** usando IA contextual
@@ -205,7 +205,11 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 
 ### Inteligencia Artificial & APIs Externas
 
-- **LLM para generación de frases:** OpenAI GPT-4o-mini (inicial). Arquitectura agnóstica permite cambiar a Claude, Gemini, LLaMA, etc.
+- **LLM para generación de frases:** Multi-proveedor configurable via `PHRASE_PROVIDER`:
+  - `gemini` - Gemini 2.5 Flash Lite (free tier)
+  - `openai` - OpenAI GPT-4o-mini
+  - `fake` - Respuestas simuladas (sin API key)
+  - Valor inválido → fallback a `fake`
 - **ARASAAC API:** Repositorio de pictogramas (30,000+ símbolos en español)
 - **Web Speech API:** Síntesis de voz nativa del navegador (Fase 1)
 - **ElevenLabs API:** Text-to-Speech premium (Fase 4 - futuro)
@@ -275,12 +279,29 @@ cp frontend/.env.example frontend/.env
 # Base de datos
 DATABASE_URL="postgresql://hablaia_user:hablaia_pass@postgres:5432/hablaia?serverVersion=16&charset=utf8"
 
-# OpenAI API (obtén tu clave en https://platform.openai.com)
-OPENAI_API_KEY=sk-tu-clave-aqui
-
 # Symfony
 APP_ENV=dev
 APP_SECRET=genera-un-secreto-aleatorio-aqui
+
+# LLM Phrase Generator (gemini | openai | fake)
+PHRASE_PROVIDER="gemini"
+PHRASE_TEMPERATURE="0.7"
+PHRASE_MAX_TOKENS="256"
+PHRASE_TIMEOUT="10"
+
+# Gemini (default - free tier)
+GEMINI_API_URL="https://generativelanguage.googleapis.com/v1beta/models"
+GEMINI_API_KEY="tu-clave-gemini"
+GEMINI_MODEL="gemini-2.5-flash-lite"
+
+# OpenAI (alternativa)
+OPENAI_API_URL="https://api.openai.com/v1/chat/completions"
+OPENAI_API_KEY="sk-tu-clave-aqui"
+OPENAI_MODEL="gpt-4o-mini"
+
+# Rate Limiting (POST /api/phrases/generate)
+PHRASE_RATE_LIMIT="30"
+PHRASE_RATE_INTERVAL="60"
 ```
 
 **Edita `frontend/.env` y configura:**
@@ -288,9 +309,6 @@ APP_SECRET=genera-un-secreto-aleatorio-aqui
 ```env
 # URL del backend API
 VITE_API_URL=http://localhost:8080
-
-# OpenAI API (para desarrollo frontend independiente)
-VITE_OPENAI_API_KEY=sk-tu-clave-aqui
 ```
 
 #### 3️⃣ Levantar Servicios con Docker
@@ -453,9 +471,13 @@ PostgreSQL ya está corriendo en tu máquina local. Opciones:
 1. Para el PostgreSQL local: `sudo systemctl stop postgresql`
 2. Cambia el puerto en `docker-compose.yml`: `"5433:5432"`
 
-#### Error: "OpenAI API key not found"
+#### Error: "API key not found" o errores de LLM
 
-Asegúrate de haber configurado `OPENAI_API_KEY` en `backend/.env` y `frontend/.env`.
+**Opción 1 (desarrollo sin API keys):** Usa `PHRASE_PROVIDER=fake` en `backend/.env` - funciona sin claves externas.
+
+**Opción 2 (con LLM real):** Configura las variables según el proveedor:
+- Gemini: `GEMINI_API_KEY` (obtén en https://aistudio.google.com)
+- OpenAI: `OPENAI_API_KEY` (obtén en https://platform.openai.com)
 
 #### Error: "Permission denied" al ejecutar scripts
 
@@ -516,7 +538,7 @@ backend/src/
 ├── Infrastructure/   # Implementaciones (✅ completado)
 │   ├── Console/      # LoadFixturesCommand, SyncArasaacCommand
 │   ├── DataFixtures/ # CategoryFixtures (7 categorías SAAC, colores Fitzgerald Key)
-│   ├── ExternalApi/  # ArasaacApiClient, OpenAIPhraseGenerator
+│   ├── ExternalApi/  # Arasaac/, Gemini/, OpenAI/, Shared/, PhraseGeneratorFactory
 │   ├── Health/       # DatabaseHealthChecker
 │   ├── Http/         # Controllers (Category, Pictogram, Phrase, Health)
 │   ├── Persistence/  # Cycle ORM (Entities, Mappers, Repositories)
@@ -570,7 +592,8 @@ docs/adrs/
 ├── ADR-005-phrase-caching.md
 ├── ADR-006-uuid-agnostic-domain.md
 ├── ADR-007-cycle-orm-over-doctrine.md
-└── ADR-008-fitzgerald-key-color-coding.md
+├── ADR-008-fitzgerald-key-color-coding.md
+└── ADR-009-multi-provider-llm.md
 ```
 
 ---
@@ -598,13 +621,13 @@ docs/adrs/
 | Aspecto | Estado | Descripción |
 |---------|--------|-------------|
 | Clean Architecture | ✅ Completado | Domain ✅ → Application ✅ → Infrastructure ✅ |
-| TDD | ✅ Completado | 303 tests (803 assertions) |
+| TDD | ✅ Completado | 332 tests |
 | Excepciones de Dominio | ✅ Completado | `DomainException` base + excepciones semánticas por módulo |
 | Excepciones de Application | ✅ Completado | `ApplicationException` + `*NotFoundException` |
 | UUID Desacoplado | ✅ Completado | Domain valida (`Uuid`), Infrastructure genera (`UuidGeneratorInterface`) |
 | Docker | ✅ Completado | Contenedores para todos los servicios |
 | CI/CD | ✅ Completado | GitHub Actions + Husky (pre-commit, commit-msg, post-merge) + commitlint |
-| Seguridad | ✅ Completado | SSRF protection, Path Traversal, MIME validation, Rate limiting |
+| Seguridad | ✅ Completado | SSRF protection, Path Traversal, MIME validation, Rate limiting (configurable) |
 
 **Leyenda:** 🔲 Pendiente | 🚧 En progreso | ✅ Completado
 

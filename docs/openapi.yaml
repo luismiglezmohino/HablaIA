@@ -7,12 +7,12 @@ info:
 
     ## Features
     - ARASAAC pictogram management
-    - AI-powered humanized phrase generation (OpenAI GPT-4o-mini)
+    - AI-powered humanized phrase generation
     - Pictogram search with ARASAAC API fallback
     - Health checks for container orchestration
 
     ## Rate Limiting
-    The `/api/phrases/generate` endpoint is rate-limited to protect OpenAI API costs.
+    The `/api/phrases/generate` endpoint is rate-limited to protect API costs.
     - **Limit:** 30 requests per minute per IP
     - **Window:** 60 seconds (sliding window)
     - **Response:** HTTP 429 with `Retry-After` header when exceeded
@@ -296,19 +296,9 @@ paths:
         - Pictograms
       summary: Search pictograms
       description: |
-        Search pictograms by keyword (label).
+        Search pictograms by keyword (label). Returns max 10 results.
 
-        **Search flow:**
-        1. Search in local database by label (LIKE query)
-        2. If local results found, return them
-        3. If NO local results, search in ARASAAC API
-        4. For ARASAAC results:
-           - Check if already exists locally by arasaacId
-           - If not, download image to public/pictograms/
-           - Save to database with local path
-        5. Return pictograms (max 10)
-
-        **Minimum query length:** 2 characters
+        **Query limits:** 2-100 characters
       operationId: searchPictograms
       parameters:
         - name: q
@@ -405,25 +395,9 @@ paths:
       description: |
         Generates humanized phrase variations from a sequence of pictogram IDs.
 
-        **Core MVP feature:** This is the main functionality of HablaIA.
-
-        **Generation flow:**
-        1. Validate that all pictogram IDs exist
-        2. Calculate SHA256 hash of the sequence
-        3. Search in cache by hash
-        4. If cache hit, return cached variations (source: "cache")
-        5. If cache miss, call OpenAI GPT-4o-mini
-        6. If OpenAI succeeds, save and return (source: "generated")
-        7. If OpenAI fails, concatenate labels (source: "fallback")
-
-        **Rate Limiting:**
-        - 30 requests per minute per IP
-        - HTTP 429 returned when limit exceeded
-        - `Retry-After` header indicates when to retry
-
-        **Pictogram sequence limits:**
-        - Minimum: 1 pictogram
-        - Maximum: 10 pictograms
+        **Limits:**
+        - Pictograms: 1-10 per request
+        - Rate: 30 requests/min per IP (HTTP 429 when exceeded)
       operationId: generatePhrase
       requestBody:
         required: true

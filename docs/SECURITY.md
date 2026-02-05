@@ -36,7 +36,7 @@ Interceptor Symfony (`kernel.response`) que añade a todas las respuestas:
 - **UUIDs:** Validados en Value Objects (`CategoryId`, `PictogramId`, `PhraseId`)
 - **Search query:** Mínimo 2 chars, máximo 100 chars, sanitizada contra SQL injection
 - **Pictogram sequence:** Máximo 10 pictogramas por petición
-- **OpenAI labels:** Sanitizados contra prompt injection (solo letras, números, espacios)
+- **LLM labels:** Sanitizados contra prompt injection (solo letras, números, espacios) en todos los proveedores
 
 ### SSRF (HttpImageDownloader)
 - Whitelist de dominios: solo `static.arasaac.org` y `api.arasaac.org`
@@ -49,7 +49,7 @@ Interceptor Symfony (`kernel.response`) que añade a todas las respuestas:
 - Métodos limitados a `GET` y `POST`
 
 ### Rate limiting
-- `POST /api/phrases/generate`: 30 peticiones / 60 segundos (sliding window, por IP)
+- `POST /api/phrases/generate`: configurable via `PHRASE_RATE_LIMIT` / `PHRASE_RATE_INTERVAL` (default: 30 req/60s, sliding window, por IP)
 
 ---
 
