@@ -19,10 +19,6 @@ when@dev:
             alias: App\Infrastructure\Shared\SymfonyUuidGenerator
             public: true
 
-        App\Domain\Phrase\Service\PhraseGeneratorInterface:
-            alias: App\Infrastructure\ExternalApi\OpenAI\FakeOpenAIPhraseGenerator
-            public: true
-
 when@prod:
     services:
         App\Domain\Category\Repository\CategoryRepository:
@@ -39,8 +35,4 @@ when@prod:
 
         App\Domain\Shared\Service\UuidGeneratorInterface:
             alias: App\Infrastructure\Shared\SymfonyUuidGenerator
-            public: true
-
-        App\Domain\Phrase\Service\PhraseGeneratorInterface:
-            alias: App\Infrastructure\ExternalApi\OpenAI\RealOpenAIPhraseGenerator
             public: true
