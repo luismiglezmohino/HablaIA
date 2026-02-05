@@ -42,6 +42,22 @@ describe('SearchPictogram', function (): void {
                 ->toThrow(InvalidArgumentException::class, 'Search query must be at least 2 characters');
         });
 
+        it('throws exception when query exceeds 100 characters', function (): void {
+            $longQuery = str_repeat('a', 101);
+
+            expect(fn () => ($this->useCase)($longQuery))
+                ->toThrow(InvalidArgumentException::class, 'Search query must not exceed 100 characters');
+        });
+
+        it('accepts query with exactly 100 characters', function (): void {
+            $query = str_repeat('a', 100);
+            $this->pictogramProvider->method('searchByKeyword')->willReturn([]);
+
+            $result = ($this->useCase)($query);
+
+            expect($result)->toBe([]);
+        });
+
         it('accepts query with exactly 2 characters', function (): void {
             $this->pictogramProvider->method('searchByKeyword')->willReturn([]);
 

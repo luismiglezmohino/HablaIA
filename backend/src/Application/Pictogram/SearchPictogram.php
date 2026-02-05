@@ -32,6 +32,7 @@ final readonly class SearchPictogram
 {
     private const int MAX_RESULTS = 10;
     private const int MIN_QUERY_LENGTH = 2;
+    private const int MAX_QUERY_LENGTH = 100;
     private const string DEFAULT_LANGUAGE = 'es';
     private const string DEFAULT_CATEGORY_ID = '00000000-0000-4000-8000-000000000000';
 
@@ -57,6 +58,10 @@ final readonly class SearchPictogram
 
         if (mb_strlen($sanitizedQuery) < self::MIN_QUERY_LENGTH) {
             throw new InvalidArgumentException('Search query must be at least 2 characters');
+        }
+
+        if (mb_strlen($sanitizedQuery) > self::MAX_QUERY_LENGTH) {
+            throw new InvalidArgumentException('Search query must not exceed 100 characters');
         }
 
         // Step 1: Search locally
