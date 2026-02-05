@@ -23,39 +23,32 @@ function createTestPictogram(string $id, string $label): Pictogram
     );
 }
 
-beforeEach(function (): void {
-    $this->pictogramRepository = $this->createMock(PictogramRepository::class);
-    $this->phraseRepository = $this->createMock(PhraseRepository::class);
-    $this->phraseGenerator = $this->createMock(PhraseGeneratorInterface::class);
-    $this->uuidGenerator = $this->createMock(UuidGeneratorInterface::class);
-});
-
-function setupMocks(object $test): void
-{
-    self::getContainer()->set(PictogramRepository::class, $test->pictogramRepository);
-    self::getContainer()->set(PhraseRepository::class, $test->phraseRepository);
-    self::getContainer()->set(PhraseGeneratorInterface::class, $test->phraseGenerator);
-    self::getContainer()->set(UuidGeneratorInterface::class, $test->uuidGenerator);
-}
-
 describe('PhraseController', function (): void {
     describe('POST /api/phrases/generate', function (): void {
         it('returns phrase variations', function (): void {
             $client = static::createClient();
 
+            $pictogramRepo = $this->createMock(PictogramRepository::class);
+            $phraseRepo = $this->createMock(PhraseRepository::class);
+            $phraseGen = $this->createMock(PhraseGeneratorInterface::class);
+            $uuidGen = $this->createMock(UuidGeneratorInterface::class);
+
             $pictogramId = '550e8400-e29b-41d4-a716-446655440010';
             $pictogram = createTestPictogram($pictogramId, 'comer');
 
-            $this->pictogramRepository->method('findById')->willReturn($pictogram);
-            $this->phraseRepository->method('findBySequenceHash')->willReturn(null);
-            $this->phraseGenerator->method('generate')->willReturn([
+            $pictogramRepo->method('findById')->willReturn($pictogram);
+            $phraseRepo->method('findBySequenceHash')->willReturn(null);
+            $phraseGen->method('generate')->willReturn([
                 'Quiero comer',
                 'Me gustaría comer',
                 'Necesito comer',
             ]);
-            $this->uuidGenerator->method('generate')->willReturn('550e8400-e29b-41d4-a716-446655440099');
+            $uuidGen->method('generate')->willReturn('550e8400-e29b-41d4-a716-446655440099');
 
-            setupMocks($this);
+            self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
+            self::getContainer()->set(PhraseRepository::class, $phraseRepo);
+            self::getContainer()->set(PhraseGeneratorInterface::class, $phraseGen);
+            self::getContainer()->set(UuidGeneratorInterface::class, $uuidGen);
 
             $client->request(
                 'POST',
@@ -77,15 +70,23 @@ describe('PhraseController', function (): void {
         it('returns correct JSON structure', function (): void {
             $client = static::createClient();
 
+            $pictogramRepo = $this->createMock(PictogramRepository::class);
+            $phraseRepo = $this->createMock(PhraseRepository::class);
+            $phraseGen = $this->createMock(PhraseGeneratorInterface::class);
+            $uuidGen = $this->createMock(UuidGeneratorInterface::class);
+
             $pictogramId = '550e8400-e29b-41d4-a716-446655440010';
             $pictogram = createTestPictogram($pictogramId, 'comer');
 
-            $this->pictogramRepository->method('findById')->willReturn($pictogram);
-            $this->phraseRepository->method('findBySequenceHash')->willReturn(null);
-            $this->phraseGenerator->method('generate')->willReturn(['Quiero comer']);
-            $this->uuidGenerator->method('generate')->willReturn('550e8400-e29b-41d4-a716-446655440099');
+            $pictogramRepo->method('findById')->willReturn($pictogram);
+            $phraseRepo->method('findBySequenceHash')->willReturn(null);
+            $phraseGen->method('generate')->willReturn(['Quiero comer']);
+            $uuidGen->method('generate')->willReturn('550e8400-e29b-41d4-a716-446655440099');
 
-            setupMocks($this);
+            self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
+            self::getContainer()->set(PhraseRepository::class, $phraseRepo);
+            self::getContainer()->set(PhraseGeneratorInterface::class, $phraseGen);
+            self::getContainer()->set(UuidGeneratorInterface::class, $uuidGen);
 
             $client->request(
                 'POST',
@@ -102,7 +103,11 @@ describe('PhraseController', function (): void {
 
         it('returns 400 with invalid JSON', function (): void {
             $client = static::createClient();
-            setupMocks($this);
+
+            self::getContainer()->set(PictogramRepository::class, $this->createMock(PictogramRepository::class));
+            self::getContainer()->set(PhraseRepository::class, $this->createMock(PhraseRepository::class));
+            self::getContainer()->set(PhraseGeneratorInterface::class, $this->createMock(PhraseGeneratorInterface::class));
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->createMock(UuidGeneratorInterface::class));
 
             $client->request(
                 'POST',
@@ -120,7 +125,11 @@ describe('PhraseController', function (): void {
 
         it('returns 400 when missing pictogramIds', function (): void {
             $client = static::createClient();
-            setupMocks($this);
+
+            self::getContainer()->set(PictogramRepository::class, $this->createMock(PictogramRepository::class));
+            self::getContainer()->set(PhraseRepository::class, $this->createMock(PhraseRepository::class));
+            self::getContainer()->set(PhraseGeneratorInterface::class, $this->createMock(PhraseGeneratorInterface::class));
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->createMock(UuidGeneratorInterface::class));
 
             $client->request(
                 'POST',
@@ -138,7 +147,11 @@ describe('PhraseController', function (): void {
 
         it('returns 400 when pictogramIds not array', function (): void {
             $client = static::createClient();
-            setupMocks($this);
+
+            self::getContainer()->set(PictogramRepository::class, $this->createMock(PictogramRepository::class));
+            self::getContainer()->set(PhraseRepository::class, $this->createMock(PhraseRepository::class));
+            self::getContainer()->set(PhraseGeneratorInterface::class, $this->createMock(PhraseGeneratorInterface::class));
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->createMock(UuidGeneratorInterface::class));
 
             $client->request(
                 'POST',
@@ -156,7 +169,11 @@ describe('PhraseController', function (): void {
 
         it('returns 400 when pictogramIds empty', function (): void {
             $client = static::createClient();
-            setupMocks($this);
+
+            self::getContainer()->set(PictogramRepository::class, $this->createMock(PictogramRepository::class));
+            self::getContainer()->set(PhraseRepository::class, $this->createMock(PhraseRepository::class));
+            self::getContainer()->set(PhraseGeneratorInterface::class, $this->createMock(PhraseGeneratorInterface::class));
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->createMock(UuidGeneratorInterface::class));
 
             $client->request(
                 'POST',
@@ -174,7 +191,11 @@ describe('PhraseController', function (): void {
 
         it('returns 400 with invalid UUID format', function (): void {
             $client = static::createClient();
-            setupMocks($this);
+
+            self::getContainer()->set(PictogramRepository::class, $this->createMock(PictogramRepository::class));
+            self::getContainer()->set(PhraseRepository::class, $this->createMock(PhraseRepository::class));
+            self::getContainer()->set(PhraseGeneratorInterface::class, $this->createMock(PhraseGeneratorInterface::class));
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->createMock(UuidGeneratorInterface::class));
 
             $client->request(
                 'POST',
@@ -193,8 +214,13 @@ describe('PhraseController', function (): void {
         it('returns 404 when pictogram not found', function (): void {
             $client = static::createClient();
 
-            $this->pictogramRepository->method('findById')->willReturn(null);
-            setupMocks($this);
+            $pictogramRepo = $this->createMock(PictogramRepository::class);
+            $pictogramRepo->method('findById')->willReturn(null);
+
+            self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
+            self::getContainer()->set(PhraseRepository::class, $this->createMock(PhraseRepository::class));
+            self::getContainer()->set(PhraseGeneratorInterface::class, $this->createMock(PhraseGeneratorInterface::class));
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->createMock(UuidGeneratorInterface::class));
 
             $client->request(
                 'POST',
@@ -213,15 +239,23 @@ describe('PhraseController', function (): void {
         it('returns valid JSON', function (): void {
             $client = static::createClient();
 
+            $pictogramRepo = $this->createMock(PictogramRepository::class);
+            $phraseRepo = $this->createMock(PhraseRepository::class);
+            $phraseGen = $this->createMock(PhraseGeneratorInterface::class);
+            $uuidGen = $this->createMock(UuidGeneratorInterface::class);
+
             $pictogramId = '550e8400-e29b-41d4-a716-446655440010';
             $pictogram = createTestPictogram($pictogramId, 'comer');
 
-            $this->pictogramRepository->method('findById')->willReturn($pictogram);
-            $this->phraseRepository->method('findBySequenceHash')->willReturn(null);
-            $this->phraseGenerator->method('generate')->willReturn(['Quiero comer']);
-            $this->uuidGenerator->method('generate')->willReturn('550e8400-e29b-41d4-a716-446655440099');
+            $pictogramRepo->method('findById')->willReturn($pictogram);
+            $phraseRepo->method('findBySequenceHash')->willReturn(null);
+            $phraseGen->method('generate')->willReturn(['Quiero comer']);
+            $uuidGen->method('generate')->willReturn('550e8400-e29b-41d4-a716-446655440099');
 
-            setupMocks($this);
+            self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
+            self::getContainer()->set(PhraseRepository::class, $phraseRepo);
+            self::getContainer()->set(PhraseGeneratorInterface::class, $phraseGen);
+            self::getContainer()->set(UuidGeneratorInterface::class, $uuidGen);
 
             $client->request(
                 'POST',
@@ -255,12 +289,17 @@ describe('PhraseController', function (): void {
         it('handles multiple pictograms', function (): void {
             $client = static::createClient();
 
+            $pictogramRepo = $this->createMock(PictogramRepository::class);
+            $phraseRepo = $this->createMock(PhraseRepository::class);
+            $phraseGen = $this->createMock(PhraseGeneratorInterface::class);
+            $uuidGen = $this->createMock(UuidGeneratorInterface::class);
+
             $pictogramId1 = '550e8400-e29b-41d4-a716-446655440010';
             $pictogramId2 = '550e8400-e29b-41d4-a716-446655440011';
             $pictogram1 = createTestPictogram($pictogramId1, 'yo');
             $pictogram2 = createTestPictogram($pictogramId2, 'comer');
 
-            $this->pictogramRepository->method('findById')
+            $pictogramRepo->method('findById')
                 ->willReturnCallback(function (PictogramId $id) use ($pictogram1, $pictogram2) {
                     return match ($id->value()) {
                         '550e8400-e29b-41d4-a716-446655440010' => $pictogram1,
@@ -269,15 +308,18 @@ describe('PhraseController', function (): void {
                     };
                 });
 
-            $this->phraseRepository->method('findBySequenceHash')->willReturn(null);
-            $this->phraseGenerator->method('generate')->willReturn([
+            $phraseRepo->method('findBySequenceHash')->willReturn(null);
+            $phraseGen->method('generate')->willReturn([
                 'Yo quiero comer',
                 'Yo necesito comer',
                 'Yo deseo comer',
             ]);
-            $this->uuidGenerator->method('generate')->willReturn('550e8400-e29b-41d4-a716-446655440099');
+            $uuidGen->method('generate')->willReturn('550e8400-e29b-41d4-a716-446655440099');
 
-            setupMocks($this);
+            self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
+            self::getContainer()->set(PhraseRepository::class, $phraseRepo);
+            self::getContainer()->set(PhraseGeneratorInterface::class, $phraseGen);
+            self::getContainer()->set(UuidGeneratorInterface::class, $uuidGen);
 
             $client->request(
                 'POST',
