@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
-  title: PictoSpeak AI - Backend API
+  title: HablaIA - Backend API
   description: |
-    REST API for the PictoSpeak AI SAAC (Augmentative and Alternative Communication)
+    REST API for the HablaIA SAAC (Augmentative and Alternative Communication)
     communicator with AI-powered phrase generation.
 
     ## Features
@@ -13,7 +13,7 @@ info:
 
     ## Rate Limiting
     The `/api/phrases/generate` endpoint is rate-limited to protect OpenAI API costs.
-    - **Limit:** 10 requests per minute per IP
+    - **Limit:** 30 requests per minute per IP
     - **Window:** 60 seconds (sliding window)
     - **Response:** HTTP 429 with `Retry-After` header when exceeded
 
@@ -21,17 +21,15 @@ info:
     Currently no authentication required (MVP phase). Future versions will implement JWT.
   version: 1.0.0
   contact:
-    name: PictoSpeak AI Team
-    url: https://github.com/your-repo/pictospeak-ai
+    name: HablaIA Team
+    url: https://github.com/luismiglezmohino/HablaIA
   license:
     name: Source Available
-    url: https://github.com/your-repo/pictospeak-ai/blob/main/LICENSE
+    url: https://github.com/luismiglezmohino/HablaIA/blob/main/LICENSE
 
 servers:
   - url: http://localhost:8080
     description: Local development server
-  - url: https://api.pictospeak.ai
-    description: Production server (future)
 
 tags:
   - name: Health
@@ -177,13 +175,19 @@ paths:
               example:
                 - id: "550e8400-e29b-41d4-a716-446655440001"
                   name: "Acciones"
-                  icon: "hand-pointer"
+                  icon: "running"
+                  colorHex: "#22C55E"
+                  displayOrder: 2
                 - id: "550e8400-e29b-41d4-a716-446655440002"
                   name: "Emociones"
                   icon: "smile"
+                  colorHex: "#3B82F6"
+                  displayOrder: 3
                 - id: "550e8400-e29b-41d4-a716-446655440003"
-                  name: "Alimentos"
+                  name: "Comida"
                   icon: "utensils"
+                  colorHex: "#F97316"
+                  displayOrder: 6
 
   /api/categories/{id}:
     get:
@@ -211,7 +215,9 @@ paths:
               example:
                 id: "550e8400-e29b-41d4-a716-446655440001"
                 name: "Acciones"
-                icon: "hand-pointer"
+                icon: "running"
+                colorHex: "#22C55E"
+                displayOrder: 2
         '400':
           description: Invalid UUID format
           content:
@@ -308,10 +314,11 @@ paths:
         - name: q
           in: query
           required: true
-          description: Search query (min 2 characters)
+          description: Search query (min 2, max 100 characters)
           schema:
             type: string
             minLength: 2
+            maxLength: 100
           example: "comer"
       responses:
         '200':
@@ -398,7 +405,7 @@ paths:
       description: |
         Generates humanized phrase variations from a sequence of pictogram IDs.
 
-        **Core MVP feature:** This is the main functionality of PictoSpeak AI.
+        **Core MVP feature:** This is the main functionality of HablaIA.
 
         **Generation flow:**
         1. Validate that all pictogram IDs exist
@@ -410,7 +417,7 @@ paths:
         7. If OpenAI fails, concatenate labels (source: "fallback")
 
         **Rate Limiting:**
-        - 10 requests per minute per IP
+        - 30 requests per minute per IP
         - HTTP 429 returned when limit exceeded
         - `Retry-After` header indicates when to retry
 
@@ -532,6 +539,8 @@ components:
       required:
         - id
         - name
+        - colorHex
+        - displayOrder
       properties:
         id:
           type: string
@@ -545,10 +554,20 @@ components:
           type: string
           nullable: true
           description: FontAwesome icon identifier
+        colorHex:
+          type: string
+          description: Fitzgerald Key color for the category
+          pattern: "^#[0-9A-Fa-f]{6}$"
+        displayOrder:
+          type: integer
+          description: Display order in the UI (0-based)
+          minimum: 0
       example:
         id: "550e8400-e29b-41d4-a716-446655440001"
         name: "Acciones"
-        icon: "hand-pointer"
+        icon: "running"
+        colorHex: "#22C55E"
+        displayOrder: 2
 
     PictogramDTO:
       type: object
