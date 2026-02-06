@@ -3,9 +3,9 @@
 # =============================================================================
 # HablaIA - Pre-push Hook
 # =============================================================================
-# Ejecuta tests antes de cada push
-# - Frontend: Vitest
-# - Backend: PestPHP
+# 1. Branch name validation (agnostico)
+# 2. Tests (frontend + backend)
+# 3. Dependency audit (contexto-aware: npm audit / composer audit)
 
 echo "🧪 Running pre-push checks..."
 echo ""
@@ -13,58 +13,131 @@ echo ""
 FAILED=0
 
 # -----------------------------------------------------------------------------
+# 1. Branch name validation
+# -----------------------------------------------------------------------------
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+VALID_PREFIXES="^(feat|fix|docs|test|refactor|chore|style|perf|ci|build|hotfix|release|main|master|develop)(/.*)?$"
+
+if ! echo "$BRANCH" | grep -qE "$VALID_PREFIXES"; then
+    echo "❌ Nombre de rama invalido: '$BRANCH'"
+    echo "   Prefijos validos: feat/, fix/, docs/, test/, refactor/, chore/, style/, perf/, ci/, build/, hotfix/, release/"
+    echo "   Ejemplo: feat/add-login, fix/button-alignment"
+    FAILED=1
+fi
+
+# -----------------------------------------------------------------------------
+# Detectar contexto (que se ha modificado)
+# -----------------------------------------------------------------------------
+REMOTE=${1:-origin}
+REMOTE_SHA=$(git rev-parse "$REMOTE/$BRANCH" 2>/dev/null || true)
+
+if [ -n "$REMOTE_SHA" ]; then
+    CHANGED_FILES=$(git diff --name-only "$REMOTE_SHA"..HEAD 2>/dev/null || echo "")
+else
+    # Rama nueva: comparar contra main
+    CHANGED_FILES=$(git diff --name-only origin/main..HEAD 2>/dev/null || git diff --name-only HEAD~1..HEAD 2>/dev/null || echo "")
+fi
+
+HAS_FRONTEND=$(echo "$CHANGED_FILES" | grep "^frontend/" || true)
+HAS_BACKEND=$(echo "$CHANGED_FILES" | grep "^backend/" || true)
+
+# -----------------------------------------------------------------------------
+# 2. Tests
+# -----------------------------------------------------------------------------
+
 # Frontend Tests (Vitest)
-# -----------------------------------------------------------------------------
-echo "📦 Frontend Tests"
-echo "─────────────────"
+if [ -n "$HAS_FRONTEND" ]; then
+    echo "📦 Frontend Tests"
+    echo "─────────────────"
 
-if [ -f "frontend/package.json" ]; then
-    if [ -d "frontend/node_modules" ]; then
-        cd frontend
-        npm run test -- --run
-        if [ $? -ne 0 ]; then
-            echo "❌ Frontend tests failed!"
-            FAILED=1
+    if [ -f "frontend/package.json" ]; then
+        if [ -d "frontend/node_modules" ]; then
+            cd frontend
+            npm run test -- --run
+            if [ $? -ne 0 ]; then
+                echo "❌ Frontend tests failed!"
+                FAILED=1
+            else
+                echo "✅ Frontend tests passed!"
+            fi
+            cd ..
         else
-            echo "✅ Frontend tests passed!"
+            echo "⚠️  Frontend node_modules not found. Run: cd frontend && npm install"
+            FAILED=1
         fi
-        cd ..
-    else
-        echo "⚠️  Frontend node_modules not found. Run: cd frontend && npm install"
-        FAILED=1
     fi
-else
-    echo "⚠️  Frontend package.json not found"
+    echo ""
 fi
 
-echo ""
-
-# -----------------------------------------------------------------------------
 # Backend Tests (PestPHP)
-# -----------------------------------------------------------------------------
-echo "🐘 Backend Tests"
-echo "────────────────"
+if [ -n "$HAS_BACKEND" ]; then
+    echo "🐘 Backend Tests"
+    echo "────────────────"
 
-if [ -f "backend/composer.json" ]; then
-    if [ -f "backend/vendor/bin/pest" ]; then
-        cd backend
-        ./vendor/bin/pest
-        if [ $? -ne 0 ]; then
-            echo "❌ Backend tests failed!"
-            FAILED=1
+    if [ -f "backend/composer.json" ]; then
+        if [ -f "backend/vendor/bin/pest" ]; then
+            cd backend
+            ./vendor/bin/pest
+            if [ $? -ne 0 ]; then
+                echo "❌ Backend tests failed!"
+                FAILED=1
+            else
+                echo "✅ Backend tests passed!"
+            fi
+            cd ..
         else
-            echo "✅ Backend tests passed!"
+            echo "⚠️  Backend vendor not found. Run: cd backend && composer install"
+            FAILED=1
         fi
-        cd ..
-    else
-        echo "⚠️  Backend vendor not found. Run: cd backend && composer install"
-        FAILED=1
     fi
-else
-    echo "⚠️  Backend composer.json not found"
+    echo ""
 fi
 
-echo ""
+# Si no hay cambios en frontend ni backend, skip tests
+if [ -z "$HAS_FRONTEND" ] && [ -z "$HAS_BACKEND" ]; then
+    echo "ℹ️  Solo cambios en raiz/docs. Tests omitidos."
+    echo ""
+fi
+
+# -----------------------------------------------------------------------------
+# 3. Dependency audit (contexto-aware)
+# -----------------------------------------------------------------------------
+
+if [ -n "$HAS_FRONTEND" ]; then
+    echo "🔐 Frontend Security Audit"
+    echo "──────────────────────────"
+
+    if [ -f "frontend/package.json" ]; then
+        cd frontend
+        npm audit --audit-level=high 2>/dev/null
+        if [ $? -ne 0 ]; then
+            echo "⚠️  npm audit encontro vulnerabilidades high/critical"
+            FAILED=1
+        else
+            echo "✅ Frontend dependencies OK"
+        fi
+        cd ..
+    fi
+    echo ""
+fi
+
+if [ -n "$HAS_BACKEND" ]; then
+    echo "🔐 Backend Security Audit"
+    echo "─────────────────────────"
+
+    if [ -f "backend/composer.json" ]; then
+        cd backend
+        composer audit 2>/dev/null
+        if [ $? -ne 0 ]; then
+            echo "⚠️  composer audit encontro vulnerabilidades"
+            FAILED=1
+        else
+            echo "✅ Backend dependencies OK"
+        fi
+        cd ..
+    fi
+    echo ""
+fi
 
 # -----------------------------------------------------------------------------
 # Final Result
