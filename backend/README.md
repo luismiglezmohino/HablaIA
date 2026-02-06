@@ -1,4 +1,4 @@
-# PictoSpeak AI - Backend API
+# HABLAIA - Backend API
 
 > REST API Symfony 7 para el comunicador SAAC con IA
 

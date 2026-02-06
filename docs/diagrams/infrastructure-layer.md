@@ -1,6 +1,6 @@
 # Infrastructure Layer - Diagramas
 
-> Diagramas del Infrastructure Layer de PictoSpeak AI
+> Diagramas del Infrastructure Layer de HablaIA
 
 ## Diagrama General de Componentes
 

@@ -4,6 +4,14 @@ framework:
     http_method_override: false
     handle_all_throwables: true
 
+    # Detrás de Nginx (Docker), Symfony ve la IP del proxy, no la del cliente real.
+    # trusted_proxies permite confiar en las cabeceras X-Forwarded-* que Nginx añade,
+    # para que $request->getClientIp() devuelva la IP real del usuario.
+    # REMOTE_ADDR = "confía en quien me habla directamente" (Nginx en Docker).
+    # En producción con load balancer: poner IPs/rangos del balanceador.
+    trusted_proxies: '%env(default::TRUSTED_PROXIES)%'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-proto']
+
     session:
         handler_id: null
         cookie_secure: auto

@@ -186,7 +186,34 @@ describe('PhraseController', function (): void {
 
             expect($client->getResponse()->getStatusCode())->toBe(400);
             $data = json_decode($client->getResponse()->getContent(), true);
-            expect($data)->toHaveKey('error');
+            expect($data['error'])->toBe('pictogramIds must contain between 1 and 10 elements');
+        });
+
+        it('returns 400 when pictogramIds exceeds max 10', function (): void {
+            $client = static::createClient();
+
+            self::getContainer()->set(PictogramRepository::class, $this->createMock(PictogramRepository::class));
+            self::getContainer()->set(PhraseRepository::class, $this->createMock(PhraseRepository::class));
+            self::getContainer()->set(PhraseGeneratorInterface::class, $this->createMock(PhraseGeneratorInterface::class));
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->createMock(UuidGeneratorInterface::class));
+
+            $ids = array_map(
+                fn (int $i) => sprintf('550e8400-e29b-41d4-a716-4466554400%02d', $i),
+                range(1, 11)
+            );
+
+            $client->request(
+                'POST',
+                '/api/phrases/generate',
+                [],
+                [],
+                ['CONTENT_TYPE' => 'application/json'],
+                json_encode(['pictogramIds' => $ids])
+            );
+
+            expect($client->getResponse()->getStatusCode())->toBe(400);
+            $data = json_decode($client->getResponse()->getContent(), true);
+            expect($data['error'])->toBe('pictogramIds must contain between 1 and 10 elements');
         });
 
         it('returns 400 with invalid UUID format', function (): void {
@@ -208,7 +235,7 @@ describe('PhraseController', function (): void {
 
             expect($client->getResponse()->getStatusCode())->toBe(400);
             $data = json_decode($client->getResponse()->getContent(), true);
-            expect($data['error'])->toBe('Invalid UUID format');
+            expect($data['error'])->toBe('Each pictogramId must be a valid UUID v4');
         });
 
         it('returns 404 when pictogram not found', function (): void {

@@ -27,7 +27,7 @@
 - ✅ Sincronización automática con ARASAAC API (197 palabras core vocabulary)
 - ✅ Health checks para Kubernetes (liveness, readiness)
 - ✅ Rate limiting configurable en generación de frases
-- ✅ Tests unitarios: 332 tests, PHPStan level 8
+- ✅ Tests unitarios: 389 tests, PHPStan level 8
 
 ### Frontend (🔲 Pendiente)
 - 🔲 SPA responsiva (Vue 3 + TypeScript + Tailwind)

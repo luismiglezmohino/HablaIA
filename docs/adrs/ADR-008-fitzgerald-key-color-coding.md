@@ -2,7 +2,7 @@
 
 **Estado:** Aceptado
 **Fecha:** 2026-02-05
-**Contexto:** PictoSpeak AI - SAAC con IA
+**Contexto:** HablaIA - SAAC con IA
 
 ## Contexto
 

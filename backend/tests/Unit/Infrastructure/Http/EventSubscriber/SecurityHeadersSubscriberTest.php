@@ -76,6 +76,24 @@ describe('SecurityHeadersSubscriber', function (): void {
         expect($event->getResponse()->headers->get('X-XSS-Protection'))->toBe('0');
     });
 
+    it('adds Content-Security-Policy header', function (): void {
+        $subscriber = new SecurityHeadersSubscriber();
+        $event = createResponseEvent();
+
+        $subscriber->onKernelResponse($event);
+
+        expect($event->getResponse()->headers->get('Content-Security-Policy'))->toBe("default-src 'none'; frame-ancestors 'none'");
+    });
+
+    it('adds Permissions-Policy header', function (): void {
+        $subscriber = new SecurityHeadersSubscriber();
+        $event = createResponseEvent();
+
+        $subscriber->onKernelResponse($event);
+
+        expect($event->getResponse()->headers->get('Permissions-Policy'))->toBe('camera=(), microphone=(), geolocation=()');
+    });
+
     it('does not overwrite existing headers', function (): void {
         $subscriber = new SecurityHeadersSubscriber();
         $event = createResponseEvent();
