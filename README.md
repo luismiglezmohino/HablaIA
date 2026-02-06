@@ -199,8 +199,13 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 - **Lenguaje:** TypeScript 5.3
 - **Bundler:** Vite 5
 - **CSS Framework:** Tailwind CSS 3.4
-- **Validación:** Zod
-- **Testing:** Vitest
+- **State Management:** Pinia
+- **UI Components:** shadcn-vue (Radix Vue primitives, WAI-ARIA)
+- **Icons:** Lucide Vue Next
+- **Validacion:** Zod (runtime API response validation)
+- **HTTP:** Fetch API nativo
+- **Utilities:** @vueuse/core
+- **Testing:** Vitest (62 tests)
 - **Router:** Vue Router 4
 
 ### Inteligencia Artificial & APIs Externas
@@ -551,23 +556,24 @@ backend/src/
 
 ```
 frontend/src/
-├── domain/           # Capa de Dominio
-│   ├── entity/
-│   ├── valueobject/
-│   └── repository/   # Interfaces
-├── application/      # Casos de Uso
-│   ├── usecase/
-│   └── service/
+├── domain/           # Capa de Dominio (TypeScript puro)
+│   ├── entities/     # Category, Pictogram, PhraseResponse
+│   ├── repositories/ # Interfaces: CategoryRepository, PictogramRepository, PhraseRepository
+│   └── services/     # Interfaces: TTSProvider (futuro)
+├── application/      # Capa de Aplicacion
+│   ├── schemas/      # Zod schemas (API response validation)
+│   ├── stores/       # Pinia stores (futuro)
+│   └── composables/  # Vue composables (futuro)
 ├── infrastructure/   # Implementaciones
-│   ├── http/
-│   ├── storage/
-│   └── tts/
+│   ├── http/         # ApiClient, HttpCategoryRepository, HttpPictogramRepository, HttpPhraseRepository
+│   ├── storage/      # LocalStorage (futuro)
+│   └── tts/          # Web Speech API (futuro)
 ├── presentation/     # UI (Vue)
-│   ├── components/
-│   ├── views/
-│   ├── composables/
-│   └── router/
-└── shared/           # Utils, Types
+│   ├── components/   # Componentes Vue
+│   ├── views/        # HomeView
+│   ├── layouts/      # MainLayout (futuro)
+│   └── router/       # Vue Router
+└── lib/              # Utilidades (cn helper)
 ```
 
 ### Principio de Dependencia
@@ -620,8 +626,8 @@ docs/adrs/
 
 | Aspecto | Estado | Descripción |
 |---------|--------|-------------|
-| Clean Architecture | ✅ Completado | Domain ✅ → Application ✅ → Infrastructure ✅ |
-| TDD | ✅ Completado | 389 tests |
+| Clean Architecture | ✅ Completado | Backend: Domain ✅ → Application ✅ → Infrastructure ✅. Frontend: Domain ✅ → Application ✅ → Infrastructure ✅ |
+| TDD | ✅ Completado | 389 tests (backend) + 62 tests (frontend) = 451 total |
 | Excepciones de Dominio | ✅ Completado | `DomainException` base + excepciones semánticas por módulo |
 | Excepciones de Application | ✅ Completado | `ApplicationException` + `*NotFoundException` |
 | UUID Desacoplado | ✅ Completado | Domain valida (`Uuid`), Infrastructure genera (`UuidGeneratorInterface`) |

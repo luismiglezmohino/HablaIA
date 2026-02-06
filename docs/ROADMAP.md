@@ -29,21 +29,25 @@
 - ✅ Rate limiting configurable en generación de frases
 - ✅ Tests unitarios: 389 tests, PHPStan level 8
 
-### Frontend (🔲 Pendiente)
-- 🔲 SPA responsiva (Vue 3 + TypeScript + Tailwind)
+### Frontend (🚧 En Construccion)
+- ✅ Clean Architecture frontend (Domain/Application/Infrastructure)
+- ✅ Domain entities: Category, Pictogram, PhraseResponse + repository interfaces
+- ✅ Zod schemas para validacion de API responses (Zero Trust)
+- ✅ ApiClient HTTP + repositorios (HttpCategoryRepository, HttpPictogramRepository, HttpPhraseRepository)
+- ✅ Pinia registrado, shadcn-vue configurado (Radix Vue, Lucide Vue)
+- ✅ Tests unitarios: 62 tests con Vitest
 - 🔲 Componentes: PictogramCard, CategorySelector, PhraseBar, PictogramGrid
+- 🔲 Pinia stores (categories, pictograms, phrases)
 - 🔲 Text-to-Speech con Web Speech API
 - 🔲 Interfaz accesible (WCAG 2.1 AA)
-- 🔲 Pinia stores para estado
-- 🔲 Tests unitarios con Vitest
 
-**Entregables técnicos:**
+**Entregables tecnicos:**
 - ✅ Clean Architecture backend (Domain/Application/Infrastructure)
 - ✅ API REST funcional (Symfony 7)
-- 🔲 SPA responsiva (Vue 3 + TypeScript)
+- 🚧 SPA responsiva (Vue 3 + TypeScript) - infraestructura completada, UI pendiente
 - ✅ Docker Compose con todos los servicios
 - ✅ CI/CD con GitHub Actions
-- ✅ Documentación completa (ADRs, guías de desarrollo)
+- ✅ Documentacion completa (ADRs, guias de desarrollo)
 
 ---
 
