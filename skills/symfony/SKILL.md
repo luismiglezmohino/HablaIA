@@ -80,3 +80,35 @@ public function __invoke(Request $request, ValidatorInterface $validator): Respo
     }
 }
 ```
+
+## Errores Comunes Symfony
+
+### 1. DI Container no detecta cambios en services
+**Problema:** Se modifica `services.yaml` o `cycle.yaml` pero Symfony sigue con la config vieja.
+**Solucion:** Siempre limpiar cache despues de cambios en configuracion:
+```bash
+php bin/console cache:clear
+```
+
+### 2. Servicio factory no se resuelve
+**Problema:** Un servicio creado via `factory:` no es autowireable.
+**Solucion:** Registrar el servicio explicitamente con argumentos nombrados:
+```yaml
+services:
+    # Factory que crea el servicio
+    my.service.internal:
+        class: Some\Internal\Service
+        factory: ['@Some\Factory', 'create']
+        arguments: [SomeEntity]
+
+    # Wrapper publico que usa el servicio factory
+    App\MyService:
+        arguments:
+            $internalService: '@my.service.internal'
+```
+
+### 3. Verificar que el container compila
+Despues de cualquier cambio en services o configuracion DI:
+```bash
+php bin/console cache:clear && php bin/console debug:container --tag=controller.service_arguments
+```

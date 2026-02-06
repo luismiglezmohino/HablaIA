@@ -36,11 +36,13 @@ CLAUDE_ALL_TOOLS="Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch, Task
 # Colores
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+RED='\033[0;31m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
 log_info() { echo -e "${GREEN}[OK]${NC} $1"; }
-log_warn() { echo -e "${YELLOW}[SKIP]${NC} $1"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+log_skip() { echo -e "${YELLOW}[SKIP]${NC} $1"; }
 log_section() { echo -e "\n${BLUE}=== $1 ===${NC}"; }
 
 to_kebab_case() {
@@ -99,6 +101,39 @@ should_skip_agent() {
     esac
 }
 
+validate_agent() {
+    local source_file="$1"
+    local filename
+    filename=$(basename "$source_file")
+    local warnings=0
+
+    # Verificar frontmatter con description
+    if ! grep -q "^description:" "$source_file"; then
+        log_warn "$filename: falta 'description' en frontmatter"
+        ((warnings++)) || true
+    fi
+
+    # Verificar frontmatter con mode
+    if ! grep -q "^mode:" "$source_file"; then
+        log_warn "$filename: falta 'mode' en frontmatter"
+        ((warnings++)) || true
+    fi
+
+    # Verificar seccion Quality Gates
+    if ! grep -q "Quality Gates" "$source_file"; then
+        log_warn "$filename: falta seccion 'Quality Gates'"
+        ((warnings++)) || true
+    fi
+
+    # Verificar seccion Restricciones Fatales
+    if ! grep -q "Restricciones Fatales" "$source_file"; then
+        log_warn "$filename: falta seccion 'Restricciones Fatales'"
+        ((warnings++)) || true
+    fi
+
+    return $warnings
+}
+
 main() {
     echo -e "${BLUE}╔══════════════════════════════════════════════════╗${NC}"
     echo -e "${BLUE}║   Sync to Claude Code                            ║${NC}"
@@ -126,11 +161,16 @@ main() {
     mkdir -p "$CLAUDE_AGENTS"
 
     local agent_count=0
+    local warn_count=0
     for f in "$AGENTS_SOURCE"/*.md; do
         [[ -f "$f" ]] || continue
         if should_skip_agent "$(basename "$f")"; then
-            log_warn "$(basename "$f") (excluido)"
+            log_skip "$(basename "$f") (excluido)"
             continue
+        fi
+        # Validar antes de convertir (warnings, no bloquea)
+        if ! validate_agent "$f"; then
+            ((warn_count++)) || true
         fi
         process_agent "$f"
         ((agent_count++)) || true
@@ -144,6 +184,9 @@ main() {
     # === RESUMEN ===
     log_section "Resumen"
     echo -e "Agentes convertidos: ${GREEN}$agent_count${NC}"
+    if [[ $warn_count -gt 0 ]]; then
+        echo -e "Agentes con warnings: ${YELLOW}$warn_count${NC}"
+    fi
     echo ""
     echo "Estructura final:"
     echo "  agents/             Fuente (formato OpenCode)"
