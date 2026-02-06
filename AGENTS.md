@@ -1,12 +1,12 @@
-# Project Configuration - PictoSpeak AI
+# Project Configuration - HablaIA
 
-This project uses a custom agent orchestration system for PictoSpeak AI - a SAAC (Comunicación Aumentativa y Alternativa) application with AI.
+This project uses a custom agent orchestration system for HablaIA - a SAAC (Comunicación Aumentativa y Alternativa) application with AI.
 
 **Domain:** Comunicación Aumentativa y Alternativa (SAAC) con IA  
 **Users:** Personas con TEA, afasia, parálisis cerebral, ELA  
 **Goal:** Comunicador pictográfico con IA humanizante que mejora autonomía comunicativa  
 
-**Stack:** Symfony 7 + Vue.js 3 + PostgreSQL + Docker + OpenAI API  
+**Stack:** Symfony 7 + Vue.js 3 + PostgreSQL + Docker + Multi-LLM (OpenAI, Gemini)
 **Architecture:** Clean Architecture / DDD  
 **Testing:** TDD (PestPHP + Vitest)  
 **Security:** OWASP Top 10, Zero Trust, GDPR estricto  
@@ -63,6 +63,7 @@ Technical skills are defined in `skills/` (shared across tools via symlinks):
 ### Backend
 - **symfony** - Symfony framework with PestPHP and Clean Architecture patterns
 - **symfony-pest** - Testing patterns for Symfony with Pest PHP
+- **cycle-orm** - Cycle ORM patterns, configuration and common pitfalls
 - **postgresql** - PostgreSQL database configuration and best practices
 
 ### Frontend
@@ -73,7 +74,7 @@ Technical skills are defined in `skills/` (shared across tools via symlinks):
 - **accessibility** - WCAG 2.1 AA compliance for AAC applications
 
 ### AI & Integration
-- **openai-integration** - OpenAI API integration for pictogram prediction
+- **llm-integration** - Multi-provider LLM integration for phrase generation (OpenAI, Gemini, extensible)
 
 ### Infrastructure
 - **docker** - Docker with multi-stage builds, security best practices and Docker Compose
@@ -148,7 +149,6 @@ cd frontend && npm run test:coverage
 # Backend
 composer install
 php bin/console cache:clear
-php bin/console doctrine:migrations:migrate
 
 # Frontend
 npm install
