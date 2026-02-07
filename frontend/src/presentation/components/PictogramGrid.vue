@@ -2,10 +2,12 @@
 import PictogramCard from '@/presentation/components/PictogramCard.vue'
 import { usePictogramStore } from '@/application/stores/usePictogramStore'
 import { useCategoryStore } from '@/application/stores/useCategoryStore'
+import { usePhraseStore } from '@/application/stores/usePhraseStore'
 import type { Pictogram } from '@/domain/entities/Pictogram'
 
 const pictogramStore = usePictogramStore()
 const categoryStore = useCategoryStore()
+const phraseStore = usePhraseStore()
 
 const emit = defineEmits<{
   select: [pictogram: Pictogram]
@@ -40,6 +42,7 @@ const emit = defineEmits<{
       :key="pictogram.id"
       :pictogram="pictogram"
       :category-color="categoryStore.selectedCategory?.colorHex ?? '#6B7280'"
+      :disabled="phraseStore.isFull"
       @select="emit('select', $event)"
     />
   </div>

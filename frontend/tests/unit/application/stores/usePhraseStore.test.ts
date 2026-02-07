@@ -170,6 +170,31 @@ describe('usePhraseStore', () => {
     })
   })
 
+  describe('isFull', () => {
+    it('returns false when under limit', () => {
+      const store = usePhraseStore()
+      store.addPictogram(pictogramFixtures[0]!)
+
+      expect(store.isFull).toBe(false)
+    })
+
+    it('returns true when at max (10)', () => {
+      const store = usePhraseStore()
+
+      for (let i = 0; i < 10; i++) {
+        store.addPictogram({
+          id: `p${i}`,
+          arasaacId: i,
+          categoryId: 'cat-1',
+          label: `picto-${i}`,
+          imagePath: `/pictograms/${i}.png`,
+        })
+      }
+
+      expect(store.isFull).toBe(true)
+    })
+  })
+
   describe('generatePhrase', () => {
     it('sends selected pictogram IDs to repository', async () => {
       const store = usePhraseStore()

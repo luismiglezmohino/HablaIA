@@ -116,6 +116,14 @@ describe('PhraseBar', () => {
 
       expect(button.attributes('disabled')).toBeUndefined()
     })
+
+    it('emits generate event when generate button is clicked', async () => {
+      const { wrapper } = mountPhraseBar(pictogramFixtures)
+
+      await wrapper.find('[data-testid="generate-btn"]').trigger('click')
+
+      expect(wrapper.emitted('generate')).toBeTruthy()
+    })
   })
 
   describe('accessibility', () => {

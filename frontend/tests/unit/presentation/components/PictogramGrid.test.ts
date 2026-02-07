@@ -4,6 +4,7 @@ import { setActivePinia, createPinia } from 'pinia'
 import PictogramGrid from '@/presentation/components/PictogramGrid.vue'
 import { usePictogramStore } from '@/application/stores/usePictogramStore'
 import { useCategoryStore } from '@/application/stores/useCategoryStore'
+import { usePhraseStore } from '@/application/stores/usePhraseStore'
 import type { Pictogram } from '@/domain/entities/Pictogram'
 
 const pictogramFixtures: Pictogram[] = [
@@ -137,6 +138,38 @@ describe('PictogramGrid', () => {
       const grid = wrapper.find('[role="grid"]')
 
       expect(grid.attributes('aria-label')).toBeTruthy()
+    })
+
+    it('disables pictogram buttons when phrase selection is full', () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+
+      const pictogramStore = usePictogramStore()
+      pictogramStore.pictograms = pictogramFixtures
+
+      const categoryStore = useCategoryStore()
+      categoryStore.categories = [
+        { id: 'cat-1', name: 'Acciones', icon: 'play', colorHex: '#22C55E', displayOrder: 1 },
+      ]
+      categoryStore.selectCategory('cat-1')
+
+      const phraseStore = usePhraseStore()
+      for (let i = 0; i < 10; i++) {
+        phraseStore.addPictogram({
+          id: `p${i}`,
+          arasaacId: i,
+          categoryId: 'cat-1',
+          label: `picto-${i}`,
+          imagePath: `/pictograms/${i}.png`,
+        })
+      }
+
+      const wrapper = mount(PictogramGrid, { global: { plugins: [pinia] } })
+
+      const buttons = wrapper.findAll('button')
+      buttons.forEach((btn) => {
+        expect(btn.attributes('disabled')).toBeDefined()
+      })
     })
   })
 })

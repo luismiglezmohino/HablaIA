@@ -16,6 +16,8 @@ export const usePhraseStore = defineStore('phrases', () => {
     () => selectedPictograms.value.length > 0 && !loading.value,
   )
 
+  const isFull = computed(() => selectedPictograms.value.length >= MAX_PICTOGRAMS)
+
   function addPictogram(pictogram: Pictogram): void {
     if (selectedPictograms.value.length >= MAX_PICTOGRAMS) return
     selectedPictograms.value.push(pictogram)
@@ -54,6 +56,7 @@ export const usePhraseStore = defineStore('phrases', () => {
     loading,
     error,
     canGenerate,
+    isFull,
     addPictogram,
     removePictogram,
     clearSelection,
