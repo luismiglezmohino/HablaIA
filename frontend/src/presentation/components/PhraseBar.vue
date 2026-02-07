@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { X, Trash2, Sparkles } from 'lucide-vue-next'
+import SpeakButton from '@/presentation/components/SpeakButton.vue'
 import { usePhraseStore } from '@/application/stores/usePhraseStore'
 
 const store = usePhraseStore()
@@ -92,9 +93,10 @@ const emit = defineEmits<{
         <li
           v-for="(variation, index) in store.phraseResponse.variations"
           :key="index"
-          class="rounded-lg bg-gray-50 px-4 py-3 text-accessible-text"
+          class="flex items-center justify-between gap-2 rounded-lg bg-gray-50 px-4 py-3"
         >
-          {{ variation }}
+          <span class="text-accessible-text">{{ variation }}</span>
+          <SpeakButton :data-testid="`speak-btn-${index}`" :text="variation" />
         </li>
       </ul>
     </div>

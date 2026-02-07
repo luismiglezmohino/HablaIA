@@ -205,7 +205,7 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 - **Validacion:** Zod (runtime API response validation)
 - **HTTP:** Fetch API nativo
 - **Utilities:** @vueuse/core
-- **Testing:** Vitest (62 tests)
+- **Testing:** Vitest (205 tests)
 - **Router:** Vue Router 4
 
 ### Inteligencia Artificial & APIs Externas
