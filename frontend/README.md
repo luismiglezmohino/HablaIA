@@ -8,7 +8,12 @@
 - **Lenguaje:** TypeScript 5.3
 - **Bundler:** Vite 5
 - **CSS:** Tailwind CSS 3.4
-- **Validación:** Zod
+- **State Management:** Pinia
+- **UI Components:** shadcn-vue (Radix Vue primitives)
+- **Icons:** Lucide Vue Next
+- **Validación:** Zod (runtime schemas para API responses)
+- **HTTP:** Fetch API nativo
+- **Utilities:** @vueuse/core
 - **Testing:** Vitest
 - **Arquitectura:** Clean Architecture
 
@@ -16,26 +21,24 @@
 
 ```
 src/
-├── domain/           # Capa de Dominio
-│   ├── entity/       # Entidades de negocio
-│   ├── valueobject/  # Value Objects
-│   └── repository/   # Interfaces de repositorios
-├── application/      # Casos de uso
-│   ├── usecase/      # Casos de uso
-│   └── service/      # Servicios de aplicación
+├── domain/           # Capa de Dominio (TypeScript puro, sin dependencias)
+│   ├── entities/     # Category, Pictogram, PhraseResponse
+│   ├── repositories/ # Interfaces: CategoryRepository, PictogramRepository, PhraseRepository
+│   └── services/     # Interfaces: TTSProvider (futuro)
+├── application/      # Capa de Aplicación
+│   ├── schemas/      # Zod schemas para validacion de API responses
+│   ├── stores/       # Pinia stores (futuro)
+│   └── composables/  # Vue composables (futuro)
 ├── infrastructure/   # Implementaciones
-│   ├── http/         # API Clients
-│   ├── storage/      # LocalStorage/IndexedDB
-│   └── tts/          # Text-to-Speech
+│   ├── http/         # ApiClient + HTTP repositories
+│   ├── storage/      # LocalStorage/IndexedDB (futuro)
+│   └── tts/          # Text-to-Speech (futuro)
 ├── presentation/     # UI Layer (Vue)
 │   ├── components/   # Componentes Vue
-│   ├── views/        # Páginas/Vistas
-│   ├── composables/  # Composables Vue
+│   ├── views/        # Paginas/Vistas
+│   ├── layouts/      # Layouts (futuro)
 │   └── router/       # Vue Router
-└── shared/           # Código compartido
-    ├── validation/   # Zod schemas
-    ├── types/        # TypeScript types
-    └── utils/        # Utilidades
+└── lib/              # Utilidades (cn helper para shadcn-vue)
 ```
 
 ## Instalación
@@ -87,10 +90,7 @@ El frontend cumple **WCAG 2.1 AA**:
 - ARIA labels en elementos interactivos
 - Compatible con screen readers
 
-```bash
-# Tests de accesibilidad
-npm run test:a11y
-```
+Tests de accesibilidad se ejecutaran con Lighthouse CI (configurado en `lighthouserc.json`).
 
 ## Testing
 
