@@ -35,20 +35,22 @@
 - ✅ Zod schemas para validacion de API responses (Zero Trust)
 - ✅ ApiClient HTTP + repositorios (HttpCategoryRepository, HttpPictogramRepository, HttpPhraseRepository)
 - ✅ Pinia registrado, shadcn-vue configurado (Radix Vue, Lucide Vue)
-- ✅ Tests unitarios: 102 tests con Vitest
-- ✅ Pinia store: useCategoryStore (fetch, seleccion, ordenacion)
+- ✅ Tests unitarios: 133 tests con Vitest
+- ✅ Pinia stores: useCategoryStore + usePictogramStore
 - ✅ CategoryBar con Fitzgerald Key borders, Lucide icons, keyboard nav
+- ✅ PictogramCard + PictogramGrid con Fitzgerald Key border-top, responsive grid
 - ✅ App shell: header, skip link, aria-live region
+- ✅ Conexion API: onMounted fetchCategories + watch selectedCategoryId fetchByCategory
 - ✅ WCAG 2.1 AA: 44x44px touch targets, focus rings, aria-labels, role="tablist"
-- 🔲 Componentes: PictogramCard, PhraseBar, PictogramGrid
-- 🔲 Pinia stores (pictograms, phrases)
-- 🔲 Conexion API (onMounted + fetchCategories)
+- 🔲 Componentes: PhraseBar, SelectedPictogramChip, PhraseVariations
+- 🔲 Pinia store: usePhraseStore (seleccion pictogramas, generacion frases)
 - 🔲 Text-to-Speech con Web Speech API
+- 🔲 Busqueda de pictogramas (SearchBar)
 
 **Entregables tecnicos:**
 - ✅ Clean Architecture backend (Domain/Application/Infrastructure)
 - ✅ API REST funcional (Symfony 7)
-- 🚧 SPA responsiva (Vue 3 + TypeScript) - data layer + category UI completados, pictograms pendiente
+- 🚧 SPA responsiva (Vue 3 + TypeScript) - data layer + categories + pictograms completados, phrase flow pendiente
 - ✅ Docker Compose con todos los servicios
 - ✅ CI/CD con GitHub Actions
 - ✅ Documentacion completa (ADRs, guias de desarrollo)
