@@ -5,7 +5,7 @@
 - **Framework:** Vue 3 (Composition API + TypeScript) - SPA reactiva
 - **State:** Pinia - store global (sesion usuario, pictogramas seleccionados, config TTS)
 - **CSS:** TailwindCSS - utility-first, responsive tablet-first
-- **UI Components:** shadcn-vue - componentes preconstruidos accesibles (Dialog, Popover, Toast, etc.)
+- **UI Components:** shadcn-vue - componentes preconstruidos accesibles (Dialog, Popover, Toast, etc.). El `style` en `components.json` solo afecta a componentes generados con `npx shadcn-vue add <componente>`; los ya existentes no se actualizan. Se puede cambiar en cualquier momento.
 - **Primitives:** Radix Vue - primitivas headless accesibles (base de shadcn-vue, WAI-ARIA built-in)
 - **Icons:** Lucide Vue - iconos SVG ligeros para categorias y UI
 - **Validation:** Zod - validacion de schemas en runtime (formularios, API responses)
