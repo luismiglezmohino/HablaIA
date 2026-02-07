@@ -1,8 +1,18 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { setActivePinia, createPinia } from 'pinia'
 import HomeView from '@/presentation/views/HomeView.vue'
 import { useCategoryStore } from '@/application/stores/useCategoryStore'
+
+beforeEach(() => {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve([]),
+    }),
+  )
+})
 
 describe('HomeView', () => {
   beforeEach(() => {
@@ -80,5 +90,26 @@ describe('HomeView', () => {
 
     const liveRegion = wrapper.find('[role="status"][aria-live="polite"]')
     expect(liveRegion.text()).toContain('Categoría Personas seleccionada')
+  })
+
+  it('renders the PictogramGrid component', () => {
+    const wrapper = mount(HomeView, {
+      global: { plugins: [createPinia()] },
+    })
+
+    expect(wrapper.findComponent({ name: 'PictogramGrid' }).exists()).toBe(true)
+  })
+
+  it('calls fetchCategories on mount', () => {
+    const fetchSpy = vi.mocked(fetch)
+
+    mount(HomeView, {
+      global: { plugins: [createPinia()] },
+    })
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      expect.stringContaining('/categories'),
+      expect.objectContaining({ method: 'GET' }),
+    )
   })
 })

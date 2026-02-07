@@ -1,16 +1,41 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import CategoryBar from '@/presentation/components/CategoryBar.vue'
+import PictogramGrid from '@/presentation/components/PictogramGrid.vue'
 import { useCategoryStore } from '@/application/stores/useCategoryStore'
+import { usePictogramStore } from '@/application/stores/usePictogramStore'
+import { ApiClient } from '@/infrastructure/http/ApiClient'
+import { HttpCategoryRepository } from '@/infrastructure/http/HttpCategoryRepository'
+import { HttpPictogramRepository } from '@/infrastructure/http/HttpPictogramRepository'
 
-const store = useCategoryStore()
+const apiClient = new ApiClient()
+const categoryRepo = new HttpCategoryRepository(apiClient)
+const pictogramRepo = new HttpPictogramRepository(apiClient)
+
+const categoryStore = useCategoryStore()
+const pictogramStore = usePictogramStore()
 
 const statusMessage = computed(() => {
-  if (store.selectedCategory) {
-    return `Categoría ${store.selectedCategory.name} seleccionada`
+  if (categoryStore.selectedCategory) {
+    return `Categoría ${categoryStore.selectedCategory.name} seleccionada`
   }
   return ''
 })
+
+onMounted(() => {
+  categoryStore.fetchCategories(categoryRepo)
+})
+
+watch(
+  () => categoryStore.selectedCategoryId,
+  (categoryId) => {
+    if (categoryId) {
+      pictogramStore.fetchByCategory(categoryId, pictogramRepo)
+    } else {
+      pictogramStore.clearPictograms()
+    }
+  },
+)
 </script>
 
 <template>
@@ -26,9 +51,7 @@ const statusMessage = computed(() => {
     {{ statusMessage }}
   </div>
 
-  <main id="main-content" class="container mx-auto px-4 py-6">
-    <p class="text-center text-accessible-textLight">
-      Selecciona una categoría para ver los pictogramas
-    </p>
+  <main id="main-content" class="container mx-auto">
+    <PictogramGrid />
   </main>
 </template>
