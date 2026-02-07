@@ -4,6 +4,7 @@ import type { Pictogram } from '@/domain/entities/Pictogram'
 const props = defineProps<{
   pictogram: Pictogram
   categoryColor: string
+  disabled?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -18,7 +19,8 @@ const emit = defineEmits<{
   >
     <button
       :aria-label="`Pictograma ${props.pictogram.label}`"
-      class="min-h-touch min-w-touch flex w-full flex-col items-center gap-2 rounded-xl p-3 text-center transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-1"
+      :disabled="props.disabled"
+      class="min-h-touch min-w-touch flex w-full flex-col items-center gap-2 rounded-xl p-3 text-center transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
       @click="emit('select', props.pictogram)"
     >
       <img

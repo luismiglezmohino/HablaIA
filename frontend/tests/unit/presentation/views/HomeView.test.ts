@@ -100,6 +100,14 @@ describe('HomeView', () => {
     expect(wrapper.findComponent({ name: 'PictogramGrid' }).exists()).toBe(true)
   })
 
+  it('renders the PhraseBar component', () => {
+    const wrapper = mount(HomeView, {
+      global: { plugins: [createPinia()] },
+    })
+
+    expect(wrapper.findComponent({ name: 'PhraseBar' }).exists()).toBe(true)
+  })
+
   it('calls fetchCategories on mount', () => {
     const fetchSpy = vi.mocked(fetch)
 
