@@ -13,9 +13,28 @@ export const usePictogramStore = defineStore('pictograms', () => {
     error.value = null
     try {
       pictograms.value = await repository.findByCategory(categoryId)
-    } catch (e) {
+    } catch {
       pictograms.value = []
-      error.value = e instanceof Error ? e.message : 'Error loading pictograms'
+      error.value = 'No se pudieron cargar los pictogramas. Inténtalo de nuevo.'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function searchPictograms(query: string, repository: PictogramRepository): Promise<void> {
+    if (!query.trim()) {
+      pictograms.value = []
+      error.value = null
+      return
+    }
+
+    loading.value = true
+    error.value = null
+    try {
+      pictograms.value = await repository.search(query)
+    } catch {
+      pictograms.value = []
+      error.value = 'No se pudieron cargar los resultados. Inténtalo de nuevo.'
     } finally {
       loading.value = false
     }
@@ -31,6 +50,7 @@ export const usePictogramStore = defineStore('pictograms', () => {
     loading,
     error,
     fetchByCategory,
+    searchPictograms,
     clearPictograms,
   }
 })

@@ -119,6 +119,55 @@ describe('PictogramGrid', () => {
     })
   })
 
+  describe('category colors', () => {
+    it('resolves color per pictogram from its categoryId', () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+
+      const pictogramStore = usePictogramStore()
+      pictogramStore.pictograms = [
+        { id: 'p1', arasaacId: 1, categoryId: 'cat-1', label: 'correr', imagePath: '/1.png' },
+        { id: 'p2', arasaacId: 2, categoryId: 'cat-2', label: 'manzana', imagePath: '/2.png' },
+      ]
+
+      const categoryStore = useCategoryStore()
+      categoryStore.categories = [
+        { id: 'cat-1', name: 'Acciones', icon: 'play', colorHex: '#22C55E', displayOrder: 1 },
+        { id: 'cat-2', name: 'Comida', icon: 'utensils', colorHex: '#EA580C', displayOrder: 2 },
+      ]
+      categoryStore.selectCategory('cat-1')
+
+      const wrapper = mount(PictogramGrid, { global: { plugins: [pinia] } })
+
+      const cards = wrapper.findAll('[style]')
+      const styles = cards.map((c) => c.attributes('style'))
+
+      expect(styles.some((s) => s?.includes('#22C55E'))).toBe(true)
+      expect(styles.some((s) => s?.includes('#EA580C'))).toBe(true)
+    })
+
+    it('uses default gray for pictograms without matching category', () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+
+      const pictogramStore = usePictogramStore()
+      pictogramStore.pictograms = [
+        { id: 'p1', arasaacId: 1, categoryId: 'unknown-cat', label: 'spiderman', imagePath: '/1.png' },
+      ]
+
+      const categoryStore = useCategoryStore()
+      categoryStore.categories = [
+        { id: 'cat-1', name: 'Acciones', icon: 'play', colorHex: '#22C55E', displayOrder: 1 },
+      ]
+      categoryStore.selectCategory('cat-1')
+
+      const wrapper = mount(PictogramGrid, { global: { plugins: [pinia] } })
+
+      const card = wrapper.find('[style]')
+      expect(card.attributes('style')).toContain('#9CA3AF')
+    })
+  })
+
   describe('interaction', () => {
     it('emits select when a pictogram card is clicked', async () => {
       const { wrapper } = mountGrid()
