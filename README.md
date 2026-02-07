@@ -309,11 +309,10 @@ PHRASE_RATE_LIMIT="30"
 PHRASE_RATE_INTERVAL="60"
 ```
 
-**Edita `frontend/.env` y configura:**
+**Solo si ejecutas el frontend fuera de Docker**, el proxy usa `http://localhost:8080` por defecto. Para sobreescribirlo, crea `frontend/.env`:
 
 ```env
-# URL del backend API
-VITE_API_URL=http://localhost:8080
+VITE_API_TARGET=http://localhost:8080
 ```
 
 #### 3️⃣ Levantar Servicios con Docker
@@ -493,7 +492,7 @@ chmod +x scripts/*.sh
 
 #### Frontend no conecta con Backend
 
-Verifica que `VITE_API_URL` en `frontend/.env` apunte a `http://localhost:8080`.
+En Docker, el proxy de Vite usa `http://backend:8000` (configurado via `VITE_API_TARGET` en docker-compose). Fuera de Docker, usa `http://localhost:8080` por defecto.
 
 ---
 
