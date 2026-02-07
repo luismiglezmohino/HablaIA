@@ -140,6 +140,18 @@ describe('CategoryBar', () => {
       expect(store.selectedCategoryId).toBe('2')
     })
 
+    it('does not change selection on non-arrow key', async () => {
+      const { wrapper, store } = mountCategoryBar()
+
+      const tabs = wrapper.findAll('[role="tab"]')
+      await tabs.at(0)?.trigger('click')
+      expect(store.selectedCategoryId).toBe('1')
+
+      await tabs.at(0)?.trigger('keydown', { key: 'Tab' })
+
+      expect(store.selectedCategoryId).toBe('1')
+    })
+
     it('navigates with arrow keys', async () => {
       const { wrapper, store } = mountCategoryBar()
 

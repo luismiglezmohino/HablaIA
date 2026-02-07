@@ -35,16 +35,20 @@
 - ✅ Zod schemas para validacion de API responses (Zero Trust)
 - ✅ ApiClient HTTP + repositorios (HttpCategoryRepository, HttpPictogramRepository, HttpPhraseRepository)
 - ✅ Pinia registrado, shadcn-vue configurado (Radix Vue, Lucide Vue)
-- ✅ Tests unitarios: 62 tests con Vitest
-- 🔲 Componentes: PictogramCard, CategorySelector, PhraseBar, PictogramGrid
-- 🔲 Pinia stores (categories, pictograms, phrases)
+- ✅ Tests unitarios: 102 tests con Vitest
+- ✅ Pinia store: useCategoryStore (fetch, seleccion, ordenacion)
+- ✅ CategoryBar con Fitzgerald Key borders, Lucide icons, keyboard nav
+- ✅ App shell: header, skip link, aria-live region
+- ✅ WCAG 2.1 AA: 44x44px touch targets, focus rings, aria-labels, role="tablist"
+- 🔲 Componentes: PictogramCard, PhraseBar, PictogramGrid
+- 🔲 Pinia stores (pictograms, phrases)
+- 🔲 Conexion API (onMounted + fetchCategories)
 - 🔲 Text-to-Speech con Web Speech API
-- 🔲 Interfaz accesible (WCAG 2.1 AA)
 
 **Entregables tecnicos:**
 - ✅ Clean Architecture backend (Domain/Application/Infrastructure)
 - ✅ API REST funcional (Symfony 7)
-- 🚧 SPA responsiva (Vue 3 + TypeScript) - infraestructura completada, UI pendiente
+- 🚧 SPA responsiva (Vue 3 + TypeScript) - data layer + category UI completados, pictograms pendiente
 - ✅ Docker Compose con todos los servicios
 - ✅ CI/CD con GitHub Actions
 - ✅ Documentacion completa (ADRs, guias de desarrollo)
@@ -198,4 +202,4 @@
 - Las métricas se actualizarán con datos reales conforme se complete cada fase
 - El orden de las fases puede alterarse según prioridades del proyecto
 
-**Última actualización:** 5 de febrero de 2026
+**Última actualización:** 7 de febrero de 2026
