@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { setActivePinia, createPinia } from 'pinia'
 import PhraseBar from '@/presentation/components/PhraseBar.vue'
@@ -25,6 +25,34 @@ function mountPhraseBar(pictograms: Pictogram[] = []) {
 
 describe('PhraseBar', () => {
   beforeEach(() => {
+    vi.restoreAllMocks()
+    Object.defineProperty(window, 'speechSynthesis', {
+      writable: true,
+      value: {
+        speak: vi.fn(),
+        cancel: vi.fn(),
+        pause: vi.fn(),
+        resume: vi.fn(),
+        getVoices: vi.fn().mockReturnValue([]),
+        pending: false,
+        speaking: false,
+        paused: false,
+      },
+    })
+    Object.defineProperty(window, 'SpeechSynthesisUtterance', {
+      writable: true,
+      value: class {
+        text = ''
+        lang = ''
+        voice: SpeechSynthesisVoice | null = null
+        rate = 1
+        onstart: (() => void) | null = null
+        onend: (() => void) | null = null
+        constructor(text?: string) {
+          if (text) this.text = text
+        }
+      },
+    })
     setActivePinia(createPinia())
   })
 
@@ -196,6 +224,33 @@ describe('PhraseBar', () => {
       const wrapper = mount(PhraseBar, { global: { plugins: [pinia] } })
 
       expect(wrapper.text()).toContain('Too many requests')
+    })
+
+    it('shows speak button for each phrase variation', () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const store = usePhraseStore()
+      store.addPictogram(pictogramFixtures[0]!)
+      store.phraseResponse = {
+        variations: ['Quiero comer pan', 'Me gustaría comer pan'],
+        source: 'generated',
+        sequenceHash: 'abc',
+        pictogramIds: ['p1', 'p2'],
+      }
+
+      const wrapper = mount(PhraseBar, { global: { plugins: [pinia] } })
+
+      const speakButtons = wrapper.findAll('[data-testid^="speak-btn"]')
+
+      expect(speakButtons).toHaveLength(2)
+    })
+
+    it('does not show speak buttons when no phrase response', () => {
+      const { wrapper } = mountPhraseBar(pictogramFixtures)
+
+      const speakButtons = wrapper.findAll('[data-testid^="speak-btn"]')
+
+      expect(speakButtons).toHaveLength(0)
     })
   })
 })
