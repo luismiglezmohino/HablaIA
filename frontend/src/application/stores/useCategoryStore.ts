@@ -22,7 +22,7 @@ export const useCategoryStore = defineStore('categories', () => {
     error.value = null
     try {
       categories.value = await repository.findAll()
-    } catch (e) {
+    } catch {
       error.value = 'No se pudieron cargar las categorías. Inténtalo de nuevo.'
     } finally {
       loading.value = false
