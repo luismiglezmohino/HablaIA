@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { X, Trash2, Sparkles } from 'lucide-vue-next'
+import { X, Trash2, Sparkles, Loader2, RefreshCw } from 'lucide-vue-next'
 import SpeakButton from '@/presentation/components/SpeakButton.vue'
 import { usePhraseStore } from '@/application/stores/usePhraseStore'
 
@@ -36,7 +36,7 @@ const emit = defineEmits<{
             <button
               data-testid="remove-chip"
               :aria-label="`Eliminar ${pictogram.label}`"
-              class="ml-1 rounded-full p-0.5 text-gray-500 hover:bg-gray-200 hover:text-gray-700"
+              class="ml-1 min-h-6 min-w-6 rounded-full p-1 text-gray-500 hover:bg-gray-200 hover:text-gray-700"
               @click="store.removePictogram(index)"
             >
               <X :size="14" aria-hidden="true" />
@@ -62,19 +62,23 @@ const emit = defineEmits<{
       <div class="mt-3">
         <button
           data-testid="generate-btn"
-          :disabled="!store.canGenerate"
-          class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-50"
+          :disabled="!store.canGenerate || store.loading"
+          :aria-label="store.loading ? 'Generando frase' : store.error ? 'Reintentar generar frase' : 'Generar frase'"
+          class="flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+          :class="store.error ? 'bg-red-600 hover:bg-red-700' : 'bg-primary-600 hover:bg-primary-700'"
           @click="emit('generate')"
         >
-          <Sparkles :size="18" aria-hidden="true" />
-          Generar frase
+          <Loader2 v-if="store.loading" :size="18" class="animate-spin" aria-hidden="true" />
+          <RefreshCw v-else-if="store.error" :size="18" aria-hidden="true" />
+          <Sparkles v-else :size="18" aria-hidden="true" />
+          {{ store.loading ? 'Generando...' : store.error ? 'Reintentar' : 'Generar frase' }}
         </button>
       </div>
     </div>
 
-    <!-- Loading -->
-    <div v-if="store.loading" role="status" class="mt-3 text-center">
-      <span class="text-sm text-accessible-textLight">Generando frase...</span>
+    <!-- Loading status for screen readers -->
+    <div v-if="store.loading" role="status" class="sr-only">
+      Generando frase...
     </div>
 
     <!-- Error -->

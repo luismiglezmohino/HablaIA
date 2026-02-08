@@ -23,7 +23,7 @@ export const useCategoryStore = defineStore('categories', () => {
     try {
       categories.value = await repository.findAll()
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Error loading categories'
+      error.value = 'No se pudieron cargar las categorías. Inténtalo de nuevo.'
     } finally {
       loading.value = false
     }

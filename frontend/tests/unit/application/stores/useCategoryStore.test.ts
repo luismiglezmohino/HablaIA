@@ -101,11 +101,11 @@ describe('useCategoryStore', () => {
 
       // Assert
       expect(store.categories).toEqual([])
-      expect(store.error).toBe('Network error')
+      expect(store.error).toBe('No se pudieron cargar las categorías. Inténtalo de nuevo.')
       expect(store.loading).toBe(false)
     })
 
-    it('sets generic error for non-Error exceptions', async () => {
+    it('sets user-friendly error for non-Error exceptions', async () => {
       // Arrange
       const repository = createMockRepository({
         findAll: vi.fn().mockRejectedValue('something went wrong'),
@@ -116,7 +116,7 @@ describe('useCategoryStore', () => {
       await store.fetchCategories(repository)
 
       // Assert
-      expect(store.error).toBe('Error loading categories')
+      expect(store.error).toBe('No se pudieron cargar las categorías. Inténtalo de nuevo.')
     })
 
     it('clears previous error on new fetch', async () => {
@@ -131,7 +131,7 @@ describe('useCategoryStore', () => {
 
       // Act - first fetch fails
       await store.fetchCategories(repository)
-      expect(store.error).toBe('fail')
+      expect(store.error).toBe('No se pudieron cargar las categorías. Inténtalo de nuevo.')
 
       // Act - second fetch succeeds
       await store.fetchCategories(repository)

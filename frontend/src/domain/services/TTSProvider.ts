@@ -1,6 +1,7 @@
 export interface TTSCallbacks {
   onStart?: () => void
   onEnd?: () => void
+  onError?: () => void
 }
 
 export interface TTSProvider {

@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import type { Pictogram } from '@/domain/entities/Pictogram'
 import type { PhraseResponse } from '@/domain/entities/PhraseResponse'
 import type { PhraseRepository } from '@/domain/repositories/PhraseRepository'
+import { ApiError } from '@/infrastructure/http/ApiClient'
 
 const MAX_PICTOGRAMS = 10
 
@@ -21,11 +22,13 @@ export const usePhraseStore = defineStore('phrases', () => {
   function addPictogram(pictogram: Pictogram): void {
     if (selectedPictograms.value.length >= MAX_PICTOGRAMS) return
     selectedPictograms.value.push(pictogram)
+    error.value = null
   }
 
   function removePictogram(index: number): void {
     if (index < 0 || index >= selectedPictograms.value.length) return
     selectedPictograms.value.splice(index, 1)
+    error.value = null
   }
 
   function clearSelection(): void {
@@ -44,7 +47,11 @@ export const usePhraseStore = defineStore('phrases', () => {
       phraseResponse.value = await repository.generate(ids)
     } catch (e) {
       phraseResponse.value = null
-      error.value = e instanceof Error ? e.message : 'Error generating phrase'
+      if (e instanceof ApiError && e.status === 429) {
+        error.value = 'Espera unos momentos antes de intentarlo de nuevo.'
+      } else {
+        error.value = 'No se pudo generar la frase. Inténtalo de nuevo.'
+      }
     } finally {
       loading.value = false
     }
