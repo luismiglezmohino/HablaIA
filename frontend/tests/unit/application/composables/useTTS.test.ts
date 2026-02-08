@@ -79,6 +79,62 @@ describe('useTTS', () => {
     })
   })
 
+  describe('error', () => {
+    it('starts as null', () => {
+      const provider = createMockProvider()
+      const { error } = useTTS(provider)
+
+      expect(error.value).toBeNull()
+    })
+
+    it('sets error message when onError callback fires', () => {
+      const provider = createMockProvider({
+        speak: vi.fn().mockImplementation((_text, callbacks) => {
+          callbacks?.onError?.()
+        }),
+      })
+      const { speak, error } = useTTS(provider)
+
+      speak('Hola')
+
+      expect(error.value).toBe('No se pudo reproducir el audio.')
+    })
+
+    it('clears error on next speak', () => {
+      const provider = createMockProvider({
+        speak: vi
+          .fn()
+          .mockImplementationOnce((_text, callbacks) => {
+            callbacks?.onError?.()
+          })
+          .mockImplementationOnce((_text, callbacks) => {
+            callbacks?.onStart?.()
+          }),
+      })
+      const { speak, error } = useTTS(provider)
+
+      speak('Hola')
+      expect(error.value).not.toBeNull()
+
+      speak('Adiós')
+      expect(error.value).toBeNull()
+    })
+
+    it('sets speaking to false on error', () => {
+      const provider = createMockProvider({
+        speak: vi.fn().mockImplementation((_text, callbacks) => {
+          callbacks?.onStart?.()
+          callbacks?.onError?.()
+        }),
+      })
+      const { speak, speaking } = useTTS(provider)
+
+      speak('Hola')
+
+      expect(speaking.value).toBe(false)
+    })
+  })
+
   describe('isSupported', () => {
     it('reflects provider support as true', () => {
       const provider = createMockProvider({ isSupported: true })

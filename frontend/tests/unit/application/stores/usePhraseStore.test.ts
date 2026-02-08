@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { usePhraseStore } from '@/application/stores/usePhraseStore'
+import { ApiError } from '@/infrastructure/http/ApiClient'
 import type { PhraseRepository } from '@/domain/repositories/PhraseRepository'
 import type { PhraseResponse } from '@/domain/entities/PhraseResponse'
 import type { Pictogram } from '@/domain/entities/Pictogram'
@@ -101,6 +102,20 @@ describe('usePhraseStore', () => {
 
       expect(store.selectedPictograms).toHaveLength(2)
     })
+
+    it('clears error when adding a pictogram', async () => {
+      const store = usePhraseStore()
+      const repo = createMockRepository({
+        generate: vi.fn().mockRejectedValue(new Error('fail')),
+      })
+      store.addPictogram(pictogramFixtures[0]!)
+      await store.generatePhrase(repo)
+      expect(store.error).not.toBeNull()
+
+      store.addPictogram(pictogramFixtures[1]!)
+
+      expect(store.error).toBeNull()
+    })
   })
 
   describe('removePictogram', () => {
@@ -122,6 +137,21 @@ describe('usePhraseStore', () => {
       store.removePictogram(5)
 
       expect(store.selectedPictograms).toHaveLength(1)
+    })
+
+    it('clears error when removing a pictogram', async () => {
+      const store = usePhraseStore()
+      const repo = createMockRepository({
+        generate: vi.fn().mockRejectedValue(new Error('fail')),
+      })
+      store.addPictogram(pictogramFixtures[0]!)
+      store.addPictogram(pictogramFixtures[1]!)
+      await store.generatePhrase(repo)
+      expect(store.error).not.toBeNull()
+
+      store.removePictogram(0)
+
+      expect(store.error).toBeNull()
     })
   })
 
@@ -235,7 +265,7 @@ describe('usePhraseStore', () => {
       expect(store.loading).toBe(false)
     })
 
-    it('sets error on failure', async () => {
+    it('sets user-friendly error on failure', async () => {
       const store = usePhraseStore()
       const repo = createMockRepository({
         generate: vi.fn().mockRejectedValue(new Error('Network error')),
@@ -244,20 +274,22 @@ describe('usePhraseStore', () => {
 
       await store.generatePhrase(repo)
 
-      expect(store.error).toBe('Network error')
+      expect(store.error).toBe('No se pudo generar la frase. Inténtalo de nuevo.')
       expect(store.phraseResponse).toBeNull()
     })
 
-    it('handles non-Error exceptions', async () => {
+    it('shows rate limit message on 429', async () => {
       const store = usePhraseStore()
       const repo = createMockRepository({
-        generate: vi.fn().mockRejectedValue('string error'),
+        generate: vi.fn().mockRejectedValue(
+          new ApiError(429, { error: 'Rate limit exceeded', retryAfter: 60 }),
+        ),
       })
       store.addPictogram(pictogramFixtures[0]!)
 
       await store.generatePhrase(repo)
 
-      expect(store.error).toBe('Error generating phrase')
+      expect(store.error).toBe('Espera unos momentos antes de intentarlo de nuevo.')
     })
 
     it('clears previous error on new generation', async () => {

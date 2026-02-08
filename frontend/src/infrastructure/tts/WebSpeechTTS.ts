@@ -25,6 +25,9 @@ export class WebSpeechTTS implements TTSProvider {
     if (callbacks?.onEnd) {
       utterance.onend = callbacks.onEnd
     }
+    if (callbacks?.onError) {
+      utterance.onerror = callbacks.onError
+    }
 
     window.speechSynthesis.speak(utterance)
   }

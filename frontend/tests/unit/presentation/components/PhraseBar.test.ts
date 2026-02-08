@@ -171,6 +171,18 @@ describe('PhraseBar', () => {
       })
     })
 
+    it('has WCAG 2.2 compliant target size on remove buttons (>= 24px)', () => {
+      const { wrapper } = mountPhraseBar(pictogramFixtures)
+
+      const removeButtons = wrapper.findAll('[data-testid="remove-chip"]')
+
+      removeButtons.forEach((btn) => {
+        const classes = btn.classes()
+        expect(classes).toContain('min-h-6')
+        expect(classes).toContain('min-w-6')
+      })
+    })
+
     it('has aria-live for selection changes', () => {
       const { wrapper } = mountPhraseBar(pictogramFixtures)
 
@@ -251,6 +263,85 @@ describe('PhraseBar', () => {
       const speakButtons = wrapper.findAll('[data-testid^="speak-btn"]')
 
       expect(speakButtons).toHaveLength(0)
+    })
+  })
+
+  describe('generate button visual feedback', () => {
+    it('shows loading text when generating', () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const store = usePhraseStore()
+      pictogramFixtures.forEach((p) => store.addPictogram(p))
+      store.loading = true
+
+      const wrapper = mount(PhraseBar, { global: { plugins: [pinia] } })
+      const button = wrapper.find('[data-testid="generate-btn"]')
+
+      expect(button.text()).toContain('Generando')
+      expect(button.text()).not.toContain('Generar frase')
+    })
+
+    it('disables generate button while loading', () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const store = usePhraseStore()
+      pictogramFixtures.forEach((p) => store.addPictogram(p))
+      store.loading = true
+
+      const wrapper = mount(PhraseBar, { global: { plugins: [pinia] } })
+      const button = wrapper.find('[data-testid="generate-btn"]')
+
+      expect(button.attributes('disabled')).toBeDefined()
+    })
+
+    it('shows default state when not loading', () => {
+      const { wrapper } = mountPhraseBar(pictogramFixtures)
+      const button = wrapper.find('[data-testid="generate-btn"]')
+
+      expect(button.text()).toContain('Generar frase')
+    })
+
+    it('shows error style on generate button when error exists', () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const store = usePhraseStore()
+      store.addPictogram(pictogramFixtures[0]!)
+      store.error = 'No se pudo generar la frase. Inténtalo de nuevo.'
+
+      const wrapper = mount(PhraseBar, { global: { plugins: [pinia] } })
+      const button = wrapper.find('[data-testid="generate-btn"]')
+
+      expect(button.classes()).toContain('bg-red-600')
+    })
+
+    it('shows retry text on generate button when error exists', () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const store = usePhraseStore()
+      store.addPictogram(pictogramFixtures[0]!)
+      store.error = 'No se pudo generar la frase. Inténtalo de nuevo.'
+
+      const wrapper = mount(PhraseBar, { global: { plugins: [pinia] } })
+      const button = wrapper.find('[data-testid="generate-btn"]')
+
+      expect(button.text()).toContain('Reintentar')
+    })
+
+    it('restores default style after error clears', async () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const store = usePhraseStore()
+      store.addPictogram(pictogramFixtures[0]!)
+      store.error = 'No se pudo generar la frase. Inténtalo de nuevo.'
+
+      const wrapper = mount(PhraseBar, { global: { plugins: [pinia] } })
+      store.error = null
+      await wrapper.vm.$nextTick()
+
+      const button = wrapper.find('[data-testid="generate-btn"]')
+
+      expect(button.classes()).toContain('bg-primary-600')
+      expect(button.text()).toContain('Generar frase')
     })
   })
 })
