@@ -33,6 +33,10 @@ export const useCategoryStore = defineStore('categories', () => {
     selectedCategoryId.value = id
   }
 
+  function clearSelection(): void {
+    selectedCategoryId.value = null
+  }
+
   return {
     categories,
     selectedCategoryId,
@@ -42,5 +46,6 @@ export const useCategoryStore = defineStore('categories', () => {
     selectedCategory,
     fetchCategories,
     selectCategory,
+    clearSelection,
   }
 })

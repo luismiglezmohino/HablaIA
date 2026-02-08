@@ -78,7 +78,7 @@ describe('usePictogramStore', () => {
       })
 
       await store.fetchByCategory('cat-1', failingRepo)
-      expect(store.error).toBe('Network error')
+      expect(store.error).toBe('No se pudieron cargar los pictogramas. Inténtalo de nuevo.')
 
       const repo = createMockRepository()
       await store.fetchByCategory('cat-1', repo)
@@ -86,7 +86,7 @@ describe('usePictogramStore', () => {
       expect(store.error).toBeNull()
     })
 
-    it('sets error on repository failure', async () => {
+    it('sets user-friendly error on repository failure', async () => {
       const store = usePictogramStore()
       const repo = createMockRepository({
         findByCategory: vi.fn().mockRejectedValue(new Error('Network error')),
@@ -94,11 +94,11 @@ describe('usePictogramStore', () => {
 
       await store.fetchByCategory('cat-1', repo)
 
-      expect(store.error).toBe('Network error')
+      expect(store.error).toBe('No se pudieron cargar los pictogramas. Inténtalo de nuevo.')
       expect(store.pictograms).toEqual([])
     })
 
-    it('handles non-Error exceptions', async () => {
+    it('sets user-friendly error on non-Error exceptions', async () => {
       const store = usePictogramStore()
       const repo = createMockRepository({
         findByCategory: vi.fn().mockRejectedValue('string error'),
@@ -106,7 +106,7 @@ describe('usePictogramStore', () => {
 
       await store.fetchByCategory('cat-1', repo)
 
-      expect(store.error).toBe('Error loading pictograms')
+      expect(store.error).toBe('No se pudieron cargar los pictogramas. Inténtalo de nuevo.')
     })
 
     it('replaces previous pictograms on new fetch', async () => {
@@ -141,6 +141,64 @@ describe('usePictogramStore', () => {
       await store.fetchByCategory('cat-2', failingRepo)
 
       expect(store.pictograms).toEqual([])
+    })
+  })
+
+  describe('searchPictograms', () => {
+    it('loads pictograms from repository search', async () => {
+      const store = usePictogramStore()
+      const searchResults: Pictogram[] = [
+        { id: 'p1', arasaacId: 2345, categoryId: 'cat-1', label: 'comer', imagePath: '/pictograms/2345.png' },
+      ]
+      const repo = createMockRepository({
+        search: vi.fn().mockResolvedValue(searchResults),
+      })
+
+      await store.searchPictograms('comer', repo)
+
+      expect(store.pictograms).toEqual(searchResults)
+      expect(repo.search).toHaveBeenCalledWith('comer')
+    })
+
+    it('sets loading while searching', async () => {
+      const store = usePictogramStore()
+      const repo = createMockRepository({
+        search: vi.fn().mockImplementation(
+          () => new Promise((resolve) => setTimeout(() => resolve([]), 100)),
+        ),
+      })
+
+      const promise = store.searchPictograms('agua', repo)
+
+      expect(store.loading).toBe(true)
+
+      await promise
+
+      expect(store.loading).toBe(false)
+    })
+
+    it('sets error on search failure', async () => {
+      const store = usePictogramStore()
+      const repo = createMockRepository({
+        search: vi.fn().mockRejectedValue(new Error('Search failed')),
+      })
+
+      await store.searchPictograms('agua', repo)
+
+      expect(store.error).toBe('No se pudieron cargar los resultados. Inténtalo de nuevo.')
+      expect(store.pictograms).toEqual([])
+    })
+
+    it('clears pictograms when query is empty', async () => {
+      const store = usePictogramStore()
+      const repo = createMockRepository()
+      await store.fetchByCategory('cat-1', repo)
+      expect(store.pictograms).toHaveLength(3)
+
+      await store.searchPictograms('', repo)
+
+      expect(store.pictograms).toEqual([])
+      expect(repo.search).not.toHaveBeenCalled()
     })
   })
 

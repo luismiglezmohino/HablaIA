@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import CategoryBar from '@/presentation/components/CategoryBar.vue'
 import PictogramGrid from '@/presentation/components/PictogramGrid.vue'
 import PhraseBar from '@/presentation/components/PhraseBar.vue'
+import SearchBar from '@/presentation/components/SearchBar.vue'
 import { useCategoryStore } from '@/application/stores/useCategoryStore'
 import { usePictogramStore } from '@/application/stores/usePictogramStore'
 import { usePhraseStore } from '@/application/stores/usePhraseStore'
@@ -21,7 +22,12 @@ const categoryStore = useCategoryStore()
 const pictogramStore = usePictogramStore()
 const phraseStore = usePhraseStore()
 
+const isSearching = ref(false)
+
 const statusMessage = computed(() => {
+  if (isSearching.value) {
+    return `Mostrando resultados de búsqueda`
+  }
   if (categoryStore.selectedCategory) {
     return `Categoría ${categoryStore.selectedCategory.name} seleccionada`
   }
@@ -36,6 +42,17 @@ function handleGenerate() {
   phraseStore.generatePhrase(phraseRepo)
 }
 
+function handleSearch(query: string) {
+  if (query.trim()) {
+    isSearching.value = true
+    categoryStore.clearSelection()
+    pictogramStore.searchPictograms(query, pictogramRepo)
+  } else {
+    isSearching.value = false
+    pictogramStore.clearPictograms()
+  }
+}
+
 onMounted(() => {
   categoryStore.fetchCategories(categoryRepo)
 })
@@ -44,8 +61,9 @@ watch(
   () => categoryStore.selectedCategoryId,
   (categoryId) => {
     if (categoryId) {
+      isSearching.value = false
       pictogramStore.fetchByCategory(categoryId, pictogramRepo)
-    } else {
+    } else if (!isSearching.value) {
       pictogramStore.clearPictograms()
     }
   },
@@ -60,6 +78,8 @@ watch(
   </header>
 
   <PhraseBar @generate="handleGenerate" />
+
+  <SearchBar @search="handleSearch" />
 
   <CategoryBar />
 

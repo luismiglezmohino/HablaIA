@@ -5,6 +5,8 @@ import { useCategoryStore } from '@/application/stores/useCategoryStore'
 import { usePhraseStore } from '@/application/stores/usePhraseStore'
 import type { Pictogram } from '@/domain/entities/Pictogram'
 
+const DEFAULT_COLOR = '#9CA3AF'
+
 const pictogramStore = usePictogramStore()
 const categoryStore = useCategoryStore()
 const phraseStore = usePhraseStore()
@@ -12,19 +14,27 @@ const phraseStore = usePhraseStore()
 const emit = defineEmits<{
   select: [pictogram: Pictogram]
 }>()
+
+function getCategoryColor(pictogram: Pictogram): string {
+  const category = categoryStore.categories.find((c) => c.id === pictogram.categoryId)
+  return category?.colorHex ?? DEFAULT_COLOR
+}
 </script>
 
 <template>
-  <div v-if="!categoryStore.selectedCategoryId" class="flex items-center justify-center p-8">
-    <p class="text-accessible-textLight">Selecciona una categoría para ver los pictogramas</p>
-  </div>
-
-  <div v-else-if="pictogramStore.loading" role="status" class="flex items-center justify-center p-8">
+  <div v-if="pictogramStore.loading" role="status" class="flex items-center justify-center p-8">
     <span class="text-accessible-textLight">Cargando pictogramas...</span>
   </div>
 
   <div v-else-if="pictogramStore.error" role="alert" class="flex items-center justify-center gap-2 p-8">
     <span class="text-red-600">{{ pictogramStore.error }}</span>
+  </div>
+
+  <div
+    v-else-if="!categoryStore.selectedCategoryId && pictogramStore.pictograms.length === 0"
+    class="flex items-center justify-center p-8"
+  >
+    <p class="text-accessible-textLight">Selecciona una categoría o busca un pictograma</p>
   </div>
 
   <div v-else-if="pictogramStore.pictograms.length === 0" class="flex items-center justify-center p-8">
@@ -41,7 +51,7 @@ const emit = defineEmits<{
       v-for="pictogram in pictogramStore.pictograms"
       :key="pictogram.id"
       :pictogram="pictogram"
-      :category-color="categoryStore.selectedCategory?.colorHex ?? '#6B7280'"
+      :category-color="getCategoryColor(pictogram)"
       :disabled="phraseStore.isFull"
       @select="emit('select', $event)"
     />
