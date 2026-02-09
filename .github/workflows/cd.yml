@@ -1,0 +1,96 @@
+# =============================================================================
+# HablaIA - Continuous Deployment
+# =============================================================================
+# Deploys to Hetzner CX33 on merge to main via SSH + Docker Compose
+# No third-party actions — native SSH only
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip deploy]')"
+
+    steps:
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Deploy
+        run: |
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} 'bash -s' << 'DEPLOY_SCRIPT'
+          set -euo pipefail
+
+          APP_DIR="/opt/hablaia"
+          COMPOSE_FILE="docker-compose.prod.yml"
+
+          echo "=== Starting deployment ==="
+          cd "$APP_DIR"
+
+          # Save current commit for rollback
+          PREVIOUS_COMMIT=$(git rev-parse HEAD)
+          echo "$PREVIOUS_COMMIT" > .previous-deploy-commit
+
+          # Pull latest code
+          echo "--- Pulling latest code ---"
+          git fetch origin main
+          git reset --hard origin/main
+
+          # Build and restart
+          echo "--- Building production images ---"
+          docker compose -f "$COMPOSE_FILE" build
+
+          echo "--- Restarting services ---"
+          docker compose -f "$COMPOSE_FILE" down --timeout 30
+          docker compose -f "$COMPOSE_FILE" up -d
+
+          # Wait for services to start
+          echo "--- Waiting for services ---"
+          sleep 10
+
+          # Health check
+          echo "--- Running health check ---"
+          for i in 1 2 3 4 5 6; do
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/api/health/ready || echo "000")
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "Health check passed (attempt $i)"
+              break
+            fi
+            if [ "$i" = "6" ]; then
+              echo "Health check FAILED — rolling back to $PREVIOUS_COMMIT"
+              git reset --hard "$PREVIOUS_COMMIT"
+              docker compose -f "$COMPOSE_FILE" build
+              docker compose -f "$COMPOSE_FILE" down --timeout 30
+              docker compose -f "$COMPOSE_FILE" up -d
+              exit 1
+            fi
+            echo "Attempt $i failed (HTTP $HTTP_CODE), retrying in 5s..."
+            sleep 5
+          done
+
+          # Cleanup old images
+          echo "--- Cleaning up old Docker images ---"
+          docker image prune -f
+
+          echo "=== Deployment successful ==="
+          DEPLOY_SCRIPT
+
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
