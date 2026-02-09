@@ -60,6 +60,8 @@ services:
       OPENAI_API_URL: ${OPENAI_API_URL:-https://api.openai.com/v1/chat/completions}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+    volumes:
+      - pictograms_data:/var/www/public/pictograms
     depends_on:
       postgres:
         condition: service_healthy
@@ -82,6 +84,8 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+    volumes:
+      - pictograms_data:/var/www/public/pictograms:ro
     depends_on:
       - backend
     deploy:
@@ -94,6 +98,7 @@ services:
 
 volumes:
   postgres_data:
+  pictograms_data:
 
 networks:
   hablaia_network:
