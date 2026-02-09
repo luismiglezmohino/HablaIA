@@ -1,6 +1,18 @@
 <script setup lang="ts">
 import { type Component } from 'vue'
-import { Users, Play, Heart, MapPin, Box, Utensils, Car, Shapes } from 'lucide-vue-next'
+import {
+  Users,
+  Play,
+  Heart,
+  MapPin,
+  Box,
+  Utensils,
+  Car,
+  MessageCircle,
+  Clock,
+  Sliders,
+  Shapes,
+} from 'lucide-vue-next'
 import { Skeleton } from '@/presentation/components/ui/skeleton'
 import { useCategoryStore } from '@/application/stores/useCategoryStore'
 
@@ -12,6 +24,9 @@ const iconMap: Record<string, Component> = {
   box: Box,
   utensils: Utensils,
   car: Car,
+  'message-circle': MessageCircle,
+  clock: Clock,
+  sliders: Sliders,
 }
 
 const store = useCategoryStore()
@@ -49,7 +64,7 @@ function handleKeydown(event: KeyboardEvent, index: number) {
   </div>
 
   <nav v-else aria-label="Categorías" class="bg-white border-b border-surface-200 shadow-soft xl:overflow-x-auto">
-    <div role="tablist" class="flex flex-wrap gap-2 px-3 py-3 sm:gap-3 sm:px-4 sm:py-4 xl:flex-nowrap tablet-landscape-nowrap">
+    <div role="tablist" class="flex flex-wrap gap-2 px-3 py-3 sm:gap-3 sm:px-4 sm:py-4 xl:flex-nowrap xl:gap-2 tablet-landscape-nowrap">
       <button
         v-for="(category, index) in store.sortedCategories"
         :key="category.id"
@@ -60,7 +75,7 @@ function handleKeydown(event: KeyboardEvent, index: number) {
           borderColor: category.colorHex,
           backgroundColor: store.selectedCategoryId === category.id ? category.colorHex + '18' : undefined,
         }"
-        class="min-h-touch min-w-touch flex shrink-0 items-center justify-center rounded-xl border-2 px-2.5 py-2 font-semibold text-accessible-text shadow-card motion-safe:transition-all motion-safe:duration-200 motion-safe:hover:shadow-card-hover motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0 sm:justify-start sm:gap-2.5 sm:px-5 sm:py-2.5 sm:text-sm tablet-landscape-center"
+        class="min-h-touch min-w-touch flex shrink-0 items-center justify-center rounded-xl border-2 px-2.5 py-2 font-semibold text-accessible-text shadow-card motion-safe:transition-all motion-safe:duration-200 motion-safe:hover:shadow-card-hover motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0 sm:justify-start sm:gap-2.5 sm:px-5 sm:py-2.5 sm:text-sm xl:px-[1.125rem] xl:text-xs tablet-landscape-center"
         :class="
           store.selectedCategoryId === category.id
             ? 'ring-2 ring-primary-500 ring-offset-2'
