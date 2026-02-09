@@ -22,22 +22,23 @@ function getCategoryColor(pictogram: Pictogram): string {
 </script>
 
 <template>
-  <div v-if="pictogramStore.loading" role="status" class="flex items-center justify-center p-8">
+  <div v-if="pictogramStore.loading" role="status" class="flex flex-col items-center justify-center gap-3 p-12">
+    <div class="h-8 w-8 animate-spin rounded-full border-2 border-surface-300 border-t-primary-500"></div>
     <span class="text-accessible-textLight">Cargando pictogramas...</span>
   </div>
 
-  <div v-else-if="pictogramStore.error" role="alert" class="flex items-center justify-center gap-2 p-8">
+  <div v-else-if="pictogramStore.error" role="alert" class="mx-4 rounded-xl bg-red-50 p-6 text-center">
     <span class="text-red-600">{{ pictogramStore.error }}</span>
   </div>
 
   <div
     v-else-if="!categoryStore.selectedCategoryId && pictogramStore.pictograms.length === 0"
-    class="flex items-center justify-center p-8"
+    class="flex items-center justify-center p-12"
   >
     <p class="text-accessible-textLight">Selecciona una categoría o busca un pictograma</p>
   </div>
 
-  <div v-else-if="pictogramStore.pictograms.length === 0" class="flex items-center justify-center p-8">
+  <div v-else-if="pictogramStore.pictograms.length === 0" class="flex items-center justify-center p-12">
     <p class="text-accessible-textLight">No hay pictogramas en esta categoría</p>
   </div>
 
@@ -45,7 +46,7 @@ function getCategoryColor(pictogram: Pictogram): string {
     v-else
     role="grid"
     aria-label="Pictogramas"
-    class="grid grid-cols-3 gap-4 p-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6"
+    class="grid grid-cols-3 gap-2.5 px-3 py-4 sm:grid-cols-4 sm:gap-3.5 sm:px-4 sm:py-5 md:grid-cols-5 md:gap-4 lg:grid-cols-6 lg:px-6"
   >
     <PictogramCard
       v-for="pictogram in pictogramStore.pictograms"

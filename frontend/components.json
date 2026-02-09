@@ -8,9 +8,8 @@
     "baseColor": "zinc",
     "cssVariables": true
   },
-  "framework": "vite",
   "aliases": {
-    "components": "@/presentation/components/ui",
+    "components": "@/presentation/components",
     "utils": "@/lib/utils"
   }
 }

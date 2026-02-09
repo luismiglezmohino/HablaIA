@@ -15,8 +15,8 @@ const { speak, stop, speaking, error, isSupported } = useTTS(provider)
   <button
     v-if="isSupported"
     :aria-label="error ? 'Error de audio' : `Escuchar: ${text.slice(0, 50)}`"
-    class="min-h-touch min-w-touch rounded-lg p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-1"
-    :class="error ? 'text-red-500 hover:bg-red-50' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'"
+    class="min-h-touch min-w-touch rounded-xl p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1"
+    :class="error ? 'text-red-500 hover:bg-red-50' : 'text-primary-600 hover:bg-primary-50'"
     @click="speaking ? stop() : speak(text)"
   >
     <AlertCircle v-if="error" :size="20" aria-hidden="true" />
