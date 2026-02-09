@@ -3,9 +3,16 @@
 @tailwind utilities;
 
 @layer base {
-  /* Focus styles for accessibility */
+  /* Global typography (ADR-011) */
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-padding-top: 180px; /* WCAG 2.2 2.4.11: sticky header + PhraseBar + SearchBar do not obscure focused elements */
+  }
+
+  /* Focus styles for accessibility — Indigo-500, 3px, offset-2 (ADR-011) */
   *:focus-visible {
-    @apply outline-none ring-focus ring-accessible-focus ring-offset-2;
+    @apply outline-none ring-focus ring-primary-500 ring-offset-2;
   }
 
   /* Ensure minimum touch target size */
@@ -15,18 +22,84 @@
     @apply min-h-touch min-w-touch;
   }
 
+  /* Hide native search clear button (we provide our own) */
+  input[type='search']::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
   /* Skip link for keyboard users */
   .skip-link {
-    @apply sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-white focus:text-accessible-text;
+    @apply sr-only focus:not-sr-only focus:absolute focus:z-50 focus:rounded-lg focus:p-4 focus:bg-white focus:text-accessible-text focus:shadow-lg;
   }
 }
 
 @layer components {
   /* Pictogram card base styles */
   .pictogram-card {
-    @apply flex flex-col items-center justify-center p-4 rounded-lg border-2 border-gray-200 bg-white;
+    @apply flex flex-col items-center justify-center p-4 rounded-lg border-2 border-surface-200 bg-white;
     @apply hover:border-primary-500 focus:border-primary-500;
     @apply transition-colors duration-200;
     @apply min-h-touch min-w-touch;
+  }
+
+  /* Landscape blocker — only on mobile phones (small viewport height) */
+  .landscape-blocker {
+    display: none;
+  }
+}
+
+/* Tablet landscape layout — compact like mobile (saves vertical space with keyboard) */
+@media (orientation: landscape) and (min-width: 640px) and (max-width: 1279px) {
+  .tablet-landscape-show {
+    display: block !important;
+  }
+  .tablet-landscape-hide {
+    display: none !important;
+  }
+  .tablet-landscape-center {
+    justify-content: center !important;
+    gap: 0 !important;
+    padding-left: 0.625rem !important;
+    padding-right: 0.625rem !important;
+  }
+  .tablet-landscape-nowrap {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+  }
+  .tablet-landscape-hstrip {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    max-height: none !important;
+    min-width: 0 !important;
+  }
+  .tablet-landscape-inline > div:first-child {
+    min-width: 0 !important;
+    flex: 1 1 0% !important;
+  }
+  .tablet-landscape-inline {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+  }
+  .tablet-landscape-inline > .tl-generate {
+    display: none !important;
+  }
+  .tablet-landscape-inline .tl-actions .tl-generate-inline {
+    display: flex !important;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .landscape-blocker {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    background-color: #fafaf9; /* surface-50 */
   }
 }

@@ -46,11 +46,14 @@
 - ✅ Text-to-Speech con Web Speech API (TTSProvider interface, WebSpeechTTS, useTTS composable, SpeakButton)
 - ✅ SearchBar con debounce y búsqueda: local DB → fallback ARASAAC API (descarga y persiste pictogramas)
 - ✅ Error handling UI: inline feedback (ADR-010), mensajes user-friendly en español, feedback visual en botones (loading/error/retry)
+- ✅ Rediseño visual moderno (ADR-011): paleta Indigo, fuente Inter, sombras, motion-safe, Badge/Skeleton shadcn-vue, WCAG 2.2
+- ✅ Responsive tres configuraciones: movil, tablet portrait, tablet landscape (media query custom con clases utilitarias independientes)
+- ✅ Tablet landscape compacto: busqueda + categorias en header, PhraseBar inline con scroll horizontal, proteccion landscape movil
 
 **Entregables tecnicos:**
 - ✅ Clean Architecture backend (Domain/Application/Infrastructure)
 - ✅ API REST funcional (Symfony 7)
-- ✅ SPA responsiva (Vue 3 + TypeScript) - data layer + categories + pictograms + phrase flow + TTS + search + error feedback
+- ✅ SPA responsiva (Vue 3 + TypeScript) - data layer + categories + pictograms + phrase flow + TTS + search + error feedback + diseño visual moderno + responsive 3 configuraciones
 - ✅ Docker Compose con todos los servicios
 - ✅ CI/CD con GitHub Actions
 - ✅ Documentacion completa (ADRs, guias de desarrollo)
@@ -204,4 +207,4 @@
 - Las métricas se actualizarán con datos reales conforme se complete cada fase
 - El orden de las fases puede alterarse según prioridades del proyecto
 
-**Última actualización:** 7 de febrero de 2026
+**Última actualización:** 9 de febrero de 2026

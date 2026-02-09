@@ -15,20 +15,25 @@ const emit = defineEmits<{
 <template>
   <div
     :style="{ borderTopColor: props.categoryColor }"
-    class="border-t-4 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow"
+    class="group overflow-hidden rounded-2xl border border-surface-200 border-t-[5px] bg-white shadow-card motion-safe:transition-all motion-safe:duration-200 motion-safe:hover:shadow-card-hover motion-safe:hover:-translate-y-1"
   >
     <button
       :aria-label="`Pictograma ${props.pictogram.label}`"
       :disabled="props.disabled"
-      class="min-h-touch min-w-touch flex w-full flex-col items-center gap-2 rounded-xl p-3 text-center transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+      class="min-h-touch min-w-touch flex w-full flex-col items-center rounded-2xl text-center transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
       @click="emit('select', props.pictogram)"
     >
-      <img
-        :src="props.pictogram.imagePath"
-        :alt="props.pictogram.label"
-        class="h-20 w-20 object-contain"
-      />
-      <span class="text-sm font-medium text-accessible-text">{{ props.pictogram.label }}</span>
+      <div class="flex w-full items-center justify-center px-2 pt-4 pb-3 sm:px-3 sm:pt-5 sm:pb-4">
+        <img
+          :src="props.pictogram.imagePath"
+          :alt="props.pictogram.label"
+          class="h-16 w-16 object-contain drop-shadow-md sm:h-20 sm:w-20 lg:h-24 lg:w-24"
+        />
+      </div>
+      <span
+        :style="{ backgroundColor: props.categoryColor + '14' }"
+        class="block w-full border-t border-surface-100 px-2 py-2 text-sm font-semibold leading-tight text-accessible-text sm:py-2.5 sm:text-base"
+      >{{ props.pictogram.label }}</span>
     </button>
   </div>
 </template>

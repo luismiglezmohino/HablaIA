@@ -178,8 +178,8 @@ describe('PhraseBar', () => {
 
       removeButtons.forEach((btn) => {
         const classes = btn.classes()
-        expect(classes).toContain('min-h-6')
-        expect(classes).toContain('min-w-6')
+        expect(classes).toContain('min-h-7')
+        expect(classes).toContain('min-w-7')
       })
     })
 
