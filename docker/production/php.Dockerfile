@@ -63,6 +63,9 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts --prefer-dist
 # Copiar codigo de la aplicacion
 COPY backend/ .
 
+# .env minimo para Symfony (las variables reales vienen de Docker Compose)
+RUN echo "APP_ENV=prod" > .env
+
 # Post-install scripts (cache:clear, assets:install)
 RUN APP_ENV=prod APP_SECRET=build-placeholder composer run-script post-install-cmd --no-interaction 2>/dev/null || true
 
