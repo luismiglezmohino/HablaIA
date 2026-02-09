@@ -67,16 +67,19 @@ final class RunMigrationsCommand extends Command
         foreach ($pending as $name => $path) {
             $io->write("Applying {$name}... ");
 
-            $sql = $this->extractUpSql($path);
-            if (empty(trim($sql))) {
+            $statements = $this->extractUpStatements($path);
+            if ($statements === []) {
                 $io->writeln('<comment>SKIP (empty)</comment>');
                 continue;
             }
 
-            $db->execute($sql);
-            $db->execute(
-                sprintf("INSERT INTO %s (version, applied_at) VALUES ('%s', NOW())", self::MIGRATIONS_TABLE, $name)
-            );
+            foreach ($statements as $statement) {
+                $db->execute($statement);
+            }
+
+            /** @var non-empty-string $insertSql */
+            $insertSql = sprintf("INSERT INTO %s (version, applied_at) VALUES ('%s', NOW())", self::MIGRATIONS_TABLE, $name);
+            $db->execute($insertSql);
 
             $io->writeln('<info>OK</info>');
         }
@@ -88,19 +91,23 @@ final class RunMigrationsCommand extends Command
 
     private function ensureMigrationsTable(mixed $db): void
     {
-        $db->execute(sprintf(
+        /** @var non-empty-string $createSql */
+        $createSql = sprintf(
             'CREATE TABLE IF NOT EXISTS %s (
                 version VARCHAR(255) NOT NULL PRIMARY KEY,
                 applied_at TIMESTAMP NOT NULL DEFAULT NOW()
             )',
             self::MIGRATIONS_TABLE
-        ));
+        );
+        $db->execute($createSql);
     }
 
     /** @return string[] */
     private function getAppliedMigrations(mixed $db): array
     {
-        $rows = $db->query(sprintf('SELECT version FROM %s ORDER BY version', self::MIGRATIONS_TABLE))->fetchAll();
+        /** @var non-empty-string $selectSql */
+        $selectSql = sprintf('SELECT version FROM %s ORDER BY version', self::MIGRATIONS_TABLE);
+        $rows = $db->query($selectSql)->fetchAll();
 
         return array_column($rows, 'version');
     }
@@ -128,23 +135,32 @@ final class RunMigrationsCommand extends Command
         return $result;
     }
 
-    private function extractUpSql(string $path): string
+    /** @return list<non-empty-string> */
+    private function extractUpStatements(string $path): array
     {
         $content = file_get_contents($path);
         if ($content === false) {
-            return '';
+            return [];
         }
 
         $upPos = strpos($content, '-- UP');
         $downPos = strpos($content, '-- DOWN');
 
         if ($upPos === false) {
-            return $content;
+            $sql = $content;
+        } else {
+            $start = $upPos + strlen('-- UP');
+            $sql = $downPos !== false ? substr($content, $start, $downPos - $start) : substr($content, $start);
         }
 
-        $start = $upPos + strlen('-- UP');
-        $length = $downPos !== false ? $downPos - $start : null;
+        $statements = [];
+        foreach (explode(';', $sql) as $statement) {
+            $trimmed = trim($statement);
+            if ($trimmed !== '' && !str_starts_with($trimmed, '--')) {
+                $statements[] = $trimmed;
+            }
+        }
 
-        return $length !== null ? substr($content, $start, $length) : substr($content, $start);
+        return $statements;
     }
 }
