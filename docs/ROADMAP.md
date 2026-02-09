@@ -49,6 +49,7 @@
 - ✅ Rediseño visual moderno (ADR-011): paleta Indigo, fuente Inter, sombras, motion-safe, Badge/Skeleton shadcn-vue, WCAG 2.2
 - ✅ Responsive tres configuraciones: movil, tablet portrait, tablet landscape (media query custom con clases utilitarias independientes)
 - ✅ Tablet landscape compacto: busqueda + categorias en header, PhraseBar inline con scroll horizontal, proteccion landscape movil
+- ✅ CD pipeline: GitHub Actions SSH deploy a Hetzner CX33, Docker Compose produccion (PHP-FPM + nginx + PostgreSQL), health check con rollback automatico
 
 **Entregables tecnicos:**
 - ✅ Clean Architecture backend (Domain/Application/Infrastructure)

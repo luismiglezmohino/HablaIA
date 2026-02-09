@@ -1,0 +1,100 @@
+# =============================================================================
+# HablaIA - Production Docker Compose
+# =============================================================================
+# 3 servicios: PostgreSQL + Backend (PHP-FPM) + Nginx (frontend + proxy)
+# Deploy: docker compose -f docker-compose.prod.yml up -d
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: hablaia_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-hablaia}
+      POSTGRES_USER: ${POSTGRES_USER:-hablaia_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hablaia_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+    networks:
+      - hablaia_network
+
+  # ---------------------------------------------------------------------------
+  # Backend - Symfony 7 (PHP-FPM)
+  # ---------------------------------------------------------------------------
+  backend:
+    build:
+      context: .
+      dockerfile: docker/production/php.Dockerfile
+    container_name: hablaia_backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-hablaia_user}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hablaia}?serverVersion=16&charset=utf8"
+      APP_ENV: prod
+      APP_DEBUG: "0"
+      APP_SECRET: ${APP_SECRET:?Set APP_SECRET in .env}
+      CORS_ALLOW_ORIGIN: ${CORS_ALLOW_ORIGIN:?Set CORS_ALLOW_ORIGIN in .env}
+      TRUSTED_PROXIES: REMOTE_ADDR
+      PHRASE_RATE_LIMIT: ${PHRASE_RATE_LIMIT:-30}
+      PHRASE_RATE_INTERVAL: ${PHRASE_RATE_INTERVAL:-60}
+      PHRASE_PROVIDER: ${PHRASE_PROVIDER:-gemini}
+      PHRASE_TEMPERATURE: ${PHRASE_TEMPERATURE:-0.7}
+      PHRASE_MAX_TOKENS: ${PHRASE_MAX_TOKENS:-256}
+      PHRASE_TIMEOUT: ${PHRASE_TIMEOUT:-10}
+      GEMINI_API_URL: ${GEMINI_API_URL:-https://generativelanguage.googleapis.com/v1beta/models}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash-lite}
+      OPENAI_API_URL: ${OPENAI_API_URL:-https://api.openai.com/v1/chat/completions}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1.0'
+    networks:
+      - hablaia_network
+
+  # ---------------------------------------------------------------------------
+  # Nginx - Reverse Proxy + Frontend SPA + Static Files
+  # ---------------------------------------------------------------------------
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/production/nginx.Dockerfile
+    container_name: hablaia_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+    networks:
+      - hablaia_network
+
+volumes:
+  postgres_data:
+
+networks:
+  hablaia_network:
+    driver: bridge

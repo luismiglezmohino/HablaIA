@@ -11,6 +11,8 @@
     "format:backend": "cd backend && ./vendor/bin/php-cs-fixer fix src --rules=@PSR12",
     "test:frontend": "cd frontend && npm run test",
     "test:backend": "cd backend && ./vendor/bin/pest",
+    "check": "npm run lint:frontend && npm run test:frontend -- --run",
+    "ci": "npm run lint:frontend && cd frontend && npm run type-check && npm run test:coverage && npm run build && cd .. && npm run lint:backend && npm run test:backend",
     "release": "standard-version",
     "release:minor": "standard-version --release-as minor",
     "release:major": "standard-version --release-as major",

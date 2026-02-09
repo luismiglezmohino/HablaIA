@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+.git
+.github
+.claude
+.opencode
+node_modules
+**/node_modules
+backend/vendor
+frontend/node_modules
+docs
+agents
+skills
+*.md
+.husky
