@@ -64,20 +64,18 @@ jobs:
           echo "--- Waiting for services ---"
           sleep 10
 
+          # Fix volume permissions (Docker volumes are root-owned by default)
+          echo "--- Fixing permissions ---"
+          docker compose -f "$COMPOSE_FILE" exec -T -u root backend chown -R www-data:www-data /var/www/public/pictograms
+
           # Run migrations (idempotent — skips already applied)
           echo "--- Running migrations ---"
           docker compose -f "$COMPOSE_FILE" exec -T backend php bin/console app:migrations:run
 
-          # Load fixtures + sync pictograms if no pictograms exist
-          echo "--- Checking data ---"
-          PICTO_COUNT=$(docker compose -f "$COMPOSE_FILE" exec -T postgres psql -U "${POSTGRES_USER:-hablaia_user}" -d "${POSTGRES_DB:-hablaia}" -tAc "SELECT COUNT(*) FROM pictograms" 2>/dev/null || echo "0")
-          if [ "$PICTO_COUNT" = "0" ]; then
-            echo "No pictograms — loading fixtures and syncing from ARASAAC"
-            docker compose -f "$COMPOSE_FILE" exec -T backend php bin/console app:fixtures:load
-            docker compose -f "$COMPOSE_FILE" exec -T backend php bin/console app:arasaac:sync --all
-          else
-            echo "Database has $PICTO_COUNT pictograms — skipping seed"
-          fi
+          # Load fixtures + sync pictograms (idempotent — skips existing)
+          echo "--- Syncing data ---"
+          docker compose -f "$COMPOSE_FILE" exec -T backend php bin/console app:fixtures:load
+          docker compose -f "$COMPOSE_FILE" exec -T backend php bin/console app:arasaac:sync --all
 
           # Health check
           echo "--- Running health check ---"
