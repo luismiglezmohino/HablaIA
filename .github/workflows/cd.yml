@@ -68,15 +68,15 @@ jobs:
           echo "--- Running migrations ---"
           docker compose -f "$COMPOSE_FILE" exec -T backend php bin/console app:migrations:run
 
-          # Load fixtures + sync pictograms if DB is empty
+          # Load fixtures + sync pictograms if no pictograms exist
           echo "--- Checking data ---"
-          CATEGORY_COUNT=$(docker compose -f "$COMPOSE_FILE" exec -T postgres psql -U "${POSTGRES_USER:-hablaia_user}" -d "${POSTGRES_DB:-hablaia}" -tAc "SELECT COUNT(*) FROM categories" 2>/dev/null || echo "0")
-          if [ "$CATEGORY_COUNT" = "0" ]; then
-            echo "Empty database — loading fixtures and syncing pictograms"
+          PICTO_COUNT=$(docker compose -f "$COMPOSE_FILE" exec -T postgres psql -U "${POSTGRES_USER:-hablaia_user}" -d "${POSTGRES_DB:-hablaia}" -tAc "SELECT COUNT(*) FROM pictograms" 2>/dev/null || echo "0")
+          if [ "$PICTO_COUNT" = "0" ]; then
+            echo "No pictograms — loading fixtures and syncing from ARASAAC"
             docker compose -f "$COMPOSE_FILE" exec -T backend php bin/console app:fixtures:load
             docker compose -f "$COMPOSE_FILE" exec -T backend php bin/console app:arasaac:sync --all
           else
-            echo "Database has $CATEGORY_COUNT categories — skipping seed"
+            echo "Database has $PICTO_COUNT pictograms — skipping seed"
           fi
 
           # Health check
