@@ -70,7 +70,8 @@ RUN APP_ENV=prod APP_SECRET=build-placeholder composer run-script post-install-c
 RUN APP_ENV=prod APP_SECRET=build-placeholder php bin/console cache:warmup --no-debug 2>/dev/null || true
 
 # Permisos correctos
-RUN chown -R www-data:www-data var/ public/
+RUN mkdir -p var/cache var/log public/pictograms \
+    && chown -R www-data:www-data var/ public/
 
 USER www-data
 
