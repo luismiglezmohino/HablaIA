@@ -21,13 +21,13 @@
 
 ### Backend (✅ Completado)
 - ✅ API REST con Symfony 7 + Cycle ORM + PostgreSQL
-- ✅ Grid de pictogramas por categorías (7 categorías SAAC, colores Fitzgerald Key)
+- ✅ Grid de pictogramas por categorías (10 categorías SAAC, colores Fitzgerald Key)
 - ✅ Integración LLM multi-proveedor (`PHRASE_PROVIDER`: gemini, openai, fake)
 - ✅ Caché de frases en PostgreSQL (SHA256 hash de secuencia)
 - ✅ Sincronización automática con ARASAAC API (197 palabras core vocabulary)
 - ✅ Health checks para Kubernetes (liveness, readiness)
 - ✅ Rate limiting configurable en generación de frases
-- ✅ Tests unitarios: 389 tests, PHPStan level 8
+- ✅ Tests unitarios: 392 tests, PHPStan level 8
 
 ### Frontend (🚧 En Construccion)
 - ✅ Clean Architecture frontend (Domain/Application/Infrastructure)

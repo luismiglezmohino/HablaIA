@@ -28,7 +28,7 @@ src/
 │   └── Exception/              # ApplicationException, *NotFoundException
 └── Infrastructure/             # Implementaciones tecnicas
     ├── Console/                # Comandos CLI (app:fixtures:load, app:arasaac:sync)
-    ├── DataFixtures/           # CategoryFixtures (7 categorias SAAC, colores Fitzgerald Key)
+    ├── DataFixtures/           # CategoryFixtures (10 categorias SAAC, colores Fitzgerald Key)
     ├── ExternalApi/            # Clientes externos
     │   ├── Arasaac/            # ArasaacApiClient (PictogramProviderInterface)
     │   ├── Gemini/             # GeminiPhraseGenerator (PhraseGeneratorInterface)
