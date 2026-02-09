@@ -27,7 +27,7 @@ El **Modified Fitzgerald Key** es el sistema de codificacion por colores estanda
 
 ### Problema especifico
 
-HablaIA define 7 categorias SAAC (Personas, Acciones, Emociones, Lugares, Objetos, Comida, Transporte). De estas, **tres son sustantivos** (Lugares, Objetos, Comida) y todas corresponderian al naranja en Fitzgerald estricto, lo que las haria visualmente indistinguibles en el grid de pictogramas.
+HablaIA define 10 categorias SAAC (Personas, Acciones, Emociones, Lugares, Objetos, Comida, Transporte, Social, Tiempo, Descriptivos). De estas, **tres son sustantivos** (Lugares, Objetos, Comida) y todas corresponderian al naranja en Fitzgerald estricto, lo que las haria visualmente indistinguibles en el grid de pictogramas.
 
 ## Decision
 

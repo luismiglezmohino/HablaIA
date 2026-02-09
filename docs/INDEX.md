@@ -2,7 +2,7 @@
 
 > Guia de navegacion de toda la documentacion del proyecto
 
-**Ultima actualizacion:** 5 de febrero de 2026
+**Ultima actualizacion:** 9 de febrero de 2026
 
 ---
 
@@ -41,6 +41,9 @@ Decisiones arquitectonicas documentadas con contexto, alternativas y consecuenci
 | [ADR-007](adrs/ADR-007-cycle-orm-over-doctrine.md) | Cycle ORM over Doctrine | Eleccion de Cycle ORM frente a Doctrine |
 | [ADR-008](adrs/ADR-008-fitzgerald-key-color-coding.md) | Fitzgerald Key Color Coding | Sistema de colores por categoria segun Fitzgerald Key |
 | [ADR-009](adrs/ADR-009-multi-provider-llm.md) | Multi-Provider LLM | Arquitectura multi-proveedor para LLM (OpenAI, Gemini, Fake) |
+| [ADR-010](adrs/ADR-010-inline-feedback-over-toasts.md) | Inline Feedback over Toasts | Feedback visual inline en vez de toasts para accesibilidad SAAC |
+| [ADR-011](adrs/ADR-011-visual-design-system.md) | Visual Design System | Sistema de diseno visual moderno con paleta Indigo y responsive |
+| [ADR-012](adrs/ADR-012-cd-pipeline.md) | CD Pipeline | Despliegue continuo con GitHub Actions, SSH y Docker Compose |
 
 ---
 

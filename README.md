@@ -158,7 +158,7 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 ### Alcance del MVP (Fases 1-2)
 
 **Fase 1 - Core Funcional:**
-- Grid de pictogramas organizados por 7 categorías SAAC (Personas, Acciones, Emociones, Lugares, Objetos, Comida, Transporte) con colores Modified Fitzgerald Key
+- Grid de pictogramas organizados por 10 categorías SAAC (Personas, Acciones, Emociones, Lugares, Objetos, Comida, Transporte, Social, Tiempo, Descriptivos) con colores Modified Fitzgerald Key
 - Selección multi-pictograma para construir frases
 - Integración LLM (OpenAI inicial) para generar 3 variaciones humanizadas
 - Text-to-Speech con Web Speech API
@@ -205,7 +205,7 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 - **Validacion:** Zod (runtime API response validation)
 - **HTTP:** Fetch API nativo
 - **Utilities:** @vueuse/core
-- **Testing:** Vitest (217 tests)
+- **Testing:** Vitest (230 tests)
 - **Router:** Vue Router 4
 
 ### Inteligencia Artificial & APIs Externas
@@ -380,7 +380,7 @@ composer analyse
 # Limpiar caché
 php bin/console cache:clear
 
-# Cargar categorías SAAC (7 categorías base)
+# Cargar categorías SAAC (10 categorías base)
 php bin/console app:fixtures:load
 
 # Sincronizar pictogramas desde ARASAAC (197 palabras core vocabulary)
@@ -541,7 +541,7 @@ backend/src/
 │   └── Exception/    # ApplicationException, *NotFoundException
 ├── Infrastructure/   # Implementaciones (✅ completado)
 │   ├── Console/      # LoadFixturesCommand, SyncArasaacCommand
-│   ├── DataFixtures/ # CategoryFixtures (7 categorías SAAC, colores Fitzgerald Key)
+│   ├── DataFixtures/ # CategoryFixtures (10 categorías SAAC, colores Fitzgerald Key)
 │   ├── ExternalApi/  # Arasaac/, Gemini/, OpenAI/, Shared/, PhraseGeneratorFactory
 │   ├── Health/       # DatabaseHealthChecker
 │   ├── Http/         # Controllers (Category, Pictogram, Phrase, Health)
@@ -598,7 +598,10 @@ docs/adrs/
 ├── ADR-006-uuid-agnostic-domain.md
 ├── ADR-007-cycle-orm-over-doctrine.md
 ├── ADR-008-fitzgerald-key-color-coding.md
-└── ADR-009-multi-provider-llm.md
+├── ADR-009-multi-provider-llm.md
+├── ADR-010-inline-feedback-over-toasts.md
+├── ADR-011-visual-design-system.md
+└── ADR-012-cd-pipeline.md
 ```
 
 ---
@@ -612,21 +615,21 @@ docs/adrs/
 
 | Funcionalidad | Estado | Descripción |
 |---------------|--------|-------------|
-| Grid de pictogramas | ✅ Backend | API: GET /api/pictograms, GET /api/categories (7 categorías SAAC con colores Modified Fitzgerald Key) |
+| Grid de pictogramas | ✅ Backend | API: GET /api/pictograms, GET /api/categories (10 categorías SAAC con colores Modified Fitzgerald Key) |
 | Búsqueda de pictogramas | ✅ Backend | API: GET /api/pictograms/search?q= (con fallback ARASAAC) |
 | Generación IA | ✅ Backend | API: POST /api/phrases/generate (3 variaciones) |
 | Caché de frases | ✅ Backend | PostgreSQL + Cycle ORM |
 | Sincronización ARASAAC | ✅ Backend | Comando: app:arasaac:sync (197 palabras core vocabulary) |
 | Health checks | ✅ Backend | API: /api/health, /api/health/live, /api/health/ready |
-| Text-to-Speech | 🔲 Frontend | Web Speech API (pendiente frontend) |
-| Accesibilidad WCAG 2.1 AA | 🔲 Frontend | Pendiente frontend |
+| Text-to-Speech | ✅ Completado | Web Speech API (SpeakButton, useTTS composable) |
+| Accesibilidad WCAG 2.1 AA | ✅ Completado | 44x44px targets, focus rings, aria-labels, keyboard nav |
 
 ### Objetivos Técnicos 🛠️
 
 | Aspecto | Estado | Descripción |
 |---------|--------|-------------|
 | Clean Architecture | ✅ Completado | Backend: Domain ✅ → Application ✅ → Infrastructure ✅. Frontend: Domain ✅ → Application ✅ → Infrastructure ✅ |
-| TDD | ✅ Completado | 389 tests (backend) + 62 tests (frontend) = 451 total |
+| TDD | ✅ Completado | 392 tests (backend) + 230 tests (frontend) = 622 total |
 | Excepciones de Dominio | ✅ Completado | `DomainException` base + excepciones semánticas por módulo |
 | Excepciones de Application | ✅ Completado | `ApplicationException` + `*NotFoundException` |
 | UUID Desacoplado | ✅ Completado | Domain valida (`Uuid`), Infrastructure genera (`UuidGeneratorInterface`) |
