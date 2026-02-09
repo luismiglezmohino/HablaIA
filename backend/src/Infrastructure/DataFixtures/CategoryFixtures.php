@@ -19,6 +19,9 @@ final readonly class CategoryFixtures implements CategoryFixturesInterface
         ['name' => 'Objetos', 'icon' => 'box', 'colorHex' => '#FB923C', 'displayOrder' => 5],
         ['name' => 'Comida', 'icon' => 'utensils', 'colorHex' => '#EA580C', 'displayOrder' => 6],
         ['name' => 'Transporte', 'icon' => 'car', 'colorHex' => '#F59E0B', 'displayOrder' => 7],
+        ['name' => 'Social', 'icon' => 'message-circle', 'colorHex' => '#EC4899', 'displayOrder' => 8],
+        ['name' => 'Tiempo', 'icon' => 'clock', 'colorHex' => '#8B5CF6', 'displayOrder' => 9],
+        ['name' => 'Descriptivos', 'icon' => 'sliders', 'colorHex' => '#14B8A6', 'displayOrder' => 10],
     ];
 
     public function __construct(
