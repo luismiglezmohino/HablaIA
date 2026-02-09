@@ -11,11 +11,35 @@ use App\Infrastructure\DataFixtures\CategoryFixtures;
 
 describe('CategoryFixtures', function (): void {
     describe('getCategories', function (): void {
-        it('returns array with 7 SAAC standard categories', function (): void {
+        it('returns array with 10 SAAC standard categories', function (): void {
             $categories = CategoryFixtures::getCategories();
 
             expect($categories)->toBeArray();
-            expect($categories)->toHaveCount(7);
+            expect($categories)->toHaveCount(10);
+        });
+
+        it('contains Social category with Fitzgerald color', function (): void {
+            $categories = CategoryFixtures::getCategories();
+
+            expect($categories[7])->toBe([
+                'name' => 'Social', 'icon' => 'message-circle', 'colorHex' => '#EC4899', 'displayOrder' => 8,
+            ]);
+        });
+
+        it('contains Tiempo category with Fitzgerald color', function (): void {
+            $categories = CategoryFixtures::getCategories();
+
+            expect($categories[8])->toBe([
+                'name' => 'Tiempo', 'icon' => 'clock', 'colorHex' => '#8B5CF6', 'displayOrder' => 9,
+            ]);
+        });
+
+        it('contains Descriptivos category with Fitzgerald color', function (): void {
+            $categories = CategoryFixtures::getCategories();
+
+            expect($categories[9])->toBe([
+                'name' => 'Descriptivos', 'icon' => 'sliders', 'colorHex' => '#14B8A6', 'displayOrder' => 10,
+            ]);
         });
 
         it('contains Personas category with Fitzgerald color', function (): void {
@@ -84,7 +108,7 @@ describe('CategoryFixtures', function (): void {
     });
 
     describe('load', function (): void {
-        it('loads all 7 categories when repository is empty', function (): void {
+        it('loads all 10 categories when repository is empty', function (): void {
             $uuidGenerator = $this->createMock(UuidGeneratorInterface::class);
             $uuidGenerator->method('generate')
                 ->willReturnOnConsecutiveCalls(
@@ -94,17 +118,20 @@ describe('CategoryFixtures', function (): void {
                     '550e8400-e29b-41d4-a716-446655440004',
                     '550e8400-e29b-41d4-a716-446655440005',
                     '550e8400-e29b-41d4-a716-446655440006',
-                    '550e8400-e29b-41d4-a716-446655440007'
+                    '550e8400-e29b-41d4-a716-446655440007',
+                    '550e8400-e29b-41d4-a716-446655440008',
+                    '550e8400-e29b-41d4-a716-446655440009',
+                    '550e8400-e29b-41d4-a716-446655440010'
                 );
 
             $repository = $this->createMock(CategoryRepository::class);
             $repository->method('findByName')->willReturn(null);
-            $repository->expects($this->exactly(7))->method('save');
+            $repository->expects($this->exactly(10))->method('save');
 
             $fixtures = new CategoryFixtures($uuidGenerator, $repository);
             $count = $fixtures->load();
 
-            expect($count)->toBe(7);
+            expect($count)->toBe(10);
         });
 
         it('skips existing categories', function (): void {
@@ -115,7 +142,10 @@ describe('CategoryFixtures', function (): void {
                     '550e8400-e29b-41d4-a716-446655440002',
                     '550e8400-e29b-41d4-a716-446655440003',
                     '550e8400-e29b-41d4-a716-446655440004',
-                    '550e8400-e29b-41d4-a716-446655440005'
+                    '550e8400-e29b-41d4-a716-446655440005',
+                    '550e8400-e29b-41d4-a716-446655440006',
+                    '550e8400-e29b-41d4-a716-446655440007',
+                    '550e8400-e29b-41d4-a716-446655440008'
                 );
 
             $existingCategory = new Category(
@@ -143,12 +173,12 @@ describe('CategoryFixtures', function (): void {
                         default => null,
                     };
                 });
-            $repository->expects($this->exactly(5))->method('save');
+            $repository->expects($this->exactly(8))->method('save');
 
             $fixtures = new CategoryFixtures($uuidGenerator, $repository);
             $count = $fixtures->load();
 
-            expect($count)->toBe(5);
+            expect($count)->toBe(8);
         });
 
         it('returns 0 when all categories already exist', function (): void {
@@ -195,7 +225,7 @@ describe('CategoryFixtures', function (): void {
             $fixtures = new CategoryFixtures($uuidGenerator, $repository);
             $fixtures->load();
 
-            expect(count(array_unique($savedCategories)))->toBe(7);
+            expect(count(array_unique($savedCategories)))->toBe(10);
         });
     });
 });
