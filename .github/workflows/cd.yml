@@ -70,13 +70,14 @@ jobs:
           docker exec -u root "$BACKEND_CONTAINER" chown -R www-data:www-data /var/www/public/pictograms
 
           # Run migrations (idempotent — skips already applied)
+          # NOTE: </dev/null prevents docker compose exec from consuming the heredoc stdin
           echo "--- Running migrations ---"
-          docker compose -f "$COMPOSE_FILE" exec -T backend php bin/console app:migrations:run
+          docker compose -f "$COMPOSE_FILE" exec -T backend php bin/console app:migrations:run </dev/null
 
           # Load fixtures + sync pictograms (idempotent — skips existing)
           echo "--- Syncing data ---"
-          docker compose -f "$COMPOSE_FILE" exec -T backend php bin/console app:fixtures:load
-          docker compose -f "$COMPOSE_FILE" exec -T backend php bin/console app:arasaac:sync --all
+          docker compose -f "$COMPOSE_FILE" exec -T backend php bin/console app:fixtures:load </dev/null
+          docker compose -f "$COMPOSE_FILE" exec -T backend php bin/console app:arasaac:sync --all </dev/null
 
           # Health check
           echo "--- Running health check ---"

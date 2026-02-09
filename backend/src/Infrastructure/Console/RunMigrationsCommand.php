@@ -69,6 +69,9 @@ final class RunMigrationsCommand extends Command
 
             $statements = $this->extractUpStatements($path);
             if ($statements === []) {
+                /** @var non-empty-string $insertSql */
+                $insertSql = sprintf("INSERT INTO %s (version, applied_at) VALUES ('%s', NOW())", self::MIGRATIONS_TABLE, $name);
+                $db->execute($insertSql);
                 $io->writeln('<comment>SKIP (empty)</comment>');
                 continue;
             }
