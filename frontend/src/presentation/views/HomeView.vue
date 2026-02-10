@@ -304,12 +304,12 @@ watch(
     </div>
   </section>
 
-  <main id="main-content" class="mx-auto max-w-7xl pb-8 sm:pb-14">
+  <main id="main-content" class="mx-auto max-w-7xl pb-8 xl:pb-14">
     <PictogramGrid @select="handlePictogramSelect" />
   </main>
 
   <!-- Keyboard shortcuts footer — desktop only -->
-  <footer class="hidden sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:z-20 sm:block border-t border-surface-100 bg-surface-50 px-4 py-2" aria-label="Atajos de teclado">
+  <footer class="hidden xl:fixed xl:bottom-0 xl:left-0 xl:right-0 xl:z-20 xl:block border-t border-surface-100 bg-surface-50 px-4 py-2" aria-label="Atajos de teclado">
     <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-accessible-textLight">
       <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">1</kbd>–<kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">0</kbd> <kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">?</kbd> Categorías</span>
       <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">/</kbd> Buscar</span>
