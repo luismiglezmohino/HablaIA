@@ -31,6 +31,15 @@ const iconMap: Record<string, Component> = {
 
 const store = useCategoryStore()
 
+const emit = defineEmits<{
+  select: [id: string]
+}>()
+
+function handleClick(id: string) {
+  store.selectCategory(id)
+  emit('select', id)
+}
+
 function handleKeydown(event: KeyboardEvent, index: number) {
   const categories = store.sortedCategories
   let nextIndex = index
@@ -43,9 +52,13 @@ function handleKeydown(event: KeyboardEvent, index: number) {
     return
   }
 
+  event.preventDefault()
   const next = categories[nextIndex]
   if (next) {
     store.selectCategory(next.id)
+    const tablist = (event.currentTarget as HTMLElement).closest('[role="tablist"]')
+    const buttons = tablist?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
+    buttons?.[nextIndex]?.focus()
   }
 }
 </script>
@@ -75,13 +88,13 @@ function handleKeydown(event: KeyboardEvent, index: number) {
           borderColor: category.colorHex,
           backgroundColor: store.selectedCategoryId === category.id ? category.colorHex + '18' : undefined,
         }"
-        class="min-h-touch min-w-touch flex shrink-0 items-center justify-center rounded-xl border-2 px-2.5 py-2 font-semibold text-accessible-text shadow-card motion-safe:transition-all motion-safe:duration-200 motion-safe:hover:shadow-card-hover motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0 sm:justify-start sm:gap-2.5 sm:px-5 sm:py-2.5 sm:text-sm xl:px-[1.125rem] xl:text-xs tablet-landscape-center"
+        class="min-h-touch min-w-touch flex shrink-0 items-center justify-center rounded-xl border-2 px-2.5 py-2 font-semibold text-accessible-text shadow-card focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 motion-safe:transition-all motion-safe:duration-200 motion-safe:hover:shadow-card-hover motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0 sm:justify-start sm:gap-2.5 sm:px-5 sm:py-2.5 sm:text-sm xl:px-[1.125rem] xl:text-xs tablet-landscape-center"
         :class="
           store.selectedCategoryId === category.id
             ? 'ring-2 ring-primary-500 ring-offset-2'
             : 'bg-white'
         "
-        @click="store.selectCategory(category.id)"
+        @click="handleClick(category.id)"
         @keydown="handleKeydown($event, index)"
       >
         <span

@@ -140,6 +140,15 @@ describe('CategoryBar', () => {
       expect(store.selectedCategoryId).toBe('2')
     })
 
+    it('emits select event on click', async () => {
+      const { wrapper } = mountCategoryBar()
+
+      await wrapper.findAll('[role="tab"]').at(1)?.trigger('click')
+
+      expect(wrapper.emitted('select')).toBeTruthy()
+      expect(wrapper.emitted('select')![0]).toEqual(['2'])
+    })
+
     it('does not change selection on non-arrow key', async () => {
       const { wrapper, store } = mountCategoryBar()
 
@@ -186,6 +195,38 @@ describe('CategoryBar', () => {
       await tabs.at(0)?.trigger('keydown', { key: 'ArrowLeft' })
 
       expect(store.selectedCategoryId).toBe('3')
+    })
+
+    it('moves focus to the new tab on ArrowRight', async () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const store = useCategoryStore()
+      store.categories = categoryFixtures
+      const wrapper = mount(CategoryBar, { global: { plugins: [pinia] }, attachTo: document.body })
+
+      const tabs = wrapper.findAll('[role="tab"]')
+      ;(tabs.at(0)?.element as HTMLElement).focus()
+      await tabs.at(0)?.trigger('keydown', { key: 'ArrowRight' })
+      await wrapper.vm.$nextTick()
+
+      expect(document.activeElement).toBe(tabs.at(1)?.element)
+      wrapper.unmount()
+    })
+
+    it('moves focus to the new tab on ArrowLeft', async () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const store = useCategoryStore()
+      store.categories = categoryFixtures
+      const wrapper = mount(CategoryBar, { global: { plugins: [pinia] }, attachTo: document.body })
+
+      const tabs = wrapper.findAll('[role="tab"]')
+      ;(tabs.at(1)?.element as HTMLElement).focus()
+      await tabs.at(1)?.trigger('keydown', { key: 'ArrowLeft' })
+      await wrapper.vm.$nextTick()
+
+      expect(document.activeElement).toBe(tabs.at(0)?.element)
+      wrapper.unmount()
     })
   })
 

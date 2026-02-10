@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { Sparkles, Search, X, Users, Play, Heart, MapPin, Box, Utensils, Car, Shapes } from 'lucide-vue-next'
 import type { Component } from 'vue'
 import CategoryBar from '@/presentation/components/CategoryBar.vue'
@@ -39,6 +39,10 @@ const phraseStore = usePhraseStore()
 const isSearching = ref(false)
 const isSearchFocused = ref(false)
 const searchBarRef = ref<InstanceType<typeof SearchBar> | null>(null)
+const mobileSearchRef = ref<HTMLInputElement | null>(null)
+const mobileResultsRef = ref<HTMLElement | null>(null)
+const actionAnnouncement = ref('')
+const pendingGridFocus = ref(false)
 
 const mobileQuery = ref('')
 let mobileDebounceTimer: ReturnType<typeof setTimeout> | null = null
@@ -56,8 +60,10 @@ function clearMobileSearch() {
 }
 
 const statusMessage = computed(() => {
-  if (isSearching.value) {
-    return `Mostrando resultados de búsqueda`
+  if (isSearching.value && !pictogramStore.loading) {
+    const count = pictogramStore.pictograms.length
+    if (count === 0) return 'Sin resultados de búsqueda'
+    return `${count} pictograma${count !== 1 ? 's' : ''} encontrado${count !== 1 ? 's' : ''}`
   }
   if (categoryStore.selectedCategory) {
     return `Categoría ${categoryStore.selectedCategory.name} seleccionada`
@@ -67,10 +73,19 @@ const statusMessage = computed(() => {
 
 function handlePictogramSelect(pictogram: Pictogram) {
   phraseStore.addPictogram(pictogram)
+  actionAnnouncement.value = `Pictograma ${pictogram.label} añadido a la frase`
 }
 
 function handleGenerate() {
   phraseStore.generatePhrase(phraseRepo)
+}
+
+function handleMobileEscape() {
+  if (mobileQuery.value) {
+    clearMobileSearch()
+  } else {
+    mobileSearchRef.value?.blur()
+  }
 }
 
 function handleSearch(query: string) {
@@ -86,9 +101,88 @@ function handleSearch(query: string) {
   }
 }
 
+watch(
+  () => phraseStore.selectedPictograms.length,
+  (newLen, oldLen) => {
+    if (oldLen !== undefined && newLen < oldLen) {
+      actionAnnouncement.value = 'Pictograma eliminado de la frase'
+    }
+  },
+)
+
+watch(
+  () => phraseStore.phraseResponse,
+  (newVal) => {
+    if (newVal && !phraseStore.loading) {
+      const count = newVal.variations.length
+      actionAnnouncement.value = `Frase generada con ${count} ${count !== 1 ? 'variaciones' : 'variación'}`
+      nextTick(() => mobileResultsRef.value?.focus())
+    }
+  },
+)
+
+function selectCategoryByShortcut(index: number) {
+  const categories = categoryStore.sortedCategories
+  if (index < categories.length) {
+    pendingGridFocus.value = true
+    categoryStore.selectCategory(categories[index]!.id)
+  }
+}
+
+function handleCategoryClick() {
+  pendingGridFocus.value = true
+}
+
+function handleGlobalKeydown(event: KeyboardEvent) {
+  const isInInput = event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement
+
+  if (event.key === '/' && !isInInput) {
+    event.preventDefault()
+    const searchInput = document.getElementById('search-pictograms') as HTMLInputElement | null
+    searchInput?.focus()
+    return
+  }
+
+  if (!isInInput && /^[0-9]$/.test(event.key)) {
+    event.preventDefault()
+    selectCategoryByShortcut(event.key === '0' ? 9 : parseInt(event.key) - 1)
+    return
+  }
+
+  if (!isInInput && event.key === '?') {
+    event.preventDefault()
+    selectCategoryByShortcut(10)
+    return
+  }
+
+  if (!isInInput && event.key === 'Backspace' && phraseStore.selectedPictograms.length > 0) {
+    event.preventDefault()
+    const chips = document.querySelectorAll<HTMLElement>('[data-testid="remove-chip"]')
+    chips[chips.length - 1]?.focus()
+  }
+}
+
 onMounted(() => {
   categoryStore.fetchCategories(categoryRepo)
+  document.addEventListener('keydown', handleGlobalKeydown)
 })
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleGlobalKeydown)
+})
+
+watch(
+  () => pictogramStore.loading,
+  (loading, wasLoading) => {
+    if (wasLoading && !loading && pictogramStore.pictograms.length > 0 && pendingGridFocus.value) {
+      pendingGridFocus.value = false
+      nextTick(() => {
+        const firstButton = document.querySelector('#main-content [role="grid"] button') as HTMLElement | null
+        firstButton?.focus()
+      })
+    }
+  },
+)
 
 watch(
   () => categoryStore.selectedCategoryId,
@@ -127,16 +221,18 @@ watch(
           aria-hidden="true"
         />
         <input
+          ref="mobileSearchRef"
           id="mobile-search"
           v-model="mobileQuery"
           type="search"
           placeholder="Buscar pictogramas..."
           class="min-h-touch w-full rounded-xl border-2 border-surface-200 bg-surface-50 py-2 pl-10 pr-10 text-sm shadow-soft transition-all placeholder:text-surface-300 focus:border-primary-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:shadow-card"
+          @keydown.escape="handleMobileEscape"
         />
         <button
           v-if="mobileQuery"
           aria-label="Borrar búsqueda"
-          class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-surface-400 hover:text-accessible-textLight"
+          class="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full p-2 text-surface-400 hover:text-accessible-textLight focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
           @click="clearMobileSearch"
         >
           <X :size="18" aria-hidden="true" />
@@ -154,7 +250,7 @@ watch(
             :style="{ borderColor: category.colorHex, backgroundColor: categoryStore.selectedCategoryId === category.id ? category.colorHex + '18' : undefined }"
             class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border-2 bg-white"
             :class="categoryStore.selectedCategoryId === category.id ? 'ring-2 ring-primary-500 ring-offset-1' : ''"
-            @click="categoryStore.selectCategory(category.id)"
+            @click="pendingGridFocus = true; categoryStore.selectCategory(category.id)"
           >
             <component
               :is="(category.icon && categoryIconMap[category.icon]) || Shapes"
@@ -175,14 +271,16 @@ watch(
     <div class="hidden sm:block tablet-landscape-hide">
       <SearchBar ref="searchBarRef" @search="handleSearch" @focus="isSearchFocused = true" @blur="isSearchFocused = false" />
     </div>
-  </div>
-
-  <div class="tablet-landscape-hide">
-    <CategoryBar />
+    <div class="tablet-landscape-hide">
+      <CategoryBar @select="handleCategoryClick" />
+    </div>
   </div>
 
   <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
     {{ statusMessage }}
+  </div>
+  <div role="status" aria-live="assertive" aria-atomic="true" class="sr-only">
+    {{ actionAnnouncement }}
   </div>
 
   <!-- Phrase results — mobile only (outside sticky for more space) -->
@@ -193,7 +291,7 @@ watch(
           {{ phraseStore.phraseResponse.source }}
         </Badge>
       </div>
-      <ul class="space-y-2" role="list">
+      <ul ref="mobileResultsRef" class="space-y-2" role="list" tabindex="-1">
         <li
           v-for="(variation, index) in phraseStore.phraseResponse.variations"
           :key="index"
@@ -206,7 +304,18 @@ watch(
     </div>
   </section>
 
-  <main id="main-content" class="mx-auto max-w-7xl pb-8">
+  <main id="main-content" class="mx-auto max-w-7xl pb-8 sm:pb-14">
     <PictogramGrid @select="handlePictogramSelect" />
   </main>
+
+  <!-- Keyboard shortcuts footer — desktop only -->
+  <footer class="hidden sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:z-20 sm:block border-t border-surface-100 bg-surface-50 px-4 py-2" aria-label="Atajos de teclado">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-accessible-textLight">
+      <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">1</kbd>–<kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">0</kbd> <kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">?</kbd> Categorías</span>
+      <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">/</kbd> Buscar</span>
+      <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">Esc</kbd> Cerrar búsqueda</span>
+      <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">←</kbd> <kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">→</kbd> <kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">↑</kbd> <kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">↓</kbd> Mover en pictogramas (con teclado)</span>
+      <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">⌫</kbd> Ir a selección</span>
+    </div>
+  </footer>
 </template>

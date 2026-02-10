@@ -189,6 +189,69 @@ describe('PictogramGrid', () => {
       expect(grid.attributes('aria-label')).toBeTruthy()
     })
 
+    it('moves focus to next pictogram on ArrowRight', async () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const pictogramStore = usePictogramStore()
+      pictogramStore.pictograms = pictogramFixtures
+      const categoryStore = useCategoryStore()
+      categoryStore.categories = [
+        { id: 'cat-1', name: 'Acciones', icon: 'play', colorHex: '#22C55E', displayOrder: 1 },
+      ]
+      categoryStore.selectCategory('cat-1')
+
+      const wrapper = mount(PictogramGrid, { global: { plugins: [pinia] }, attachTo: document.body })
+      const buttons = wrapper.findAll('button')
+      ;(buttons.at(0)?.element as HTMLElement).focus()
+
+      await wrapper.find('[role="grid"]').trigger('keydown', { key: 'ArrowRight' })
+
+      expect(document.activeElement).toBe(buttons.at(1)?.element)
+      wrapper.unmount()
+    })
+
+    it('moves focus to previous pictogram on ArrowLeft', async () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const pictogramStore = usePictogramStore()
+      pictogramStore.pictograms = pictogramFixtures
+      const categoryStore = useCategoryStore()
+      categoryStore.categories = [
+        { id: 'cat-1', name: 'Acciones', icon: 'play', colorHex: '#22C55E', displayOrder: 1 },
+      ]
+      categoryStore.selectCategory('cat-1')
+
+      const wrapper = mount(PictogramGrid, { global: { plugins: [pinia] }, attachTo: document.body })
+      const buttons = wrapper.findAll('button')
+      ;(buttons.at(2)?.element as HTMLElement).focus()
+
+      await wrapper.find('[role="grid"]').trigger('keydown', { key: 'ArrowLeft' })
+
+      expect(document.activeElement).toBe(buttons.at(1)?.element)
+      wrapper.unmount()
+    })
+
+    it('does not move focus before first pictogram on ArrowLeft', async () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const pictogramStore = usePictogramStore()
+      pictogramStore.pictograms = pictogramFixtures
+      const categoryStore = useCategoryStore()
+      categoryStore.categories = [
+        { id: 'cat-1', name: 'Acciones', icon: 'play', colorHex: '#22C55E', displayOrder: 1 },
+      ]
+      categoryStore.selectCategory('cat-1')
+
+      const wrapper = mount(PictogramGrid, { global: { plugins: [pinia] }, attachTo: document.body })
+      const buttons = wrapper.findAll('button')
+      ;(buttons.at(0)?.element as HTMLElement).focus()
+
+      await wrapper.find('[role="grid"]').trigger('keydown', { key: 'ArrowLeft' })
+
+      expect(document.activeElement).toBe(buttons.at(0)?.element)
+      wrapper.unmount()
+    })
+
     it('disables pictogram buttons when phrase selection is full', () => {
       const pinia = createPinia()
       setActivePinia(pinia)

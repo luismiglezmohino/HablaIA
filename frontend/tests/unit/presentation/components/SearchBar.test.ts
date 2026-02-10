@@ -68,4 +68,33 @@ describe('SearchBar', () => {
 
     expect(input.classes()).toContain('min-h-touch')
   })
+
+  describe('escape key', () => {
+    it('clears query and emits empty search immediately on Escape', async () => {
+      vi.useFakeTimers()
+      const wrapper = mount(SearchBar)
+      const input = wrapper.find('input')
+
+      await input.setValue('agua')
+      await input.trigger('keydown', { key: 'Escape' })
+
+      expect((input.element as HTMLInputElement).value).toBe('')
+      expect(wrapper.emitted('search')?.at(-1)).toEqual([''])
+
+      vi.useRealTimers()
+    })
+
+    it('blurs input on Escape when query is already empty', async () => {
+      const wrapper = mount(SearchBar, { attachTo: document.body })
+      const input = wrapper.find('input')
+
+      ;(input.element as HTMLInputElement).focus()
+      expect(document.activeElement).toBe(input.element)
+
+      await input.trigger('keydown', { key: 'Escape' })
+
+      expect(document.activeElement).not.toBe(input.element)
+      wrapper.unmount()
+    })
+  })
 })

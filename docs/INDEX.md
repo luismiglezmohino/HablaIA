@@ -44,6 +44,7 @@ Decisiones arquitectonicas documentadas con contexto, alternativas y consecuenci
 | [ADR-010](adrs/ADR-010-inline-feedback-over-toasts.md) | Inline Feedback over Toasts | Feedback visual inline en vez de toasts para accesibilidad SAAC |
 | [ADR-011](adrs/ADR-011-visual-design-system.md) | Visual Design System | Sistema de diseno visual moderno con paleta Indigo y responsive |
 | [ADR-012](adrs/ADR-012-cd-pipeline.md) | CD Pipeline | Despliegue continuo con GitHub Actions, SSH y Docker Compose |
+| [ADR-013](adrs/ADR-013-keyboard-screenreader-accessibility.md) | Keyboard & Screen Reader | Navegacion por teclado, atajos, gestion de foco y anuncios SR |
 
 ---
 
