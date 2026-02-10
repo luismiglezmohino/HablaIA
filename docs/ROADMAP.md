@@ -29,7 +29,7 @@
 - ✅ Sincronización automática con ARASAAC API (197 palabras core vocabulary)
 - ✅ Health checks para Kubernetes (liveness, readiness)
 - ✅ Rate limiting configurable en generación de frases
-- ✅ Tests unitarios: 394 tests, PHPStan level 8
+- ✅ Tests: 394 unitarios (PestPHP), PHPStan level 8
 
 ### Frontend (🚧 En Construccion)
 - ✅ Clean Architecture frontend (Domain/Application/Infrastructure)
@@ -37,7 +37,7 @@
 - ✅ Zod schemas para validacion de API responses (Zero Trust)
 - ✅ ApiClient HTTP + repositorios (HttpCategoryRepository, HttpPictogramRepository, HttpPhraseRepository)
 - ✅ Pinia registrado, shadcn-vue configurado (Radix Vue, Lucide Vue)
-- ✅ Tests unitarios: 230 tests con Vitest
+- ✅ Tests: 230 unitarios (Vitest) + 21 E2E (Playwright) = 251 frontend
 - ✅ Pinia stores: useCategoryStore + usePictogramStore + usePhraseStore
 - ✅ CategoryBar con Fitzgerald Key borders, Lucide icons, keyboard nav
 - ✅ PictogramCard + PictogramGrid con Fitzgerald Key border-top, responsive grid
@@ -52,6 +52,7 @@
 - ✅ Responsive tres configuraciones: movil, tablet portrait, tablet landscape (media query custom con clases utilitarias independientes)
 - ✅ Tablet landscape compacto: busqueda + categorias en header, PhraseBar inline con scroll horizontal, proteccion landscape movil
 - ✅ CD pipeline: GitHub Actions SSH deploy a Hetzner CX33, Docker Compose produccion (PHP-FPM + nginx + PostgreSQL), health check con rollback automatico
+- ✅ E2E tests con Playwright (21 tests): app load, pictogram flow, search, phrase limits, error handling, responsive (5 viewports), video on failure
 
 **Entregables tecnicos:**
 - ✅ Clean Architecture backend (Domain/Application/Infrastructure)

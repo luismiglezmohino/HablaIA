@@ -67,6 +67,50 @@ if [ -n "$HAS_FRONTEND" ]; then
         fi
     fi
     echo ""
+
+    # E2E Tests (Playwright)
+    echo "🎭 E2E Tests (Playwright)"
+    echo "─────────────────────────"
+
+    DOCKER_STARTED_BY_HOOK=0
+    FRONTEND_UP=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 2>/dev/null || echo "000")
+
+    if [ "$FRONTEND_UP" != "200" ]; then
+        echo "🐳 Docker no esta levantado. Iniciando servicios..."
+        docker compose up -d
+        DOCKER_STARTED_BY_HOOK=1
+
+        for i in $(seq 1 30); do
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 2>/dev/null || echo "000")
+            if [ "$HTTP_CODE" = "200" ]; then
+                echo "✅ Docker listo (intento $i)"
+                break
+            fi
+            if [ "$i" = "30" ]; then
+                echo "❌ Docker no arranco tras 30 intentos"
+                FAILED=1
+            fi
+            sleep 2
+        done
+    fi
+
+    if [ $FAILED -eq 0 ]; then
+        cd frontend
+        npx playwright test
+        if [ $? -ne 0 ]; then
+            echo "❌ E2E tests failed!"
+            FAILED=1
+        else
+            echo "✅ E2E tests passed!"
+        fi
+        cd ..
+    fi
+
+    if [ $DOCKER_STARTED_BY_HOOK -eq 1 ]; then
+        echo "🐳 Parando Docker (iniciado por el hook)..."
+        docker compose down
+    fi
+    echo ""
 fi
 
 # Backend Tests (PestPHP)
