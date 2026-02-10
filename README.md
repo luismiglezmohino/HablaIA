@@ -205,7 +205,8 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 - **Validacion:** Zod (runtime API response validation)
 - **HTTP:** Fetch API nativo
 - **Utilities:** @vueuse/core
-- **Testing:** Vitest (230 tests)
+- **Testing:** Vitest (230 unit) + Playwright (21 E2E)
+- **E2E Testing:** Playwright (Chromium)
 - **Router:** Vue Router 4
 
 ### Inteligencia Artificial & APIs Externas
@@ -220,12 +221,11 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 - **ElevenLabs API:** Text-to-Speech premium (Fase 4 - futuro)
 - **Voice Cloning:** Clonación de voz del usuario (Fase 6 - futuro)
 
-### Observabilidad & Monitoreo
+### Observabilidad & Monitoreo (pendiente integración)
 
-- **Analytics:** PostHog (self-hosted)
-- **Error Tracking:** Sentry Cloud
+- **Analytics:** PostHog Cloud free tier (planificado)
+- **Error Tracking:** Sentry Cloud free tier (planificado)
 - **Logs:** Estructurados en JSON con correlationId
-- **Métricas:** Prometheus + Grafana (futuro)
 
 ### DevOps & CI/CD
 
@@ -264,8 +264,8 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 #### 1️⃣ Clonar el Repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/hablaia.git
-cd hablaia
+git clone https://github.com/luismiglezmohino/HablaIA.git
+cd HablaIA
 ```
 
 #### 2️⃣ Configurar Variables de Entorno
@@ -325,8 +325,7 @@ Esto iniciará:
 - PostgreSQL (puerto 5432)
 - Backend Symfony (puerto 8080)
 - Frontend Vue (puerto 3000)
-- PostHog Analytics (puerto 8081)
-- Redis (puerto 6379)
+- Swagger UI (puerto 8081, solo con perfil `dev`)
 
 #### 4️⃣ Instalar Dependencias Backend
 
@@ -360,8 +359,7 @@ npm install
 
 - **Frontend (Aplicación):** http://localhost:3000
 - **Backend API:** http://localhost:8080/api
-- **PostHog Analytics:** http://localhost:8081
-- **Documentación API:** http://localhost:8080/api/doc
+- **Swagger UI:** http://localhost:8081 (requiere `docker compose --profile dev up`)
 
 ### Scripts Disponibles
 
@@ -414,6 +412,15 @@ npm run test:coverage
 # Tests en modo watch
 npm run test:watch
 
+# Tests E2E con Playwright
+npm run test:e2e
+
+# E2E con interfaz visual
+npm run test:e2e:ui
+
+# E2E en modo headed (navegador visible)
+npm run test:e2e:headed
+
 # Linting con ESLint
 npm run lint
 
@@ -422,9 +429,6 @@ npm run lint:fix
 
 # Formateo con Prettier
 npm run format
-
-# Tests de accesibilidad (Lighthouse)
-npm run test:a11y
 ```
 
 #### Docker
@@ -449,9 +453,10 @@ docker-compose down -v
 docker-compose build --no-cache
 ```
 
-#### Release y CHANGELOG
+#### Release y CHANGELOG (root del monorepo)
 
 ```bash
+# Desde la raíz del proyecto (no frontend/)
 # Generar release patch (0.1.0 → 0.1.1) + CHANGELOG
 npm run release
 
@@ -465,7 +470,7 @@ npm run release:major
 npm run release:first
 ```
 
-> Los comandos de release generan automáticamente el CHANGELOG.md a partir de los conventional commits (`feat:`, `fix:`, etc.), actualizan la versión en package.json y crean un tag git.
+> Los comandos de release se ejecutan desde el `package.json` raíz (standard-version) y generan automáticamente el CHANGELOG.md a partir de los conventional commits (`feat:`, `fix:`, etc.), actualizan la versión y crean un tag git.
 
 ### Troubleshooting
 
@@ -561,12 +566,12 @@ frontend/src/
 │   └── services/     # Interfaces: TTSProvider (futuro)
 ├── application/      # Capa de Aplicacion
 │   ├── schemas/      # Zod schemas (API response validation)
-│   ├── stores/       # Pinia stores (futuro)
-│   └── composables/  # Vue composables (futuro)
+│   ├── stores/       # Pinia stores (useCategoryStore, usePictogramStore, usePhraseStore)
+│   └── composables/  # Vue composables (useTTS)
 ├── infrastructure/   # Implementaciones
 │   ├── http/         # ApiClient, HttpCategoryRepository, HttpPictogramRepository, HttpPhraseRepository
 │   ├── storage/      # LocalStorage (futuro)
-│   └── tts/          # Web Speech API (futuro)
+│   └── tts/          # WebSpeechTTS (Web Speech API)
 ├── presentation/     # UI (Vue)
 │   ├── components/   # Componentes Vue
 │   ├── views/        # HomeView
@@ -629,7 +634,7 @@ docs/adrs/
 | Aspecto | Estado | Descripción |
 |---------|--------|-------------|
 | Clean Architecture | ✅ Completado | Backend: Domain ✅ → Application ✅ → Infrastructure ✅. Frontend: Domain ✅ → Application ✅ → Infrastructure ✅ |
-| TDD | ✅ Completado | 392 tests (backend) + 230 tests (frontend) = 622 total |
+| TDD | ✅ Completado | 394 tests (backend) + 230 unit + 21 E2E (frontend) = 645 total |
 | Excepciones de Dominio | ✅ Completado | `DomainException` base + excepciones semánticas por módulo |
 | Excepciones de Application | ✅ Completado | `ApplicationException` + `*NotFoundException` |
 | UUID Desacoplado | ✅ Completado | Domain valida (`Uuid`), Infrastructure genera (`UuidGeneratorInterface`) |
