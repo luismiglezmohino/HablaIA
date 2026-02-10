@@ -23,11 +23,13 @@
 - ✅ API REST con Symfony 7 + Cycle ORM + PostgreSQL
 - ✅ Grid de pictogramas por categorías (10 categorías SAAC, colores Fitzgerald Key)
 - ✅ Integración LLM multi-proveedor (`PHRASE_PROVIDER`: gemini, openai, fake)
-- ✅ Caché de frases en PostgreSQL (SHA256 hash de secuencia)
+- ✅ Prompt tuning: 20 ejemplos few-shot, reglas semánticas, auto-validación logopeda
+- ✅ Fallback automático entre modelos Gemini (Flash → Flash Lite = 40 RPD/día)
+- ✅ Caché de frases en PostgreSQL (SHA256 hash, solo frases generadas por IA)
 - ✅ Sincronización automática con ARASAAC API (197 palabras core vocabulary)
 - ✅ Health checks para Kubernetes (liveness, readiness)
 - ✅ Rate limiting configurable en generación de frases
-- ✅ Tests unitarios: 392 tests, PHPStan level 8
+- ✅ Tests unitarios: 394 tests, PHPStan level 8
 
 ### Frontend (🚧 En Construccion)
 - ✅ Clean Architecture frontend (Domain/Application/Infrastructure)
