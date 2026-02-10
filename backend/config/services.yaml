@@ -68,6 +68,7 @@ services:
             $temperature: '%env(float:PHRASE_TEMPERATURE)%'
             $maxTokens: '%env(int:PHRASE_MAX_TOKENS)%'
             $timeout: '%env(int:PHRASE_TIMEOUT)%'
+            $fallbackModel: '%env(GEMINI_FALLBACK_MODEL)%'
 
     # Phrase Generator Factory (multi-provider)
     App\Infrastructure\ExternalApi\PhraseGeneratorFactory:

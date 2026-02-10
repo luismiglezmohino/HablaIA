@@ -98,14 +98,18 @@ final readonly class GenerateHumanizedPhrase
             $source = PhraseResponseDTO::SOURCE_FALLBACK;
         }
 
-        // Paso 6: Guardar en caché para futuras consultas con la misma secuencia.
-        $phrase = new Phrase(
-            PhraseId::fromString($this->uuidGenerator->generate()),
-            $sequence,
-            $variations,
-            new DateTimeImmutable()
-        );
-        $this->phraseRepository->save($phrase);
+        // Paso 6: Solo cachear frases generadas por IA.
+        // El fallback (concatenación literal) no se cachea para reintentar
+        // con IA en la próxima petición cuando el LLM esté disponible.
+        if ($source === PhraseResponseDTO::SOURCE_GENERATED) {
+            $phrase = new Phrase(
+                PhraseId::fromString($this->uuidGenerator->generate()),
+                $sequence,
+                $variations,
+                new DateTimeImmutable()
+            );
+            $this->phraseRepository->save($phrase);
+        }
 
         // Retornar el DTO con las variaciones, source, hash y los IDs originales.
         return new PhraseResponseDTO(

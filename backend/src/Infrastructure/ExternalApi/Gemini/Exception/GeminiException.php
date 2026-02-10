@@ -15,7 +15,7 @@ final class GeminiException extends RuntimeException
 
     public static function rateLimitExceeded(): self
     {
-        return new self('Gemini API rate limit exceeded');
+        return new self('Gemini API rate limit exceeded', 429);
     }
 
     public static function timeout(): self

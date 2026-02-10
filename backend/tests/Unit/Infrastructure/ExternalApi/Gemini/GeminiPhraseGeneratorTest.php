@@ -484,6 +484,83 @@ describe('GeminiPhraseGenerator', function (): void {
             $generator->generate($sequence, ['comer']);
         });
 
+        it('falls back to secondary model on rate limit (429)', function (): void {
+            $rateLimitResponse = $this->createMock(ResponseInterface::class);
+            $rateLimitResponse->method('getStatusCode')->willReturn(429);
+
+            $successResponse = $this->createMock(ResponseInterface::class);
+            $successResponse->method('getStatusCode')->willReturn(200);
+            $successResponse->method('toArray')->willReturn([
+                'candidates' => [
+                    [
+                        'content' => [
+                            'parts' => [
+                                ['text' => '{"variations": ["Quiero comer", "Me gustaría comer", "Necesito comer"]}'],
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
+
+            $httpClient = $this->createMock(HttpClientInterface::class);
+            $httpClient->expects($this->exactly(2))
+                ->method('request')
+                ->willReturnCallback(function (string $method, string $url) use ($rateLimitResponse, $successResponse) {
+                    if (str_contains($url, 'gemini-2.5-flash:')) {
+                        return $rateLimitResponse;
+                    }
+
+                    return $successResponse;
+                });
+
+            $generator = new GeminiPhraseGenerator(
+                $httpClient,
+                'https://generativelanguage.googleapis.com/v1beta/models',
+                'test-api-key',
+                'gemini-2.5-flash',
+                0.7,
+                256,
+                10,
+                'gemini-2.5-flash-lite'
+            );
+
+            $sequence = new PictogramSequence([
+                PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
+            ]);
+
+            $result = $generator->generate($sequence, ['comer']);
+
+            expect($result)->toHaveCount(3);
+            expect($result[0])->toBe('Quiero comer');
+        });
+
+        it('throws on rate limit when no fallback model configured', function (): void {
+            $response = $this->createMock(ResponseInterface::class);
+            $response->method('getStatusCode')->willReturn(429);
+
+            $httpClient = $this->createMock(HttpClientInterface::class);
+            $httpClient->expects($this->once())
+                ->method('request')
+                ->willReturn($response);
+
+            $generator = new GeminiPhraseGenerator(
+                $httpClient,
+                'https://generativelanguage.googleapis.com/v1beta/models',
+                'test-api-key',
+                'gemini-2.5-flash',
+                0.7,
+                256,
+                10
+            );
+
+            $sequence = new PictogramSequence([
+                PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
+            ]);
+
+            expect(fn () => $generator->generate($sequence, ['comer']))
+                ->toThrow(GeminiException::class);
+        });
+
         it('sets responseMimeType to application/json', function (): void {
             $response = $this->createMock(ResponseInterface::class);
             $response->method('getStatusCode')->willReturn(200);

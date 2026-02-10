@@ -23,6 +23,7 @@ final class GeminiPhraseGenerator implements PhraseGeneratorInterface
         private readonly float $temperature,
         private readonly int $maxTokens,
         private readonly int $timeout,
+        private readonly string $fallbackModel = '',
     ) {
     }
 
@@ -33,7 +34,23 @@ final class GeminiPhraseGenerator implements PhraseGeneratorInterface
     {
         $this->currentLabels = $labels;
 
-        $url = sprintf('%s/%s:generateContent?key=%s', $this->apiUrl, $this->model, $this->apiKey);
+        try {
+            return $this->requestModel($this->model);
+        } catch (GeminiException $e) {
+            if ($this->fallbackModel !== '' && $e->getCode() === 429) {
+                return $this->requestModel($this->fallbackModel);
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function requestModel(string $model): array
+    {
+        $url = sprintf('%s/%s:generateContent?key=%s', $this->apiUrl, $model, $this->apiKey);
 
         $response = $this->httpClient->request('POST', $url, [
             'headers' => [
@@ -52,10 +69,15 @@ final class GeminiPhraseGenerator implements PhraseGeneratorInterface
     private function buildRequestBody(): array
     {
         return [
+            'system_instruction' => [
+                'parts' => [
+                    ['text' => PhrasePrompt::SYSTEM],
+                ],
+            ],
             'contents' => [
                 [
                     'parts' => [
-                        ['text' => $this->buildPrompt()],
+                        ['text' => $this->buildUserPrompt()],
                     ],
                 ],
             ],
@@ -67,7 +89,7 @@ final class GeminiPhraseGenerator implements PhraseGeneratorInterface
         ];
     }
 
-    private function buildPrompt(): string
+    private function buildUserPrompt(): string
     {
         $sanitizedLabels = array_map(
             fn (string $label) => $this->sanitizeLabel($label),
@@ -75,9 +97,8 @@ final class GeminiPhraseGenerator implements PhraseGeneratorInterface
         );
 
         $labelsText = empty($sanitizedLabels) ? 'pictogramas' : implode(', ', $sanitizedLabels);
-        $userPrompt = sprintf(PhrasePrompt::USER_TEMPLATE, $labelsText);
 
-        return PhrasePrompt::SYSTEM . "\n\n" . $userPrompt;
+        return sprintf(PhrasePrompt::USER_TEMPLATE, $labelsText);
     }
 
     /**

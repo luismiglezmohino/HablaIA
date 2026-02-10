@@ -199,15 +199,15 @@ flowchart TB
     end
 
     GenOK --> Save
-    Fallback --> Save
 
-    subgraph Save["6. Guardar en Caché"]
+    subgraph Save["6. Guardar en Caché (solo generated)"]
         S1[Crear Phrase entity]
         S2[phraseRepository.save]
         S1 --> S2
     end
 
     Save --> Return([Retornar PhraseResponseDTO])
+    Fallback --> Return
     ReturnCache --> Return
 
     style Cache fill:#e8f5e9
@@ -247,12 +247,12 @@ sequenceDiagram
         alt LLM success
             LLM-->>UC: ["Frase 1", "Frase 2", "Frase 3"]
             Note over UC: source = generated
+            UC->>PhR: save(newPhrase)
         else LLM failure
             LLM-->>UC: Exception
             Note over UC: buildFallbackPhrase()<br/>source = fallback
         end
 
-        UC->>PhR: save(newPhrase)
         UC-->>C: PhraseResponseDTO(source=generated|fallback)
     end
 ```

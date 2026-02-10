@@ -93,14 +93,12 @@ sequenceDiagram
                                 OpenAI-->>Gen: JSON response
                                 Gen-->>UC: ["Frase 1", "Frase 2", "Frase 3"]
                                 Note over UC: source = generated
+                                UC->>PhrRepo: save(newPhrase)
                             else OpenAI failure
                                 OpenAI-->>Gen: Error
                                 UC->>UC: buildFallbackPhrase()
                                 Note over UC: Concatenate labels<br/>source = fallback
                             end
-
-                            %% Save to cache
-                            UC->>PhrRepo: save(newPhrase)
                             PhrRepo->>DB: INSERT
                             DB-->>PhrRepo: OK
 
@@ -153,9 +151,9 @@ flowchart TB
     LLMSuccess -->|No| Fallback[Concatenate labels<br/>source=fallback]
 
     Generated --> SaveCache[Save to Cache]
-    Fallback --> SaveCache
 
     SaveCache --> Success([200 OK])
+    Fallback --> Success
     ReturnCache --> Success
 
     style Success fill:#c8e6c9
