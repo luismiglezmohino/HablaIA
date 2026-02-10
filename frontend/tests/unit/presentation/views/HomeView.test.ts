@@ -3,7 +3,6 @@ import { mount } from '@vue/test-utils'
 import { setActivePinia, createPinia } from 'pinia'
 import HomeView from '@/presentation/views/HomeView.vue'
 import { useCategoryStore } from '@/application/stores/useCategoryStore'
-import { usePictogramStore } from '@/application/stores/usePictogramStore'
 import { usePhraseStore } from '@/application/stores/usePhraseStore'
 
 beforeEach(() => {
