@@ -1,0 +1,5 @@
+-- UP
+CREATE EXTENSION IF NOT EXISTS "unaccent";
+
+-- DOWN
+DROP EXTENSION IF EXISTS "unaccent";

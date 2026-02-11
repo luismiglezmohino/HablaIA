@@ -95,7 +95,7 @@ $response = $generateHumanizedPhrase(['id-comer', 'id-pan']);
 
 Caso de uso para busqueda de pictogramas con fallback a ARASAAC API:
 
-1. **Busca localmente** en base de datos (LIKE query)
+1. **Busca localmente** en base de datos (insensible a acentos via `unaccent`)
 2. **Si hay resultados locales**, los retorna
 3. **Si NO hay resultados**, busca en ARASAAC API
 4. **Descarga imagenes** y guarda pictogramas encontrados

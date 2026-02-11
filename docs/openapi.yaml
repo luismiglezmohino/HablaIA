@@ -297,6 +297,7 @@ paths:
       summary: Search pictograms
       description: |
         Search pictograms by keyword (label). Returns max 10 results.
+        Accent-insensitive: searching "camion" finds "camión".
 
         **Query limits:** 2-100 characters
       operationId: searchPictograms

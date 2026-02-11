@@ -74,7 +74,7 @@ final class CyclePictogramRepository implements PictogramRepository
         /** @var array<PictogramEntity> $entities */
         $entities = $this->repository
             ->select()
-            ->where(new Fragment('LOWER("label") LIKE ?', "%{$normalizedQuery}%"))
+            ->where(new Fragment('unaccent(LOWER("label")) LIKE unaccent(?)', "%{$normalizedQuery}%"))
             ->limit($limit)
             ->fetchAll();
 

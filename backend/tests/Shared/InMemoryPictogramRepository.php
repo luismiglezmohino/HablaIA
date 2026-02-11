@@ -42,14 +42,25 @@ final class InMemoryPictogramRepository implements PictogramRepository
     /** @return array<Pictogram> */
     public function findByLabelLike(string $query, int $limit = 10): array
     {
-        $normalizedQuery = mb_strtolower(trim($query));
+        $normalizedQuery = self::stripAccents(mb_strtolower(trim($query)));
 
         $results = array_filter(
             $this->pictograms,
-            fn(Pictogram $p) => str_contains(mb_strtolower($p->label()), $normalizedQuery)
+            fn(Pictogram $p) => str_contains(self::stripAccents(mb_strtolower($p->label())), $normalizedQuery)
         );
 
         return array_slice(array_values($results), 0, $limit);
+    }
+
+    private static function stripAccents(string $text): string
+    {
+        $normalized = \Normalizer::normalize($text, \Normalizer::FORM_D);
+
+        if ($normalized === false) {
+            return $text;
+        }
+
+        return (string) preg_replace('/\p{Mn}/u', '', $normalized);
     }
 
     public function findByArasaacId(int $arasaacId): ?Pictogram

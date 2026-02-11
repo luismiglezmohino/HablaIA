@@ -8,6 +8,7 @@
 -- -----------------------------------------------------------------------------
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";  -- Para búsqueda de texto
+CREATE EXTENSION IF NOT EXISTS "unaccent"; -- Para búsqueda sin acentos
 
 -- -----------------------------------------------------------------------------
 -- Mensaje de confirmación
