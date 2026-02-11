@@ -384,6 +384,34 @@ describe('PictogramController', function (): void {
             expect($data[0]['label'])->toBe('dinosaurio');
         });
 
+        it('finds accented labels when searching without accents', function (): void {
+            $client = static::createClient();
+
+            $pictogramRepo = new InMemoryPictogramRepository();
+
+            $pictogram = new Pictogram(
+                PictogramId::fromString($this->uuidGenerator->generate()),
+                new ArasaacId(9853),
+                CategoryId::fromString('550e8400-e29b-41d4-a716-446655440001'),
+                'quién',
+                '/pictograms/9853.png'
+            );
+            $pictogramRepo->save($pictogram);
+
+            self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
+            self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
+
+            $client->request('GET', '/api/pictograms/search?q=quien');
+
+            expect($client->getResponse()->getStatusCode())->toBe(200);
+            $data = json_decode($client->getResponse()->getContent(), true);
+            expect($data)->toHaveCount(1);
+            expect($data[0]['label'])->toBe('quién');
+        });
+
         it('returns correct JSON structure', function (): void {
             $client = static::createClient();
 

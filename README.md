@@ -622,7 +622,7 @@ docs/adrs/
 | Funcionalidad | Estado | Descripción |
 |---------------|--------|-------------|
 | Grid de pictogramas | ✅ Backend | API: GET /api/pictograms, GET /api/categories (10 categorías SAAC con colores Modified Fitzgerald Key) |
-| Búsqueda de pictogramas | ✅ Backend | API: GET /api/pictograms/search?q= (con fallback ARASAAC) |
+| Búsqueda de pictogramas | ✅ Backend | API: GET /api/pictograms/search?q= (sin acentos, con fallback ARASAAC) |
 | Generación IA | ✅ Backend | API: POST /api/phrases/generate (3 variaciones) |
 | Caché de frases | ✅ Backend | PostgreSQL + Cycle ORM |
 | Sincronización ARASAAC | ✅ Backend | Comando: app:arasaac:sync (197 palabras core vocabulary) |

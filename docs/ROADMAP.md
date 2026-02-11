@@ -46,7 +46,7 @@
 - ✅ Conexion API: fetchCategories + fetchByCategory + generatePhrase
 - ✅ WCAG 2.1 AA: 44x44px touch targets, focus rings, aria-labels, role="tablist"
 - ✅ Text-to-Speech con Web Speech API (TTSProvider interface, WebSpeechTTS, useTTS composable, SpeakButton)
-- ✅ SearchBar con debounce y búsqueda: local DB → fallback ARASAAC API (descarga y persiste pictogramas)
+- ✅ SearchBar con debounce y búsqueda insensible a acentos: local DB → fallback ARASAAC API (descarga y persiste pictogramas)
 - ✅ Error handling UI: inline feedback (ADR-010), mensajes user-friendly en español, feedback visual en botones (loading/error/retry)
 - ✅ Rediseño visual moderno (ADR-011): paleta Indigo, fuente Inter, sombras, motion-safe, Badge/Skeleton shadcn-vue, WCAG 2.2
 - ✅ Responsive tres configuraciones: movil, tablet portrait, tablet landscape (media query custom con clases utilitarias independientes)
