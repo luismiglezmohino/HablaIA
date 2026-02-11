@@ -63,7 +63,7 @@ del backend desplegado en Docker (entorno dev local). Cada petición envía los 
 de los pictogramas almacenados en PostgreSQL y recibe la respuesta del modelo LLM en tiempo
 real (no mocks). Las respuestas se registran tal cual las devuelve la API.
 
-## Resultados: 14/14 (100%)
+## Resultados: 19/19 (100%)
 
 | # | Pictogramas | Cant. | Variación 1 | Variación 2 | Variación 3 |
 |---|---|---|---|---|---|
@@ -81,6 +81,11 @@ real (no mocks). Las respuestas se registran tal cual las devuelve la API.
 | 12 | yo, estar, cansado, querer, dormir, casa, hoy, mama | 8 | Mama, estoy cansado y quiero dormir en casa hoy | Que cansado estoy, mama! Hoy quiero descansar en casa | Mama, me siento muy cansado. Podemos ir a casa a dormir hoy? |
 | 13 | yo, querer, ir, casa, abuela, manana, mama, papa, coche | 9 | Manana quiero ir a casa de la abuela con mama y papa en coche | Que ganas de ir manana en coche a casa de la abuela con mis padres! | Mama y papa, podemos ir manana en coche a casa de la abuela? |
 | 14 | hoy, yo, estar, cansado, no, gustar, colegio, querer, dormir, casa | 10 | Hoy estoy cansado, no me gusta el colegio y quiero dormir en casa | Estoy agotado hoy! No quiero estar en el colegio, prefiero dormir en casa | Hoy estoy cansado y no me siento bien. Puedo ir a casa a dormir? |
+| 15 | yo, estar, enfadado, no, gustar, colegio | 6 | Estoy enfadado y no me gusta el colegio | Qué enfado tengo con el colegio! No me gusta nada | Hoy no me gusta el colegio, estoy enfadado |
+| 16 | mamá, yo, doler, necesitar, médico | 5 | Mamá, me duele y necesito un médico | Mamá, me duele mucho y necesito que me vea un médico | Mamá, me encuentro mal y creo que necesito ir al médico |
+| 17 | mañana, yo, querer, ir, piscina, amigo | 6 | Mañana quiero ir a la piscina con mi amigo | Qué ganas de ir a la piscina con mi amigo mañana! | Podemos ir a la piscina con mi amigo mañana? |
+| 18 | yo, querer, comer, galleta, chocolate, leche | 6 | Quiero una galleta de chocolate y leche | Qué rica una galleta de chocolate con leche! | Me das una galleta de chocolate y leche, por favor? |
+| 19 | yo, estar, triste, querer, hablar, mamá | 6 | Estoy triste, quiero hablar con mamá | Me siento triste, necesito hablar con mi mamá | Mamá, estoy triste, podemos hablar? |
 
 ## Comparativa con Flash Lite (sesión anterior)
 
