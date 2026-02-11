@@ -7,6 +7,9 @@
 # --- Stage 1: Build frontend ---
 FROM node:20-alpine AS frontend-build
 
+ARG VITE_SENTRY_DSN
+ENV VITE_SENTRY_DSN=$VITE_SENTRY_DSN
+
 WORKDIR /app
 
 COPY frontend/package.json frontend/package-lock.json ./
