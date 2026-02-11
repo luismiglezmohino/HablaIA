@@ -40,3 +40,6 @@ docker-compose.override.yaml
 
 # Generated binaries
 bin/phpunit
+
+# Symfony auto-generated config reference (IDE autocompletion)
+/config/reference.php
