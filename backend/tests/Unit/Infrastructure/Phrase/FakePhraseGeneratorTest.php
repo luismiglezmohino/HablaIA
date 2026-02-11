@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Infrastructure\ExternalApi\OpenAI;
+namespace Tests\Unit\Infrastructure\Phrase;
 
 use App\Domain\Phrase\Service\PhraseGeneratorInterface;
 use App\Domain\Phrase\ValueObject\PictogramSequence;
 use App\Domain\Pictogram\ValueObject\PictogramId;
-use App\Infrastructure\ExternalApi\OpenAI\FakeOpenAIPhraseGenerator;
+use App\Infrastructure\Phrase\FakePhraseGenerator;
 
-describe('FakeOpenAIPhraseGenerator', function (): void {
+describe('FakePhraseGenerator', function (): void {
     it('implements PhraseGeneratorInterface', function (): void {
-        $generator = new FakeOpenAIPhraseGenerator();
+        $generator = new FakePhraseGenerator();
 
         expect($generator)->toBeInstanceOf(PhraseGeneratorInterface::class);
     });
 
     describe('generate', function (): void {
         it('returns exactly 3 variations', function (): void {
-            $generator = new FakeOpenAIPhraseGenerator();
+            $generator = new FakePhraseGenerator();
             $sequence = new PictogramSequence([
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
@@ -29,7 +29,7 @@ describe('FakeOpenAIPhraseGenerator', function (): void {
         });
 
         it('returns array of strings', function (): void {
-            $generator = new FakeOpenAIPhraseGenerator();
+            $generator = new FakePhraseGenerator();
             $sequence = new PictogramSequence([
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
@@ -42,7 +42,7 @@ describe('FakeOpenAIPhraseGenerator', function (): void {
         });
 
         it('generates variations with single label', function (): void {
-            $generator = new FakeOpenAIPhraseGenerator();
+            $generator = new FakePhraseGenerator();
             $sequence = new PictogramSequence([
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
@@ -53,7 +53,7 @@ describe('FakeOpenAIPhraseGenerator', function (): void {
         });
 
         it('generates variations with multiple labels', function (): void {
-            $generator = new FakeOpenAIPhraseGenerator();
+            $generator = new FakePhraseGenerator();
             $sequence = new PictogramSequence([
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440002'),
@@ -73,7 +73,7 @@ describe('FakeOpenAIPhraseGenerator', function (): void {
         });
 
         it('uses predefined templates', function (): void {
-            $generator = new FakeOpenAIPhraseGenerator();
+            $generator = new FakePhraseGenerator();
             $sequence = new PictogramSequence([
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
@@ -94,7 +94,7 @@ describe('FakeOpenAIPhraseGenerator', function (): void {
         });
 
         it('generates different variations', function (): void {
-            $generator = new FakeOpenAIPhraseGenerator();
+            $generator = new FakePhraseGenerator();
             $sequence = new PictogramSequence([
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);
@@ -106,7 +106,7 @@ describe('FakeOpenAIPhraseGenerator', function (): void {
         });
 
         it('falls back to "esto" with empty labels', function (): void {
-            $generator = new FakeOpenAIPhraseGenerator();
+            $generator = new FakePhraseGenerator();
             $sequence = new PictogramSequence([
                 PictogramId::fromString('550e8400-e29b-41d4-a716-446655440001'),
             ]);

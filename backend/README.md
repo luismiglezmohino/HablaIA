@@ -32,8 +32,9 @@ src/
     ├── ExternalApi/            # Clientes externos
     │   ├── Arasaac/            # ArasaacApiClient (PictogramProviderInterface)
     │   ├── Gemini/             # GeminiPhraseGenerator (PhraseGeneratorInterface)
-    │   ├── OpenAI/             # OpenAIPhraseGenerator (PhraseGeneratorInterface)
+    │   ├── OpenAI/             # RealOpenAIPhraseGenerator (PhraseGeneratorInterface)
     │   └── Shared/             # PhrasePrompt (constantes compartidas)
+    ├── Phrase/                 # FakePhraseGenerator (templates sin API)
     ├── Health/                 # Health checks (DB status)
     ├── Http/Controller/        # CategoryController, PictogramController, PhraseController, HealthController
     ├── Persistence/Cycle/      # Cycle ORM (entidades, mappers, repositorios)
@@ -104,7 +105,7 @@ Caso de uso para busqueda de pictogramas con fallback a ARASAAC API:
 > **Principios SOLID aplicados:**
 > - **S:** Cada Use Case hace una sola cosa
 > - **O:** Nuevos generadores sin modificar codigo existente
-> - **L:** FakePhraseGenerator intercambiable con OpenAI
+> - **L:** FakePhraseGenerator intercambiable con proveedor LLM (OpenAI/Gemini)
 > - **I:** Interfaces pequenas y especificas
 > - **D:** Use Cases dependen de interfaces, no implementaciones
 
@@ -117,10 +118,15 @@ Ver diagramas completos en [docs/diagrams/infrastructure-layer.md](../docs/diagr
 | Cliente | Interfaz | Descripcion |
 |---------|----------|-------------|
 | `ArasaacApiClient` | `PictogramProviderInterface` | Cliente para ARASAAC API (busqueda y descarga de pictogramas) |
-| `GeminiPhraseGenerator` | `PhraseGeneratorInterface` | Generador de frases con Gemini 2.5 Flash Lite (default, free tier) |
-| `RealOpenAIPhraseGenerator` | `PhraseGeneratorInterface` | Generador de frases con OpenAI GPT-4o-mini |
-| `FakeOpenAIPhraseGenerator` | `PhraseGeneratorInterface` | Fake para desarrollo/testing (no requiere API key) |
+| `GeminiPhraseGenerator` | `PhraseGeneratorInterface` | Generador de frases con Gemini 2.5 Flash (default, free tier) |
+| `OpenAIPhraseGenerator` | `PhraseGeneratorInterface` | Generador de frases con OpenAI GPT-4o-mini |
 | `PhraseGeneratorFactory` | - | Factory que crea el generador segun `PHRASE_PROVIDER` env var |
+
+### Phrase
+
+| Cliente | Interfaz | Descripcion |
+|---------|----------|-------------|
+| `FakePhraseGenerator` | `PhraseGeneratorInterface` | Fake con templates (no requiere API key) |
 
 ### Console Commands
 
