@@ -153,6 +153,19 @@ describe('usePhraseStore', () => {
 
       expect(store.error).toBeNull()
     })
+
+    it('clears phrase response when last pictogram is removed', async () => {
+      const store = usePhraseStore()
+      const repo = createMockRepository()
+      store.addPictogram(pictogramFixtures[0]!)
+      await store.generatePhrase(repo)
+      expect(store.phraseResponse).not.toBeNull()
+
+      store.removePictogram(0)
+
+      expect(store.selectedPictograms).toHaveLength(0)
+      expect(store.phraseResponse).toBeNull()
+    })
   })
 
   describe('clearSelection', () => {
