@@ -29,6 +29,9 @@ export const usePhraseStore = defineStore('phrases', () => {
     if (index < 0 || index >= selectedPictograms.value.length) return
     selectedPictograms.value.splice(index, 1)
     error.value = null
+    if (selectedPictograms.value.length === 0) {
+      phraseResponse.value = null
+    }
   }
 
   function clearSelection(): void {
