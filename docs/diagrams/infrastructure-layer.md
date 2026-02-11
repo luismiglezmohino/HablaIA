@@ -23,9 +23,12 @@ graph TB
             AAC[ArasaacApiClient]
             GPG[GeminiPhraseGenerator]
             OAI[RealOpenAIPhraseGenerator]
-            FOAI[FakeOpenAIPhraseGenerator]
             PGF[PhraseGeneratorFactory]
             PP[PhrasePrompt]
+        end
+
+        subgraph Phrase["Phrase"]
+            FPG[FakePhraseGenerator]
         end
 
         subgraph Persistence["Persistence (Cycle ORM)"]
@@ -230,7 +233,7 @@ classDiagram
         -parseVariations(string content) array~string~
     }
 
-    class FakeOpenAIPhraseGenerator {
+    class FakePhraseGenerator {
         +generate(PictogramSequence) array~string~
     }
 
@@ -278,10 +281,10 @@ classDiagram
     PictogramProviderInterface <|.. ArasaacApiClient
     PhraseGeneratorInterface <|.. GeminiPhraseGenerator
     PhraseGeneratorInterface <|.. RealOpenAIPhraseGenerator
-    PhraseGeneratorInterface <|.. FakeOpenAIPhraseGenerator
+    PhraseGeneratorInterface <|.. FakePhraseGenerator
     PhraseGeneratorFactory --> GeminiPhraseGenerator
     PhraseGeneratorFactory --> RealOpenAIPhraseGenerator
-    PhraseGeneratorFactory --> FakeOpenAIPhraseGenerator
+    PhraseGeneratorFactory --> FakePhraseGenerator
     GeminiPhraseGenerator ..> PhrasePrompt
     RealOpenAIPhraseGenerator ..> PhrasePrompt
 ```
@@ -568,8 +571,8 @@ sequenceDiagram
 | **Console** | `SyncArasaacCommand` | Sincronizacion con ARASAAC |
 | **ExternalApi** | `ArasaacApiClient` | Cliente ARASAAC API |
 | **ExternalApi** | `GeminiPhraseGenerator` | Generador con Gemini (default) |
-| **ExternalApi** | `RealOpenAIPhraseGenerator` | Generador con OpenAI |
-| **ExternalApi** | `FakeOpenAIPhraseGenerator` | Fake para desarrollo |
+| **ExternalApi** | `OpenAIPhraseGenerator` | Generador con OpenAI |
+| **Phrase** | `FakePhraseGenerator` | Fake para desarrollo (templates sin API) |
 | **ExternalApi** | `PhraseGeneratorFactory` | Factory multi-proveedor |
 | **ExternalApi** | `PhrasePrompt` | Constantes de prompt compartidas |
 | **Persistence** | `CycleCategoryRepository` | Persistencia de categorias |
@@ -588,4 +591,4 @@ sequenceDiagram
 | **Interface Segregation** | Interfaces especificas: `ImageDownloaderInterface`, `VocabularyLoaderInterface` |
 | **Single Responsibility** | Cada servicio tiene una unica responsabilidad |
 | **Open/Closed** | Gemini añadido sin modificar Domain/Application (validado) |
-| **Liskov Substitution** | `FakeOpenAIPhraseGenerator` intercambiable con `RealOpenAIPhraseGenerator` |
+| **Liskov Substitution** | `FakePhraseGenerator` intercambiable con proveedor LLM (OpenAI/Gemini) |

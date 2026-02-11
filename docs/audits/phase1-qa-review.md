@@ -113,7 +113,7 @@
 | Persistence/Repositories (3) | 3 | 3 archivos unitarios (24 tests) |
 | Persistence/Mappers (3) | 3 | 3 archivos unitarios (15 tests) |
 | Persistence/Entities (3) | 3 | Ejercitados via tests de mapper/repository |
-| API clients externos (4: Arasaac, Gemini, FakeOpenAI, RealOpenAI) | 4 | 4 archivos unitarios |
+| API clients externos (4: Arasaac, Gemini, Fake, OpenAI) | 4 | 4 archivos unitarios |
 | API factory (1) | 1 | 1 archivo unitario (6 tests) |
 | API exceptions (3) | 3 | 3 archivos unitarios |
 | SecurityHeadersSubscriber (1) | 1 | 1 archivo unitario (9 tests) |

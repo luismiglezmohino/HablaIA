@@ -62,7 +62,7 @@ Esta decisión es deliberada: el público objetivo de HablaIA son personas con n
 PhraseGeneratorInterface (Domain)
     ├── GeminiPhraseGenerator (Infrastructure)      ← NUEVO
     ├── RealOpenAIPhraseGenerator (Infrastructure)   ← existente
-    └── FakeOpenAIPhraseGenerator (Infrastructure)   ← existente (fallback)
+    └── FakePhraseGenerator (Infrastructure)          ← fake (templates sin API)
 
 PhrasePrompt (Infrastructure)                        ← NUEVO
     → Constantes compartidas: SYSTEM_PROMPT, USER_PROMPT_TEMPLATE

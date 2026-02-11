@@ -24,8 +24,9 @@ Infrastructure/
     Shared/PhrasePrompt.php                      # Prompt compartido entre providers
     OpenAI/
       RealOpenAIPhraseGenerator.php              # Provider OpenAI (GPT-4o-mini)
-      FakeOpenAIPhraseGenerator.php              # Provider Fake (dev/test)
       Exception/OpenAIException.php
+  Phrase/
+    FakePhraseGenerator.php                      # Fake (templates sin API, dev/test)
     Gemini/
       GeminiPhraseGenerator.php                  # Provider Gemini
       Exception/GeminiException.php
@@ -61,8 +62,8 @@ public function create(): PhraseGeneratorInterface
     return match ($this->provider) {   // $this->provider viene de env(LLM_PROVIDER)
         'gemini' => new GeminiPhraseGenerator(...),
         'openai' => new RealOpenAIPhraseGenerator(...),
-        'fake'   => new FakeOpenAIPhraseGenerator(),
-        default  => new FakeOpenAIPhraseGenerator(), // Fallback seguro
+        'fake'   => new FakePhraseGenerator(),
+        default  => new FakePhraseGenerator(), // Fallback seguro
     };
 }
 ```

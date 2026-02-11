@@ -104,7 +104,7 @@ No existe autenticacion, lo cual es por diseno para Phase 1 (comunicador AAC pub
 - Arquitectura Clean Architecture con separacion de capas correcta.
 - Capa Domain sin dependencias de framework.
 - Inputs externos validados en multiples capas (Controller, Use Case, Domain Value Objects).
-- `PhraseGeneratorFactory` por defecto usa `FakeOpenAIPhraseGenerator` para valores de proveedor desconocidos (fail-safe).
+- `PhraseGeneratorFactory` por defecto usa `FakePhraseGenerator` para valores de proveedor desconocidos (fail-safe).
 - Health checks exponen informacion minima.
 
 ---

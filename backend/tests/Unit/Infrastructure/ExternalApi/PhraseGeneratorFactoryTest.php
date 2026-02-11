@@ -6,7 +6,7 @@ namespace Tests\Unit\Infrastructure\ExternalApi;
 
 use App\Domain\Phrase\Service\PhraseGeneratorInterface;
 use App\Infrastructure\ExternalApi\Gemini\GeminiPhraseGenerator;
-use App\Infrastructure\ExternalApi\OpenAI\FakeOpenAIPhraseGenerator;
+use App\Infrastructure\Phrase\FakePhraseGenerator;
 use App\Infrastructure\ExternalApi\OpenAI\RealOpenAIPhraseGenerator;
 use App\Infrastructure\ExternalApi\PhraseGeneratorFactory;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -58,7 +58,7 @@ describe('PhraseGeneratorFactory', function (): void {
         expect($generator)->toBeInstanceOf(RealOpenAIPhraseGenerator::class);
     });
 
-    it('creates FakeOpenAIPhraseGenerator when provider is fake', function (): void {
+    it('creates FakePhraseGenerator when provider is fake', function (): void {
         $httpClient = $this->createMock(HttpClientInterface::class);
 
         $factory = new PhraseGeneratorFactory(
@@ -78,10 +78,10 @@ describe('PhraseGeneratorFactory', function (): void {
         $generator = $factory->create();
 
         expect($generator)->toBeInstanceOf(PhraseGeneratorInterface::class);
-        expect($generator)->toBeInstanceOf(FakeOpenAIPhraseGenerator::class);
+        expect($generator)->toBeInstanceOf(FakePhraseGenerator::class);
     });
 
-    it('falls back to FakeOpenAIPhraseGenerator for unknown provider', function (): void {
+    it('falls back to FakePhraseGenerator for unknown provider', function (): void {
         $httpClient = $this->createMock(HttpClientInterface::class);
 
         $factory = new PhraseGeneratorFactory(
@@ -101,7 +101,7 @@ describe('PhraseGeneratorFactory', function (): void {
         $generator = $factory->create();
 
         expect($generator)->toBeInstanceOf(PhraseGeneratorInterface::class);
-        expect($generator)->toBeInstanceOf(FakeOpenAIPhraseGenerator::class);
+        expect($generator)->toBeInstanceOf(FakePhraseGenerator::class);
     });
 
     it('passes correct parameters to Gemini generator', function (): void {

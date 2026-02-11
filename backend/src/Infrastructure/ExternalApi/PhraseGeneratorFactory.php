@@ -6,7 +6,7 @@ namespace App\Infrastructure\ExternalApi;
 
 use App\Domain\Phrase\Service\PhraseGeneratorInterface;
 use App\Infrastructure\ExternalApi\Gemini\GeminiPhraseGenerator;
-use App\Infrastructure\ExternalApi\OpenAI\FakeOpenAIPhraseGenerator;
+use App\Infrastructure\Phrase\FakePhraseGenerator;
 use App\Infrastructure\ExternalApi\OpenAI\RealOpenAIPhraseGenerator;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -48,8 +48,8 @@ final class PhraseGeneratorFactory
                 $this->maxTokens,
                 $this->timeout,
             ),
-            'fake' => new FakeOpenAIPhraseGenerator(),
-            default => new FakeOpenAIPhraseGenerator(), // Fallback seguro para valores inválidos
+            'fake' => new FakePhraseGenerator(),
+            default => new FakePhraseGenerator(), // Fallback seguro para valores inválidos
         };
     }
 }

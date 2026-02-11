@@ -378,7 +378,7 @@ graph TB
 |-----------|------------|
 | **S** - Single Responsibility | Cada Use Case hace una sola cosa |
 | **O** - Open/Closed | Nuevos generadores sin modificar Use Cases |
-| **L** - Liskov Substitution | FakePhraseGenerator intercambiable con OpenAI |
+| **L** - Liskov Substitution | FakePhraseGenerator intercambiable con proveedor LLM (OpenAI/Gemini) |
 | **I** - Interface Segregation | Interfaces pequeñas y específicas |
 | **D** - Dependency Inversion | Use Cases dependen de interfaces, no implementaciones |
 
