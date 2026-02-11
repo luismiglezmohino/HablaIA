@@ -19,6 +19,38 @@ function getCategoryColor(pictogram: Pictogram): string {
   const category = categoryStore.categories.find((c) => c.id === pictogram.categoryId)
   return category?.colorHex ?? DEFAULT_COLOR
 }
+
+function getColumnCount(grid: HTMLElement): number {
+  const children = Array.from(grid.children) as HTMLElement[]
+  if (children.length < 2) return 1
+  const firstTop = children[0]!.offsetTop
+  for (let i = 1; i < children.length; i++) {
+    if (children[i]!.offsetTop !== firstTop) return i
+  }
+  return children.length
+}
+
+function handleGridKeydown(event: KeyboardEvent) {
+  const grid = event.currentTarget as HTMLElement
+  const buttons = Array.from(grid.querySelectorAll<HTMLButtonElement>('button'))
+  const current = document.activeElement as HTMLButtonElement
+  const index = buttons.indexOf(current)
+  if (index === -1) return
+
+  const cols = getColumnCount(grid)
+  let next = index
+
+  switch (event.key) {
+    case 'ArrowRight': next = Math.min(index + 1, buttons.length - 1); break
+    case 'ArrowLeft': next = Math.max(index - 1, 0); break
+    case 'ArrowDown': next = Math.min(index + cols, buttons.length - 1); break
+    case 'ArrowUp': next = Math.max(index - cols, 0); break
+    default: return
+  }
+
+  event.preventDefault()
+  buttons[next]?.focus()
+}
 </script>
 
 <template>
@@ -47,6 +79,7 @@ function getCategoryColor(pictogram: Pictogram): string {
     role="grid"
     aria-label="Pictogramas"
     class="grid grid-cols-3 gap-2.5 px-3 py-4 sm:grid-cols-4 sm:gap-3.5 sm:px-4 sm:py-5 md:grid-cols-5 md:gap-4 lg:grid-cols-6 lg:px-6"
+    @keydown="handleGridKeydown"
   >
     <PictogramCard
       v-for="pictogram in pictogramStore.pictograms"

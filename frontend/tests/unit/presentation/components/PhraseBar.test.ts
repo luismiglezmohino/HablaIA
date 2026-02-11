@@ -183,10 +183,70 @@ describe('PhraseBar', () => {
       })
     })
 
-    it('has aria-live for selection changes', () => {
+    it('wraps each chip in a group with aria-label', () => {
       const { wrapper } = mountPhraseBar(pictogramFixtures)
 
-      expect(wrapper.find('[aria-live]').exists()).toBe(true)
+      const groups = wrapper.findAll('[role="group"]')
+
+      expect(groups).toHaveLength(2)
+      expect(groups.at(0)?.attributes('aria-label')).toBe('comer')
+      expect(groups.at(1)?.attributes('aria-label')).toBe('pan')
+    })
+
+    it('moves focus to next chip remove button after removing a chip', async () => {
+      const threePictograms: Pictogram[] = [
+        ...pictogramFixtures,
+        { id: 'p3', arasaacId: 4567, categoryId: 'cat-1', label: 'agua', imagePath: '/pictograms/4567.png' },
+      ]
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const store = usePhraseStore()
+      threePictograms.forEach((p) => store.addPictogram(p))
+      const wrapper = mount(PhraseBar, { global: { plugins: [pinia] }, attachTo: document.body })
+
+      const removeButtons = wrapper.findAll('[data-testid="remove-chip"]')
+      await removeButtons.at(0)?.trigger('click')
+      await wrapper.vm.$nextTick()
+
+      const remainingButtons = wrapper.findAll('[data-testid="remove-chip"]')
+      expect(remainingButtons).toHaveLength(2)
+      expect(document.activeElement).toBe(remainingButtons.at(0)?.element)
+      wrapper.unmount()
+    })
+
+    it('moves focus to last chip when removing the last chip in list', async () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const store = usePhraseStore()
+      pictogramFixtures.forEach((p) => store.addPictogram(p))
+      const wrapper = mount(PhraseBar, { global: { plugins: [pinia] }, attachTo: document.body })
+
+      const removeButtons = wrapper.findAll('[data-testid="remove-chip"]')
+      await removeButtons.at(1)?.trigger('click')
+      await wrapper.vm.$nextTick()
+
+      const remainingButtons = wrapper.findAll('[data-testid="remove-chip"]')
+      expect(remainingButtons).toHaveLength(1)
+      expect(document.activeElement).toBe(remainingButtons.at(0)?.element)
+      wrapper.unmount()
+    })
+
+    it('phrase results list is focusable for screen readers', () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const store = usePhraseStore()
+      store.addPictogram(pictogramFixtures[0]!)
+      store.phraseResponse = {
+        variations: ['Quiero comer'],
+        source: 'generated',
+        sequenceHash: 'abc',
+        pictogramIds: ['p1'],
+      }
+
+      const wrapper = mount(PhraseBar, { global: { plugins: [pinia] } })
+      const resultsList = wrapper.find('ul[role="list"]')
+
+      expect(resultsList.attributes('tabindex')).toBe('-1')
     })
   })
 

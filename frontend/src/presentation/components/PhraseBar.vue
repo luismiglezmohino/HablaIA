@@ -10,6 +10,7 @@ import type { Pictogram } from '@/domain/entities/Pictogram'
 const store = usePhraseStore()
 const categoryStore = useCategoryStore()
 const chipsRef = ref<HTMLElement | null>(null)
+const resultsRef = ref<HTMLElement | null>(null)
 
 watch(
   () => store.selectedPictograms.length,
@@ -29,6 +30,24 @@ const emit = defineEmits<{
   generate: []
 }>()
 
+async function handleRemoveChip(index: number) {
+  store.removePictogram(index)
+  await nextTick()
+  const buttons = chipsRef.value?.querySelectorAll<HTMLButtonElement>('[data-testid="remove-chip"]')
+  if (!buttons || buttons.length === 0) return
+  const target = Math.min(index, buttons.length - 1)
+  buttons[target]?.focus()
+}
+
+watch(
+  () => store.phraseResponse,
+  (newVal) => {
+    if (newVal) {
+      nextTick(() => resultsRef.value?.focus())
+    }
+  },
+)
+
 function getCategoryColor(pictogram: Pictogram): string {
   const category = categoryStore.categories.find((c) => c.id === pictogram.categoryId)
   return category?.colorHex ?? '#9CA3AF'
@@ -46,24 +65,27 @@ function getCategoryColor(pictogram: Pictogram): string {
     <div v-else class="tablet-landscape-inline">
       <div class="flex items-center gap-2">
         <!-- Chips -->
-        <div ref="chipsRef" aria-live="polite" class="flex flex-1 flex-wrap gap-1.5 overflow-y-auto max-h-24 sm:max-h-32 sm:gap-2 tablet-landscape-hstrip">
+        <div ref="chipsRef" class="flex flex-1 flex-wrap gap-1.5 overflow-y-auto max-h-24 sm:max-h-32 sm:gap-2 tablet-landscape-hstrip">
           <div
             v-for="(pictogram, index) in store.selectedPictograms"
             :key="`${pictogram.id}-${index}`"
+            role="group"
+            :aria-label="pictogram.label"
             :style="{ borderLeftColor: getCategoryColor(pictogram), '--tw-border-left-color': getCategoryColor(pictogram) }"
             class="relative flex shrink-0 items-center gap-1 rounded-full border border-surface-200 border-l-4 bg-white shadow-sm sm:py-1 sm:pl-1 sm:pr-2 tablet-landscape-chip"
           >
             <img
               :src="pictogram.imagePath"
-              :alt="pictogram.label"
+              alt=""
               class="h-10 w-10 rounded-full bg-surface-50 object-contain p-0.5 sm:h-8 sm:w-8"
+              aria-hidden="true"
             />
-            <span class="hidden text-sm text-accessible-text xl:inline">{{ pictogram.label }}</span>
+            <span aria-hidden="true" class="hidden text-sm text-accessible-text xl:inline">{{ pictogram.label }}</span>
             <button
               data-testid="remove-chip"
               :aria-label="`Eliminar ${pictogram.label}`"
-              class="ml-0.5 min-h-7 min-w-7 rounded-full p-1 text-surface-400 hover:bg-surface-100 hover:text-accessible-text sm:ml-1 tablet-landscape-chip-x"
-              @click="store.removePictogram(index)"
+              class="ml-0.5 min-h-7 min-w-7 rounded-full p-1 text-surface-400 hover:bg-surface-100 hover:text-accessible-text focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 sm:ml-1 tablet-landscape-chip-x"
+              @click="handleRemoveChip(index)"
             >
               <X :size="16" aria-hidden="true" />
             </button>
@@ -76,7 +98,7 @@ function getCategoryColor(pictogram: Pictogram): string {
           <button
             data-testid="clear-btn"
             aria-label="Borrar todos los pictogramas"
-            class="rounded-lg p-2.5 text-surface-400 hover:bg-white hover:text-accessible-text"
+            class="rounded-lg p-2.5 text-surface-400 hover:bg-white hover:text-accessible-text focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
             @click="store.clearSelection()"
           >
             <Trash2 :size="20" aria-hidden="true" />
@@ -131,7 +153,7 @@ function getCategoryColor(pictogram: Pictogram): string {
           {{ store.phraseResponse.source }}
         </Badge>
       </div>
-      <ul class="space-y-2" role="list">
+      <ul ref="resultsRef" class="space-y-2" role="list" tabindex="-1">
         <li
           v-for="(variation, index) in store.phraseResponse.variations"
           :key="index"
