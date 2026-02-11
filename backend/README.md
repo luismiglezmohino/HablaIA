@@ -205,9 +205,9 @@ Ver especificacion completa en [docs/openapi.yaml](../docs/openapi.yaml)
 
 ### Rate Limiting
 
-El endpoint `/api/phrases/generate` tiene rate limiting para proteger costes de LLM API:
-- **Limite:** 30 requests por minuto por IP (configurable via `PHRASE_RATE_LIMIT`)
-- **Ventana:** 60 segundos (configurable via `PHRASE_RATE_INTERVAL`)
+El endpoint `/api/phrases/generate` tiene doble rate limiting por IP para proteger costes de LLM API:
+- **Per-minute:** 30 req/min (sliding window) via `PHRASE_RATE_LIMIT` / `PHRASE_RATE_INTERVAL`
+- **Daily:** 500 req/dia (fixed window) via `PHRASE_DAILY_LIMIT`
 - **Respuesta:** HTTP 429 con header `Retry-After` cuando se excede
 
 ## Testing
@@ -260,6 +260,7 @@ DATABASE_URL="postgresql://user:pass@localhost:5432/pictospeak?serverVersion=16&
 # Rate Limiting
 PHRASE_RATE_LIMIT="30"
 PHRASE_RATE_INTERVAL="60"
+PHRASE_DAILY_LIMIT="500"
 
 # LLM Phrase Generator (gemini | openai | fake)
 PHRASE_PROVIDER="gemini"

@@ -13,8 +13,8 @@ info:
 
     ## Rate Limiting
     The `/api/phrases/generate` endpoint is rate-limited to protect API costs.
-    - **Limit:** 30 requests per minute per IP
-    - **Window:** 60 seconds (sliding window)
+    - **Per-minute:** 30 requests per minute per IP (sliding window)
+    - **Daily:** 500 requests per day per IP (fixed window)
     - **Response:** HTTP 429 with `Retry-After` header when exceeded
 
     ## Authentication
@@ -397,7 +397,7 @@ paths:
 
         **Limits:**
         - Pictograms: 1-10 per request
-        - Rate: 30 requests/min per IP (HTTP 429 when exceeded)
+        - Rate: 30 requests/min + 500 requests/day per IP (HTTP 429 when exceeded)
       operationId: generatePhrase
       requestBody:
         required: true
@@ -501,9 +501,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RateLimitErrorResponse'
-              example:
-                error: "Too many requests"
-                retryAfter: 1707058200
+              examples:
+                per_minute:
+                  summary: Per-minute rate limit exceeded
+                  value:
+                    error: "Too many requests"
+                    retryAfter: 1707058200
+                daily:
+                  summary: Daily rate limit exceeded
+                  value:
+                    error: "Daily request limit exceeded"
+                    retryAfter: 1707091200
 
 components:
   schemas:

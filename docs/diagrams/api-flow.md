@@ -17,23 +17,30 @@ sequenceDiagram
     participant PicRepo as PictogramRepository
     participant PhrRepo as PhraseRepository
     participant Gen as PhraseGenerator
-    participant OpenAI as OpenAI API
+    participant LLM as LLM API
     participant DB as PostgreSQL
 
     Client->>PC: POST /api/phrases/generate
     Note right of Client: {"pictogramIds": ["uuid1", "uuid2"]}
 
-    %% Rate Limiting
-    PC->>RL: consume(clientIP)
-    alt Rate limit exceeded
+    %% Rate Limiting (daily first, then per-minute)
+    PC->>RL: consumeDaily(clientIP)
+    alt Daily limit exceeded
         RL-->>PC: rejected
         PC-->>Client: 429 Too Many Requests
-        Note right of Client: {"error": "Too many requests", "retryAfter": timestamp}
-    else Rate limit OK
+        Note right of Client: {"error": "Daily request limit exceeded", "retryAfter": timestamp}
+    else Daily limit OK
         RL-->>PC: accepted
+        PC->>RL: consumePerMinute(clientIP)
+        alt Per-minute limit exceeded
+            RL-->>PC: rejected
+            PC-->>Client: 429 Too Many Requests
+            Note right of Client: {"error": "Too many requests", "retryAfter": timestamp}
+        else Per-minute limit OK
+            RL-->>PC: accepted
 
-        %% JSON Validation
-        PC->>PC: Parse JSON body
+            %% JSON Validation
+            PC->>PC: Parse JSON body
 
         alt Invalid JSON
             PC-->>Client: 400 Bad Request
@@ -86,16 +93,16 @@ sequenceDiagram
 
                             %% Generate with LLM
                             UC->>Gen: generate(sequence)
-                            Gen->>OpenAI: POST /v1/chat/completions
-                            Note right of Gen: model: gpt-4o-mini
+                            Gen->>LLM: Call LLM API
+                            Note right of Gen: Gemini / OpenAI
 
-                            alt OpenAI success
-                                OpenAI-->>Gen: JSON response
+                            alt LLM success
+                                LLM-->>Gen: JSON response
                                 Gen-->>UC: ["Frase 1", "Frase 2", "Frase 3"]
                                 Note over UC: source = generated
                                 UC->>PhrRepo: save(newPhrase)
-                            else OpenAI failure
-                                OpenAI-->>Gen: Error
+                            else LLM failure
+                                LLM-->>Gen: Error
                                 UC->>UC: buildFallbackPhrase()
                                 Note over UC: Concatenate labels<br/>source = fallback
                             end
@@ -109,6 +116,7 @@ sequenceDiagram
                 end
             end
         end
+        end
     end
 ```
 
@@ -116,10 +124,13 @@ sequenceDiagram
 
 ```mermaid
 flowchart TB
-    Start([POST /api/phrases/generate]) --> RateLimit{Rate Limit<br/>OK?}
+    Start([POST /api/phrases/generate]) --> DailyLimit{Daily Limit<br/>OK?}
 
-    RateLimit -->|No| Error429[429 Too Many Requests]
-    RateLimit -->|Yes| ParseJSON[Parse JSON Body]
+    DailyLimit -->|No| Error429D[429 Daily limit exceeded]
+    DailyLimit -->|Yes| MinuteLimit{Per-Minute<br/>Limit OK?}
+
+    MinuteLimit -->|No| Error429M[429 Too many requests]
+    MinuteLimit -->|Yes| ParseJSON[Parse JSON Body]
 
     ParseJSON --> ValidJSON{Valid JSON?}
     ValidJSON -->|No| Error400A[400 Invalid JSON]
@@ -144,7 +155,7 @@ flowchart TB
     CheckCache --> CacheHit{Cache Hit?}
 
     CacheHit -->|Yes| ReturnCache[Return source=cache]
-    CacheHit -->|No| CallLLM[Call OpenAI API]
+    CacheHit -->|No| CallLLM[Call LLM API]
 
     CallLLM --> LLMSuccess{LLM Success?}
     LLMSuccess -->|Yes| Generated[source=generated]
@@ -157,7 +168,8 @@ flowchart TB
     ReturnCache --> Success
 
     style Success fill:#c8e6c9
-    style Error429 fill:#ffcdd2
+    style Error429D fill:#ffcdd2
+    style Error429M fill:#ffcdd2
     style Error400A fill:#ffcdd2
     style Error400B fill:#ffcdd2
     style Error400C fill:#ffcdd2
@@ -175,7 +187,8 @@ flowchart TB
 | **400** | UUID invalido | `{"error": "Invalid UUID format"}` |
 | **400** | Secuencia invalida | `{"error": "Pictogram sequence cannot be empty"}` |
 | **404** | Pictograma no existe | `{"error": "Pictograms not found: uuid"}` |
-| **429** | Rate limit excedido | `{"error": "Too many requests", "retryAfter": 1234567890}` |
+| **429** | Rate limit por minuto | `{"error": "Too many requests", "retryAfter": 1234567890}` |
+| **429** | Rate limit diario | `{"error": "Daily request limit exceeded", "retryAfter": 1234567890}` |
 
 ---
 

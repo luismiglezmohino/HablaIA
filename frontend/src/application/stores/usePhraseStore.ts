@@ -51,7 +51,9 @@ export const usePhraseStore = defineStore('phrases', () => {
     } catch (e) {
       phraseResponse.value = null
       if (e instanceof ApiError && e.status === 429) {
-        error.value = 'Espera unos momentos antes de intentarlo de nuevo.'
+        error.value = e.body.error?.includes('Daily')
+          ? 'Has alcanzado el límite diario de solicitudes.'
+          : 'Espera unos momentos antes de intentarlo de nuevo.'
       } else {
         error.value = 'No se pudo generar la frase. Inténtalo de nuevo.'
       }

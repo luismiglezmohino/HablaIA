@@ -295,7 +295,7 @@ describe('usePhraseStore', () => {
       const store = usePhraseStore()
       const repo = createMockRepository({
         generate: vi.fn().mockRejectedValue(
-          new ApiError(429, { error: 'Rate limit exceeded', retryAfter: 60 }),
+          new ApiError(429, { error: 'Too many requests', retryAfter: 60 }),
         ),
       })
       store.addPictogram(pictogramFixtures[0]!)
@@ -303,6 +303,20 @@ describe('usePhraseStore', () => {
       await store.generatePhrase(repo)
 
       expect(store.error).toBe('Espera unos momentos antes de intentarlo de nuevo.')
+    })
+
+    it('shows daily limit message on 429 with daily error', async () => {
+      const store = usePhraseStore()
+      const repo = createMockRepository({
+        generate: vi.fn().mockRejectedValue(
+          new ApiError(429, { error: 'Daily request limit exceeded', retryAfter: 1770921298 }),
+        ),
+      })
+      store.addPictogram(pictogramFixtures[0]!)
+
+      await store.generatePhrase(repo)
+
+      expect(store.error).toBe('Has alcanzado el límite diario de solicitudes.')
     })
 
     it('clears previous error on new generation', async () => {
