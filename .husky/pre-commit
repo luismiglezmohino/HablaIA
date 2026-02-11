@@ -5,7 +5,7 @@
 # =============================================================================
 # 1. Ficheros prohibidos (agnostico)
 # 2. Deteccion de secrets en contenido (agnostico)
-# 3. Lint-staged (contexto-aware: ESLint frontend, PHPStan backend)
+# 3. Full check (contexto-aware: eslint+tsc+vitest frontend, phpstan+pest backend)
 
 echo "🔍 Running pre-commit checks..."
 
@@ -60,20 +60,40 @@ if [ -n "$STAGED_CONTENT" ]; then
 fi
 
 # -----------------------------------------------------------------------------
-# 3. Lint-staged
+# 3. Full check (lint + type-check + tests)
 # -----------------------------------------------------------------------------
-if [ $FAILED -eq 0 ]; then
-    if ! command -v npx &> /dev/null; then
-        echo "❌ npx not found. Please install Node.js"
-        exit 1
-    fi
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=d)
+HAS_FRONTEND=$(echo "$STAGED_FILES" | grep "^frontend/" || true)
+HAS_BACKEND=$(echo "$STAGED_FILES" | grep "^backend/" || true)
 
-    npx lint-staged
+if [ $FAILED -eq 0 ] && [ -n "$HAS_FRONTEND" ]; then
+    echo ""
+    echo "📦 Frontend check (eslint + type-check + tests)"
+    echo "─────────────────────────────────────────────────"
+    cd frontend
+    npm run check
     if [ $? -ne 0 ]; then
-        echo ""
-        echo "❌ Lint-staged checks failed!"
+        echo "❌ Frontend check failed!"
         FAILED=1
+    else
+        echo "✅ Frontend check passed!"
     fi
+    cd ..
+fi
+
+if [ $FAILED -eq 0 ] && [ -n "$HAS_BACKEND" ]; then
+    echo ""
+    echo "🐘 Backend check (phpstan + tests)"
+    echo "────────────────────────────────────"
+    cd backend
+    composer check
+    if [ $? -ne 0 ]; then
+        echo "❌ Backend check failed!"
+        FAILED=1
+    else
+        echo "✅ Backend check passed!"
+    fi
+    cd ..
 fi
 
 # -----------------------------------------------------------------------------
