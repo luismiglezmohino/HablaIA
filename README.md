@@ -307,6 +307,7 @@ OPENAI_MODEL="gpt-4o-mini"
 # Rate Limiting (POST /api/phrases/generate)
 PHRASE_RATE_LIMIT="30"
 PHRASE_RATE_INTERVAL="60"
+PHRASE_DAILY_LIMIT="500"
 ```
 
 **Solo si ejecutas el frontend fuera de Docker**, el proxy usa `http://localhost:8080` por defecto. Para sobreescribirlo, crea `frontend/.env`:
@@ -640,7 +641,7 @@ docs/adrs/
 | UUID Desacoplado | ✅ Completado | Domain valida (`Uuid`), Infrastructure genera (`UuidGeneratorInterface`) |
 | Docker | ✅ Completado | Contenedores para todos los servicios |
 | CI/CD | ✅ Completado | GitHub Actions + Husky (pre-commit, commit-msg, post-merge) + commitlint |
-| Seguridad | ✅ Completado | SSRF protection, Path Traversal, MIME validation, Rate limiting (configurable) |
+| Seguridad | ✅ Completado | SSRF protection, Path Traversal, MIME validation, Rate limiting (per-minute + daily por IP) |
 
 **Leyenda:** 🔲 Pendiente | 🚧 En progreso | ✅ Completado
 

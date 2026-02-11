@@ -362,6 +362,35 @@ describe('PhraseController', function (): void {
             expect($data['pictogramIds'])->toHaveCount(2);
         });
 
+        it('returns 429 when daily rate limit is exceeded', function (): void {
+            $client = static::createClient();
+            $client->disableReboot();
+
+            $pictogramRepo = $this->createMock(PictogramRepository::class);
+            $phraseRepo = $this->createMock(PhraseRepository::class);
+            $phraseGen = $this->createMock(PhraseGeneratorInterface::class);
+            $uuidGen = $this->createMock(UuidGeneratorInterface::class);
+
+            self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
+            self::getContainer()->set(PhraseRepository::class, $phraseRepo);
+            self::getContainer()->set(PhraseGeneratorInterface::class, $phraseGen);
+            self::getContainer()->set(UuidGeneratorInterface::class, $uuidGen);
+
+            // Pre-exhaust the daily limiter (PHRASE_DAILY_LIMIT=3 in .env.test)
+            $limiterFactory = self::getContainer()->get('limiter.phrase_daily');
+            $limiter = $limiterFactory->create('127.0.0.1');
+            $limiter->consume(3);
+
+            $body = json_encode(['pictogramIds' => ['550e8400-e29b-41d4-a716-446655440010']]);
+            $headers = ['CONTENT_TYPE' => 'application/json'];
+
+            $client->request('POST', '/api/phrases/generate', [], [], $headers, $body);
+            expect($client->getResponse()->getStatusCode())->toBe(429);
+
+            $data = json_decode($client->getResponse()->getContent(), true);
+            expect($data['error'])->toContain('Daily request limit');
+        });
+
         it('has correct rate limit response constant', function (): void {
             expect(Response::HTTP_TOO_MANY_REQUESTS)->toBe(429);
         });

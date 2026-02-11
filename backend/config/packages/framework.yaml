@@ -31,9 +31,16 @@ framework:
             policy: 'sliding_window'
             limit: '%env(int:PHRASE_RATE_LIMIT)%'
             interval: '%env(PHRASE_RATE_INTERVAL)% seconds'
+        phrase_daily:
+            policy: 'fixed_window'
+            limit: '%env(int:PHRASE_DAILY_LIMIT)%'
+            interval: '1 day'
 
 when@test:
     framework:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
+        # In-memory cache prevents rate limiter state from leaking between tests
+        cache:
+            app: cache.adapter.array

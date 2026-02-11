@@ -61,7 +61,9 @@ Interceptor Symfony (`kernel.response`) que anade a todas las respuestas:
 
 ### Rate limiting
 
-- `POST /api/phrases/generate`: configurable via `PHRASE_RATE_LIMIT` / `PHRASE_RATE_INTERVAL` (default: 30 req/60s, sliding window, por IP)
+- `POST /api/phrases/generate`: doble proteccion por IP para evitar abuso de costes LLM (Gemini/OpenAI). Protege tambien peticiones cacheadas como efecto colateral
+  - **Per-minute:** 30 req/60s (sliding window) via `PHRASE_RATE_LIMIT` / `PHRASE_RATE_INTERVAL`
+  - **Daily:** 500 req/dia (fixed window) via `PHRASE_DAILY_LIMIT`
 
 ### Trusted Proxies (Docker/Nginx)
 

@@ -58,12 +58,16 @@ Lee `skills/{skill}/SKILL.md` antes de implementar:
 
 ### Rate Limiting
 ```yaml
-# framework.yaml - 30 req/min en generacion de frases
+# framework.yaml - /api/phrases/generate
 rate_limiter:
-  phrase_generation:
+  phrase_generator:
     policy: sliding_window
-    limit: 30
-    interval: '1 minute'
+    limit: 30            # PHRASE_RATE_LIMIT (req/min)
+    interval: '60 seconds' # PHRASE_RATE_INTERVAL
+  phrase_daily:
+    policy: fixed_window
+    limit: 500           # PHRASE_DAILY_LIMIT (req/dia, 9999 en dev)
+    interval: '1 day'
 ```
 
 ### Cycle ORM DI Pattern

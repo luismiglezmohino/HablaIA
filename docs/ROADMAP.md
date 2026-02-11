@@ -28,7 +28,7 @@
 - ✅ Caché de frases en PostgreSQL (SHA256 hash, solo frases generadas por IA)
 - ✅ Sincronización automática con ARASAAC API (197 palabras core vocabulary)
 - ✅ Health checks para Kubernetes (liveness, readiness)
-- ✅ Rate limiting configurable en generación de frases
+- ✅ Rate limiting configurable en generación de frases (per-minute + daily por IP)
 - ✅ Tests: 394 unitarios (PestPHP), PHPStan level 8
 
 ### Frontend (🚧 En Construccion)

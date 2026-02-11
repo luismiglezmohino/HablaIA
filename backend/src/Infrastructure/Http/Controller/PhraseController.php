@@ -23,7 +23,8 @@ final class PhraseController
 {
     public function __construct(
         private readonly GenerateHumanizedPhrase $generateHumanizedPhrase,
-        private readonly RateLimiterFactory $phraseGeneratorLimiter
+        private readonly RateLimiterFactory $phraseGeneratorLimiter,
+        private readonly RateLimiterFactory $phraseDailyLimiter
     ) {
     }
 
@@ -37,7 +38,22 @@ final class PhraseController
     public function generate(Request $request): JsonResponse
     {
         // 1. Rate limiting by client IP
-        $limiter = $this->phraseGeneratorLimiter->create($request->getClientIp() ?? 'anonymous');
+        $clientIp = $request->getClientIp() ?? 'anonymous';
+
+        // Daily limit (fixed window, resets each day)
+        $dailyLimiter = $this->phraseDailyLimiter->create($clientIp);
+        $dailyLimit = $dailyLimiter->consume();
+
+        if (!$dailyLimit->isAccepted()) {
+            return new JsonResponse(
+                ['error' => 'Daily request limit exceeded', 'retryAfter' => $dailyLimit->getRetryAfter()->getTimestamp()],
+                Response::HTTP_TOO_MANY_REQUESTS,
+                ['Retry-After' => $dailyLimit->getRetryAfter()->getTimestamp()]
+            );
+        }
+
+        // Per-minute limit (sliding window)
+        $limiter = $this->phraseGeneratorLimiter->create($clientIp);
         $limit = $limiter->consume();
 
         if (!$limit->isAccepted()) {
