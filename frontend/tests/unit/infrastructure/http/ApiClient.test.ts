@@ -108,8 +108,50 @@ describe('ApiClient', () => {
     })
   })
 
+  describe('retry on network error', () => {
+    it('retries once on TypeError and succeeds', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch')
+        .mockRejectedValueOnce(new TypeError('Failed to fetch'))
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ id: 1, name: 'Retry OK' }), { status: 200 }),
+        )
+
+      const result = await client.get('/test', TestSchema)
+
+      expect(result).toEqual({ id: 1, name: 'Retry OK' })
+      expect(fetchSpy).toHaveBeenCalledTimes(2)
+    })
+
+    it('retries once on TypeError for POST and succeeds', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch')
+        .mockRejectedValueOnce(new TypeError('Failed to fetch'))
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ id: 1, name: 'Retry OK' }), { status: 200 }),
+        )
+
+      const result = await client.post('/test', { data: 'value' }, TestSchema)
+
+      expect(result).toEqual({ id: 1, name: 'Retry OK' })
+      expect(fetchSpy).toHaveBeenCalledTimes(2)
+    })
+
+    it('throws after retry also fails with TypeError', async () => {
+      vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('Failed to fetch'))
+
+      await expect(client.get('/test', TestSchema)).rejects.toThrow('Failed to fetch')
+    })
+
+    it('does not retry on non-TypeError errors', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch')
+        .mockRejectedValueOnce(new Error('Some other error'))
+
+      await expect(client.get('/test', TestSchema)).rejects.toThrow('Some other error')
+      expect(fetchSpy).toHaveBeenCalledTimes(1)
+    })
+  })
+
   describe('error handling', () => {
-    it('propagates network errors from fetch', async () => {
+    it('propagates network errors from fetch after retry', async () => {
       vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('Failed to fetch'))
 
       await expect(client.get('/test', TestSchema)).rejects.toThrow('Failed to fetch')

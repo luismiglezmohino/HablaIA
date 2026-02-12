@@ -29,8 +29,19 @@ function parseErrorBody(raw: unknown): { error: string; retryAfter?: number } {
 export class ApiClient {
   constructor(private readonly baseUrl: string = '/api') {}
 
+  private async fetchWithRetry(url: string, options: RequestInit): Promise<Response> {
+    try {
+      return await fetch(url, options)
+    } catch (error) {
+      if (error instanceof TypeError) {
+        return await fetch(url, options)
+      }
+      throw error
+    }
+  }
+
   async get<T>(path: string, schema: ZodSchema<T>): Promise<T> {
-    const response = await fetch(`${this.baseUrl}${path}`, { method: 'GET' })
+    const response = await this.fetchWithRetry(`${this.baseUrl}${path}`, { method: 'GET' })
 
     if (!response.ok) {
       let raw: unknown
@@ -47,7 +58,7 @@ export class ApiClient {
   }
 
   async post<T>(path: string, body: unknown, schema: ZodSchema<T>): Promise<T> {
-    const response = await fetch(`${this.baseUrl}${path}`, {
+    const response = await this.fetchWithRetry(`${this.baseUrl}${path}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
