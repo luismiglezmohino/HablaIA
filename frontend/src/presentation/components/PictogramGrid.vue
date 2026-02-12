@@ -60,7 +60,7 @@ function handleGridKeydown(event: KeyboardEvent) {
   </div>
 
   <div v-else-if="pictogramStore.error" role="alert" class="mx-4 rounded-xl bg-red-50 p-6 text-center">
-    <span class="text-red-600">{{ pictogramStore.error }}</span>
+    <span class="text-red-700">{{ pictogramStore.error }}</span>
   </div>
 
   <div

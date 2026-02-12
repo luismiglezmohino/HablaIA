@@ -143,7 +143,7 @@ function getCategoryColor(pictogram: Pictogram): string {
 
     <!-- Error -->
     <div v-if="store.error" role="alert" class="mt-3 text-center">
-      <span class="text-sm text-red-600">{{ store.error }}</span>
+      <span class="text-sm text-red-700">{{ store.error }}</span>
     </div>
 
     <!-- Phrase results (tablet+ only, mobile renders in HomeView) -->

@@ -73,7 +73,7 @@ function handleKeydown(event: KeyboardEvent, index: number) {
   </div>
 
   <div v-else-if="store.error" role="alert" class="flex items-center justify-center gap-2 p-4">
-    <span class="text-red-600">{{ store.error }}</span>
+    <span class="text-red-700">{{ store.error }}</span>
   </div>
 
   <nav v-else aria-label="Categorías" class="bg-white border-b border-surface-200 shadow-soft xl:overflow-x-auto">
