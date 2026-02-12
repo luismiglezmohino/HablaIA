@@ -26,9 +26,8 @@ const emit = defineEmits<{
       <div class="flex w-full items-center justify-center bg-white px-2 pt-4 pb-3 sm:px-3 sm:pt-5 sm:pb-4">
         <img
           :src="props.pictogram.imagePath"
-          :alt="props.pictogram.label"
+          alt=""
           loading="lazy"
-          aria-hidden="true"
           class="h-16 w-16 object-contain drop-shadow-md sm:h-20 sm:w-20 lg:h-24 lg:w-24"
         />
       </div>

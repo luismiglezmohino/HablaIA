@@ -2,7 +2,7 @@
 
 > Resumen de postura de seguridad. Informe detallado en [`docs/audits/phase1-security-audit.md`](audits/phase1-security-audit.md)
 
-**Ultima revision:** 5 de febrero de 2026
+**Ultima revision:** 13 de febrero de 2026
 **Scope:** Backend Symfony 7.4 + Cycle ORM + PostgreSQL 16
 **Fase:** Phase 1 MVP (sin autenticacion)
 
@@ -12,7 +12,7 @@
 
 | Categoria | Estado | Notas |
 |---|---|---|
-| A01 Broken Access Control | 🟡 Sin auth (por diseno en Phase 1) | Rate limiting en generacion de frases. Auth planificada para Phase 3 |
+| A01 Broken Access Control | 🟡 Sin auth (por diseno en Phase 1) | Rate limiting en generacion de frases y busqueda. Auth planificada para Phase 3 |
 | A02 Cryptographic Failures | 🟢 OK | `.env` no trackeado en git. Solo placeholders en `.env.example` |
 | A03 Injection | 🟢 OK | Cycle ORM parametrizado. UUIDs validados. Query sanitizada. Prompt injection mitigado |
 | A04 Insecure Design | 🟢 OK | Clean Architecture. Validacion en 3 capas (Controller, Application, Domain) |
@@ -64,6 +64,8 @@ Interceptor Symfony (`kernel.response`) que anade a todas las respuestas:
 - `POST /api/phrases/generate`: doble proteccion por IP para evitar abuso de costes LLM (Gemini/OpenAI). Protege tambien peticiones cacheadas como efecto colateral
   - **Per-minute:** 30 req/60s (sliding window) via `PHRASE_RATE_LIMIT` / `PHRASE_RATE_INTERVAL`
   - **Daily:** 500 req/dia (fixed window) via `PHRASE_DAILY_LIMIT`
+- `GET /api/pictograms/search`: proteccion por IP para evitar abuso de peticiones a ARASAAC y escritura en disco
+  - **Per-minute:** 30 req/60s (sliding window) via `SEARCH_RATE_LIMIT` / `SEARCH_RATE_INTERVAL`
 
 ### Trusted Proxies (Docker/Nginx)
 
@@ -76,6 +78,7 @@ Interceptor Symfony (`kernel.response`) que anade a todas las respuestas:
 - Archivos `.env` en `.gitignore` (0 trackeados en git)
 - Solo `.env.example` con placeholders commitado
 - Errores de BD devuelven mensaje generico (`'Database unavailable'`)
+- Errores API devuelven mensajes genericos (no exponen detalles internos)
 - Container Docker ejecuta como non-root (`appuser`, UID 1000)
 
 ---
@@ -83,6 +86,5 @@ Interceptor Symfony (`kernel.response`) que anade a todas las respuestas:
 ## Pendiente para fases posteriores
 
 - **Autenticacion JWT** (Phase 3)
-- **Rate limiting en busqueda** (`GET /api/pictograms/search`) - a nivel de Nginx si necesario
 - **Paginacion** en endpoints de listado
 - **HSTS** via Nginx cuando se configure HTTPS en produccion

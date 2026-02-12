@@ -37,12 +37,12 @@ describe('PictogramCard', () => {
       expect(img.attributes('src')).toBe('/pictograms/2345.png')
     })
 
-    it('uses label as image alt text', () => {
+    it('uses empty alt for decorative image (label is on button aria-label)', () => {
       const wrapper = mountCard({ pictogram: pictogramFixture })
 
       const img = wrapper.find('img')
 
-      expect(img.attributes('alt')).toBe('comer')
+      expect(img.attributes('alt')).toBe('')
     })
 
     it('applies category color as border-top', () => {

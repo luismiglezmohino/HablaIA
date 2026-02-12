@@ -14,6 +14,7 @@ use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/pictograms', name: 'api_pictograms_')]
@@ -23,7 +24,8 @@ final class PictogramController
         private readonly GetAllPictograms $getAllPictograms,
         private readonly GetPictogramsByCategory $getPictogramsByCategory,
         private readonly PictogramRepository $pictogramRepository,
-        private readonly SearchPictogram $searchPictogram
+        private readonly SearchPictogram $searchPictogram,
+        private readonly RateLimiterFactory $pictogramSearchLimiter
     ) {
     }
 
@@ -65,6 +67,18 @@ final class PictogramController
     #[Route('/search', name: 'search', methods: ['GET'])]
     public function search(Request $request): JsonResponse
     {
+        $clientIp = $request->getClientIp() ?? 'anonymous';
+        $limiter = $this->pictogramSearchLimiter->create($clientIp);
+        $limit = $limiter->consume();
+
+        if (!$limit->isAccepted()) {
+            return new JsonResponse(
+                ['error' => 'Too many requests', 'retryAfter' => $limit->getRetryAfter()->getTimestamp()],
+                Response::HTTP_TOO_MANY_REQUESTS,
+                ['Retry-After' => $limit->getRetryAfter()->getTimestamp()]
+            );
+        }
+
         $query = $request->query->get('q');
 
         if ($query === null || $query === '') {

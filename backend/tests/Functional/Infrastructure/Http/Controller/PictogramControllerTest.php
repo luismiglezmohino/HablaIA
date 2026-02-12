@@ -464,5 +464,33 @@ describe('PictogramController', function (): void {
             expect(json_last_error())->toBe(JSON_ERROR_NONE);
         });
 
+        it('returns 429 when rate limit exceeded', function (): void {
+            $client = static::createClient();
+            $client->disableReboot();
+
+            $pictogramRepo = new InMemoryPictogramRepository();
+            $this->pictogramProvider->method('searchByKeyword')->willReturn([]);
+
+            self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
+            self::getContainer()->set(CategoryRepository::class, $this->categoryRepository);
+            self::getContainer()->set(PictogramProviderInterface::class, $this->pictogramProvider);
+            self::getContainer()->set(ImageDownloaderInterface::class, $this->imageDownloader);
+            self::getContainer()->set(UuidGeneratorInterface::class, $this->uuidGenerator);
+
+            // Pre-exhaust the search limiter by consuming all available tokens
+            $limiterFactory = self::getContainer()->get('limiter.pictogram_search');
+            $limiter = $limiterFactory->create('127.0.0.1');
+            do {
+                $limit = $limiter->consume();
+            } while ($limit->isAccepted());
+
+            $client->request('GET', '/api/pictograms/search?q=final');
+
+            expect($client->getResponse()->getStatusCode())->toBe(429);
+            $data = json_decode($client->getResponse()->getContent(), true);
+            expect($data['error'])->toBe('Too many requests');
+            expect($data)->toHaveKey('retryAfter');
+        });
+
     });
 });

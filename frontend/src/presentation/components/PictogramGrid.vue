@@ -55,7 +55,7 @@ function handleGridKeydown(event: KeyboardEvent) {
 
 <template>
   <div v-if="pictogramStore.loading" role="status" class="flex flex-col items-center justify-center gap-3 p-12">
-    <div class="h-8 w-8 animate-spin rounded-full border-2 border-surface-300 border-t-primary-500"></div>
+    <div class="h-8 w-8 motion-safe:animate-spin rounded-full border-2 border-surface-300 border-t-primary-500"></div>
     <span class="text-accessible-textLight">Cargando pictogramas...</span>
   </div>
 
