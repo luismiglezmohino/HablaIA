@@ -246,13 +246,13 @@ describe('HomeView', () => {
   })
 
   describe('keyboard shortcuts', () => {
-    it('focuses search input when "/" key is pressed', async () => {
+    it('focuses search input when "b" key is pressed', async () => {
       const wrapper = mount(HomeView, {
         global: { plugins: [createPinia()] },
         attachTo: document.body,
       })
 
-      await wrapper.trigger('keydown', { key: '/' })
+      await wrapper.trigger('keydown', { key: 'b' })
       await wrapper.vm.$nextTick()
 
       const searchInput = wrapper.find('#search-pictograms')
@@ -260,7 +260,7 @@ describe('HomeView', () => {
       wrapper.unmount()
     })
 
-    it('does not focus search when "/" is pressed inside an input', async () => {
+    it('does not focus search when "b" is pressed inside an input', async () => {
       const wrapper = mount(HomeView, {
         global: { plugins: [createPinia()] },
         attachTo: document.body,
@@ -270,7 +270,7 @@ describe('HomeView', () => {
       ;(mobileInput.element as HTMLInputElement).focus()
 
       // Dispatch from the input element so event.target is an HTMLInputElement
-      const event = new KeyboardEvent('keydown', { key: '/', bubbles: true })
+      const event = new KeyboardEvent('keydown', { key: 'b', bubbles: true })
       mobileInput.element.dispatchEvent(event)
       await wrapper.vm.$nextTick()
 

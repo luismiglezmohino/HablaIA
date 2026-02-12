@@ -62,6 +62,15 @@
     gap: 0 !important;
     padding-left: 0.625rem !important;
     padding-right: 0.625rem !important;
+    position: relative !important;
+  }
+  .tablet-landscape-center::after {
+    content: '';
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
   }
   .tablet-landscape-nowrap {
     flex-wrap: nowrap !important;

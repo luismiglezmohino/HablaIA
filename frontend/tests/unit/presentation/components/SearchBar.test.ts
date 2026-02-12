@@ -14,11 +14,12 @@ describe('SearchBar', () => {
     expect(wrapper.find('input[type="search"]').exists()).toBe(true)
   })
 
-  it('has accessible label', () => {
+  it('has accessible label via placeholder', () => {
     const wrapper = mount(SearchBar)
 
-    expect(wrapper.find('label[for="search-pictograms"]').exists()).toBe(true)
-    expect(wrapper.find('#search-pictograms').exists()).toBe(true)
+    const input = wrapper.find('#search-pictograms')
+    expect(input.exists()).toBe(true)
+    expect(input.attributes('placeholder')).toBe('Buscar pictogramas...')
   })
 
   it('emits search event on input with debounce', async () => {

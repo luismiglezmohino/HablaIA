@@ -136,7 +136,7 @@ function handleCategoryClick() {
 function handleGlobalKeydown(event: KeyboardEvent) {
   const isInInput = event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement
 
-  if (event.key === '/' && !isInInput) {
+  if (event.key === 'b' && !isInInput) {
     event.preventDefault()
     const searchInput = document.getElementById('search-pictograms') as HTMLInputElement | null
     searchInput?.focus()
@@ -159,6 +159,19 @@ function handleGlobalKeydown(event: KeyboardEvent) {
     event.preventDefault()
     const chips = document.querySelectorAll<HTMLElement>('[data-testid="remove-chip"]')
     chips[chips.length - 1]?.focus()
+    return
+  }
+
+  if (!isInInput && event.key === 'g' && phraseStore.canGenerate && !phraseStore.loading) {
+    event.preventDefault()
+    handleGenerate()
+    return
+  }
+
+  if (!isInInput && event.key === 'x' && phraseStore.selectedPictograms.length > 0) {
+    event.preventDefault()
+    phraseStore.clearSelection()
+    actionAnnouncement.value = 'Todos los pictogramas eliminados de la frase'
   }
 }
 
@@ -208,13 +221,12 @@ watch(
       <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-md" aria-hidden="true">
         <Sparkles :size="22" />
       </div>
-      <h1 class="hidden text-2xl font-bold tracking-tight text-accessible-text sm:block tablet-landscape-hide">
+      <h1 class="sr-only sm:not-sr-only sm:block tablet-landscape-hide text-2xl font-bold tracking-tight text-accessible-text">
         Habla<span class="text-primary-600">IA</span>
       </h1>
 
       <!-- Mobile + tablet landscape search in header -->
       <div class="relative flex-1 sm:hidden tablet-landscape-show">
-        <label for="mobile-search" class="sr-only">Buscar pictogramas</label>
         <Search
           :size="18"
           class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-accessible-textLight"
@@ -226,6 +238,7 @@ watch(
           v-model="mobileQuery"
           type="search"
           placeholder="Buscar pictogramas..."
+          autocomplete="off"
           class="min-h-touch w-full rounded-xl border-2 border-surface-200 bg-surface-50 py-2 pl-10 pr-10 text-sm shadow-soft transition-all placeholder:text-surface-300 focus:border-primary-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:shadow-card"
           @keydown.escape="handleMobileEscape"
         />
@@ -312,10 +325,12 @@ watch(
   <footer class="hidden xl:fixed xl:bottom-0 xl:left-0 xl:right-0 xl:z-20 xl:block border-t border-surface-100 bg-surface-50 px-4 py-2" aria-label="Atajos de teclado">
     <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-accessible-textLight">
       <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">1</kbd>–<kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">0</kbd> <kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">?</kbd> Categorías</span>
-      <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">/</kbd> Buscar</span>
+      <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">b</kbd> Buscar</span>
       <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">Esc</kbd> Cerrar búsqueda</span>
       <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">←</kbd> <kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">→</kbd> <kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">↑</kbd> <kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">↓</kbd> Mover en pictogramas (con teclado)</span>
       <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">⌫</kbd> Ir a selección</span>
+      <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">g</kbd> Generar frases</span>
+      <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">x</kbd> Borrar selección de pictogramas</span>
     </div>
   </footer>
 </template>

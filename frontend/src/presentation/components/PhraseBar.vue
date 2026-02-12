@@ -48,6 +48,27 @@ watch(
   },
 )
 
+function handleChipKeydown(event: KeyboardEvent, index: number) {
+  const buttons = chipsRef.value?.querySelectorAll<HTMLButtonElement>('[data-testid="remove-chip"]')
+  if (!buttons) return
+
+  let nextIndex = index
+
+  if (event.key === 'ArrowRight') {
+    nextIndex = Math.min(index + 1, buttons.length - 1)
+  } else if (event.key === 'ArrowLeft') {
+    nextIndex = Math.max(index - 1, 0)
+  } else if (event.key === 'Delete') {
+    handleRemoveChip(index)
+    return
+  } else {
+    return
+  }
+
+  event.preventDefault()
+  buttons[nextIndex]?.focus()
+}
+
 function getCategoryColor(pictogram: Pictogram): string {
   const category = categoryStore.categories.find((c) => c.id === pictogram.categoryId)
   return category?.colorHex ?? '#9CA3AF'
@@ -72,7 +93,7 @@ function getCategoryColor(pictogram: Pictogram): string {
             role="group"
             :aria-label="pictogram.label"
             :style="{ borderLeftColor: getCategoryColor(pictogram), '--tw-border-left-color': getCategoryColor(pictogram) }"
-            class="relative flex shrink-0 items-center gap-1 rounded-full border border-surface-200 border-l-4 bg-white shadow-sm sm:py-1 sm:pl-1 sm:pr-2 tablet-landscape-chip"
+            class="relative flex shrink-0 items-center gap-1 rounded-full border border-surface-400 border-l-4 bg-white shadow-sm sm:py-1 sm:pl-1 sm:pr-2 tablet-landscape-chip"
           >
             <img
               :src="pictogram.imagePath"
@@ -86,6 +107,7 @@ function getCategoryColor(pictogram: Pictogram): string {
               :aria-label="`Eliminar ${pictogram.label}`"
               class="ml-0.5 min-h-7 min-w-7 rounded-full p-1 text-surface-400 hover:bg-surface-100 hover:text-accessible-text focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 sm:ml-1 tablet-landscape-chip-x"
               @click="handleRemoveChip(index)"
+              @keydown="handleChipKeydown($event, index)"
             >
               <X :size="16" aria-hidden="true" />
             </button>
@@ -143,7 +165,7 @@ function getCategoryColor(pictogram: Pictogram): string {
 
     <!-- Error -->
     <div v-if="store.error" role="alert" class="mt-3 text-center">
-      <span class="text-sm text-red-600">{{ store.error }}</span>
+      <span class="text-sm text-red-700">{{ store.error }}</span>
     </div>
 
     <!-- Phrase results (tablet+ only, mobile renders in HomeView) -->
