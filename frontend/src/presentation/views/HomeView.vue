@@ -208,13 +208,12 @@ watch(
       <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-md" aria-hidden="true">
         <Sparkles :size="22" />
       </div>
-      <h1 class="hidden text-2xl font-bold tracking-tight text-accessible-text sm:block tablet-landscape-hide">
+      <h1 class="sr-only sm:not-sr-only sm:block tablet-landscape-hide text-2xl font-bold tracking-tight text-accessible-text">
         Habla<span class="text-primary-600">IA</span>
       </h1>
 
       <!-- Mobile + tablet landscape search in header -->
       <div class="relative flex-1 sm:hidden tablet-landscape-show">
-        <label for="mobile-search" class="sr-only">Buscar pictogramas</label>
         <Search
           :size="18"
           class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-accessible-textLight"
@@ -226,6 +225,7 @@ watch(
           v-model="mobileQuery"
           type="search"
           placeholder="Buscar pictogramas..."
+          autocomplete="off"
           class="min-h-touch w-full rounded-xl border-2 border-surface-200 bg-surface-50 py-2 pl-10 pr-10 text-sm shadow-soft transition-all placeholder:text-surface-300 focus:border-primary-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:shadow-card"
           @keydown.escape="handleMobileEscape"
         />

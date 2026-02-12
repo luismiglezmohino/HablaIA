@@ -40,7 +40,6 @@ watch(query, (value) => {
 <template>
   <div class="border-b border-surface-200 bg-white px-4 py-3">
     <div class="relative">
-      <label for="search-pictograms" class="sr-only">Buscar pictogramas</label>
       <Search
         :size="20"
         class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-accessible-textLight"
@@ -51,8 +50,8 @@ watch(query, (value) => {
         id="search-pictograms"
         v-model="query"
         type="search"
-        role="searchbox"
         placeholder="Buscar pictogramas..."
+        autocomplete="off"
         class="min-h-touch w-full rounded-xl border-2 border-surface-200 bg-surface-50 py-3 pl-12 pr-10 text-base shadow-soft transition-all placeholder:text-surface-300 focus:border-primary-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:shadow-card"
         @focus="emit('focus')"
         @blur="emit('blur')"
