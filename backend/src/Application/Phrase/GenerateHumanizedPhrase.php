@@ -123,6 +123,8 @@ final readonly class GenerateHumanizedPhrase
     /**
      * Valida que todos los pictogramas existen y los retorna.
      *
+     * Usa una sola query (findByIds) en vez de N queries individuales.
+     *
      * @param array<string> $pictogramIdStrings Lista de IDs como strings
      * @return array<Pictogram> Lista de entidades Pictogram
      *
@@ -131,28 +133,28 @@ final readonly class GenerateHumanizedPhrase
      */
     private function validateAndGetPictograms(array $pictogramIdStrings): array
     {
-        $pictograms = [];
-        $missingIds = [];
+        // PictogramId::fromString valida el formato UUID.
+        // Lanza InvalidArgumentException si no es válido.
+        $pictogramIds = array_map(
+            function (string $idString): PictogramId {
+                return PictogramId::fromString($idString);
+            },
+            $pictogramIdStrings
+        );
 
-        foreach ($pictogramIdStrings as $idString) {
-            // PictogramId::fromString valida el formato UUID.
-            // Lanza InvalidArgumentException si no es válido.
-            $pictogramId = PictogramId::fromString($idString);
+        // Una sola query en vez de N queries individuales.
+        $pictograms = $this->pictogramRepository->findByIds($pictogramIds);
 
-            // Buscar el pictograma en el repositorio.
-            $pictogram = $this->pictogramRepository->findById($pictogramId);
-
-            if ($pictogram === null) {
-                // Acumular IDs no encontrados para reportarlos todos juntos.
-                $missingIds[] = $idString;
-            } else {
-                $pictograms[] = $pictogram;
-            }
-        }
-
-        // Si hay IDs faltantes, lanzar excepción con todos ellos.
-        if (count($missingIds) > 0) {
-            throw PictogramNotFoundException::withIds($missingIds);
+        // Verificar que se encontraron todos.
+        if (count($pictograms) !== count($pictogramIdStrings)) {
+            $foundIds = array_map(
+                function (Pictogram $p): string {
+                    return $p->id()->value();
+                },
+                $pictograms
+            );
+            $missingIds = array_diff($pictogramIdStrings, $foundIds);
+            throw PictogramNotFoundException::withIds(array_values($missingIds));
         }
 
         return $pictograms;

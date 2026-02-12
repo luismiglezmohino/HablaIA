@@ -13,6 +13,12 @@ interface PictogramRepository
     public function findById(PictogramId $id): ?Pictogram;
 
     /**
+     * @param array<PictogramId> $ids
+     * @return array<Pictogram>
+     */
+    public function findByIds(array $ids): array;
+
+    /**
      * @return array<Pictogram>
      */
     public function findByCategoryId(CategoryId $categoryId): array;
