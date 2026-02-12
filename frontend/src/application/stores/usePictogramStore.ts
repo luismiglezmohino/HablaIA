@@ -8,39 +8,55 @@ export const usePictogramStore = defineStore('pictograms', () => {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
+  let currentRequestId = 0
+
   async function fetchByCategory(categoryId: string, repository: PictogramRepository): Promise<void> {
+    const requestId = ++currentRequestId
     loading.value = true
     error.value = null
     try {
-      pictograms.value = await repository.findByCategory(categoryId)
+      const result = await repository.findByCategory(categoryId)
+      if (requestId !== currentRequestId) return
+      pictograms.value = result
     } catch {
+      if (requestId !== currentRequestId) return
       pictograms.value = []
       error.value = 'No se pudieron cargar los pictogramas. Inténtalo de nuevo.'
     } finally {
-      loading.value = false
+      if (requestId === currentRequestId) {
+        loading.value = false
+      }
     }
   }
 
   async function searchPictograms(query: string, repository: PictogramRepository): Promise<void> {
     if (!query.trim()) {
+      ++currentRequestId
       pictograms.value = []
       error.value = null
       return
     }
 
+    const requestId = ++currentRequestId
     loading.value = true
     error.value = null
     try {
-      pictograms.value = await repository.search(query)
+      const result = await repository.search(query)
+      if (requestId !== currentRequestId) return
+      pictograms.value = result
     } catch {
+      if (requestId !== currentRequestId) return
       pictograms.value = []
       error.value = 'No se pudieron cargar los resultados. Inténtalo de nuevo.'
     } finally {
-      loading.value = false
+      if (requestId === currentRequestId) {
+        loading.value = false
+      }
     }
   }
 
   function clearPictograms(): void {
+    ++currentRequestId
     pictograms.value = []
     error.value = null
   }

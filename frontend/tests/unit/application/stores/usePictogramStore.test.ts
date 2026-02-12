@@ -142,6 +142,68 @@ describe('usePictogramStore', () => {
 
       expect(store.pictograms).toEqual([])
     })
+
+    it('ignores stale response when a newer request was made', async () => {
+      const store = usePictogramStore()
+      const staleResult: Pictogram[] = [
+        { id: 'p-stale', arasaacId: 9999, categoryId: 'cat-1', label: 'stale', imagePath: '/stale.png' },
+      ]
+      const freshResult: Pictogram[] = [
+        { id: 'p-fresh', arasaacId: 8888, categoryId: 'cat-2', label: 'fresh', imagePath: '/fresh.png' },
+      ]
+
+      let resolveStale!: (value: Pictogram[]) => void
+      const slowRepo = createMockRepository({
+        findByCategory: vi.fn().mockImplementation(
+          () => new Promise((resolve) => { resolveStale = resolve }),
+        ),
+      })
+      const fastRepo = createMockRepository({
+        findByCategory: vi.fn().mockResolvedValue(freshResult),
+      })
+
+      // Start slow request (don't await)
+      const stalePromise = store.fetchByCategory('cat-1', slowRepo)
+
+      // Start fast request that completes first
+      await store.fetchByCategory('cat-2', fastRepo)
+      expect(store.pictograms).toEqual(freshResult)
+
+      // Stale request resolves late — should be ignored
+      resolveStale(staleResult)
+      await stalePromise
+
+      expect(store.pictograms).toEqual(freshResult)
+      expect(store.error).toBeNull()
+    })
+
+    it('ignores stale error when a newer request succeeded', async () => {
+      const store = usePictogramStore()
+      const freshResult: Pictogram[] = [
+        { id: 'p-fresh', arasaacId: 8888, categoryId: 'cat-2', label: 'fresh', imagePath: '/fresh.png' },
+      ]
+
+      let rejectStale!: (reason: Error) => void
+      const slowRepo = createMockRepository({
+        findByCategory: vi.fn().mockImplementation(
+          () => new Promise((_resolve, reject) => { rejectStale = reject }),
+        ),
+      })
+      const fastRepo = createMockRepository({
+        findByCategory: vi.fn().mockResolvedValue(freshResult),
+      })
+
+      const stalePromise = store.fetchByCategory('cat-1', slowRepo)
+      await store.fetchByCategory('cat-2', fastRepo)
+      expect(store.pictograms).toEqual(freshResult)
+
+      // Stale request fails late — error should be ignored
+      rejectStale(new Error('stale failure'))
+      await stalePromise
+
+      expect(store.pictograms).toEqual(freshResult)
+      expect(store.error).toBeNull()
+    })
   })
 
   describe('searchPictograms', () => {
@@ -199,6 +261,32 @@ describe('usePictogramStore', () => {
 
       expect(store.pictograms).toEqual([])
       expect(repo.search).not.toHaveBeenCalled()
+    })
+
+    it('ignores stale search response when a newer search was made', async () => {
+      const store = usePictogramStore()
+      const freshResult: Pictogram[] = [
+        { id: 'p-fresh', arasaacId: 8888, categoryId: 'cat-2', label: 'pan', imagePath: '/pan.png' },
+      ]
+
+      let resolveStale!: (value: Pictogram[]) => void
+      const slowRepo = createMockRepository({
+        search: vi.fn().mockImplementation(
+          () => new Promise((resolve) => { resolveStale = resolve }),
+        ),
+      })
+      const fastRepo = createMockRepository({
+        search: vi.fn().mockResolvedValue(freshResult),
+      })
+
+      const stalePromise = store.searchPictograms('agua', slowRepo)
+      await store.searchPictograms('pan', fastRepo)
+      expect(store.pictograms).toEqual(freshResult)
+
+      resolveStale([{ id: 'p-stale', arasaacId: 9999, categoryId: 'cat-1', label: 'agua', imagePath: '/agua.png' }])
+      await stalePromise
+
+      expect(store.pictograms).toEqual(freshResult)
     })
   })
 
