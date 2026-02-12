@@ -163,7 +163,7 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 - Integración LLM (OpenAI inicial) para generar 3 variaciones humanizadas
 - Text-to-Speech con Web Speech API
 - Caché de frases en PostgreSQL
-- Interfaz accesible (WCAG 2.1 AA)
+- Interfaz accesible (WCAG 2.2 AA)
 
 **Fase 2 - Mejoras UX (Futuro):**
 - Contexto temporal inteligente (hora del día, día de la semana)
@@ -628,7 +628,7 @@ docs/adrs/
 | Sincronización ARASAAC | ✅ Backend | Comando: app:arasaac:sync (197 palabras core vocabulary) |
 | Health checks | ✅ Backend | API: /api/health, /api/health/live, /api/health/ready |
 | Text-to-Speech | ✅ Completado | Web Speech API (SpeakButton, useTTS composable) |
-| Accesibilidad WCAG 2.1 AA | ✅ Completado | 44x44px targets, focus rings, aria-labels, keyboard nav |
+| Accesibilidad WCAG 2.2 AA | ✅ Completado | 44x44px targets, focus rings, aria-labels, keyboard nav |
 
 ### Objetivos Técnicos 🛠️
 

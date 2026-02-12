@@ -23,7 +23,7 @@ Eres un experto SDLC. ANALIZA la intención del usuario y ENRUTA al agente corre
 - Historias de usuario, criterios de aceptacion, ROI.
 
 **UX/Accesibilidad** -> `@ux_designer`
-- Interfaces accesibles, WCAG 2.1 AA, diseno SAAC, click targets.
+- Interfaces accesibles, WCAG 2.2 AA, diseno SAAC, click targets.
 
 **Arquitectura/Diseno** -> `@architect`
 - ADRs, diagramas, contratos, estructura del proyecto.

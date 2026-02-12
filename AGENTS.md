@@ -10,7 +10,7 @@ This project uses a custom agent orchestration system for HablaIA - a SAAC (Comu
 **Architecture:** Clean Architecture / DDD  
 **Testing:** TDD (PestPHP + Vitest)  
 **Security:** OWASP Top 10, Zero Trust, GDPR estricto  
-**Accessibility:** WCAG 2.1 AA mandatory  
+**Accessibility:** WCAG 2.2 AA mandatory  
 **Documentation:** TFM standard (6 sections)
 
 ## Agent Structure
@@ -26,7 +26,7 @@ The project uses specialized agents defined in `agents/` (shared across tools vi
 - **product_owner** - Business requirements, user stories and acceptance criteria
 - **architect** - Clean Architecture design, ADRs and system validation
 - **technical_writer** - Documentation, READMEs, guides and API docs (TFM standard)
-- **ux_designer** - UX/UI design for accessibility and AAC interfaces (WCAG 2.1 AA)
+- **ux_designer** - UX/UI design for accessibility and SAAC interfaces (WCAG 2.2 AA)
 
 #### Data & Persistence
 - **database_engineer** - Database migrations, schema design, query optimization and PostgreSQL best practices
@@ -46,7 +46,7 @@ The project uses specialized agents defined in `agents/` (shared across tools vi
 1. **Analysis** → `@product_owner` creates user stories (SAAC context, ROI)
 2. **Design** (paralelo):
    - `@architect` validates Clean Architecture + `@technical_writer` documents
-   - `@ux_designer` designs accessible interfaces (WCAG 2.1 AA)
+   - `@ux_designer` designs accessible interfaces (WCAG 2.2 AA)
 3. **Implementation** → `@tdd_developer` (test first, schema emerges from tests)
 4. **Security Review** → `@security_auditor` checks OWASP compliance + GDPR
 5. **Quality Check** → `@qa_engineer` validates coverage (100/80/0)
@@ -71,7 +71,7 @@ Technical skills are defined in `skills/` (shared across tools via symlinks):
 - **vue-vitest** - Vue.js 3 testing with Vitest including component and composable tests
 - **typescript** - TypeScript with Zod validation, ESLint and Prettier
 - **tailwind** - Tailwind CSS with PostCSS, security patterns and visual testing
-- **accessibility** - WCAG 2.1 AA compliance for AAC applications
+- **accessibility** - WCAG 2.2 AA compliance for SAAC applications
 
 ### AI & Integration
 - **llm-integration** - Multi-provider LLM integration for phrase generation (OpenAI, Gemini, extensible)
@@ -167,7 +167,7 @@ npm run build
 ### Definition of Done
 - [ ] Tests passing (100/80/0 coverage)
 - [ ] Security audit passed (OWASP + GDPR)
-- [ ] Accessibility verified (WCAG 2.1 AA, Lighthouse > 90)
+- [ ] Accessibility verified (WCAG 2.2 AA, Lighthouse > 90)
 - [ ] Code reviewed
 - [ ] Documentation updated (TFM standard)
 - [ ] Performance acceptable (Core Web Vitals, latency < 200ms)
@@ -186,7 +186,7 @@ npm run build
 
 ### Criterios de Aceptación
 - [ ] CA1: ...
-- [ ] **Accesibilidad:** WCAG 2.1 AA verificado
+- [ ] **Accesibilidad:** WCAG 2.2 AA verificado
 - [ ] **Performance:** Latencia < 200ms
 
 ### Definition of Done
@@ -238,7 +238,7 @@ it('should [behavior]', () => {
 - **Clean Architecture**: Domain layer must NEVER depend on Infrastructure
 - **TDD is King**: No production code without a failing test first
 - **Security First**: Every change must consider OWASP Top 10 + GDPR
-- **Accessibility**: WCAG 2.1 AA mandatory for all UI components
+- **Accessibility**: WCAG 2.2 AA mandatory for all UI components
 - **SAAC Context**: Design for users with TEA, afasia, PC, ELA
 - **Performance**: Latency < 200ms critical for UX (users need immediate feedback)
 - **Documentation**: Follow TFM README standard (6 sections)

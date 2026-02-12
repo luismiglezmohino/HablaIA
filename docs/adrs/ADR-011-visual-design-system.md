@@ -85,7 +85,7 @@ En moviles en landscape (`max-height: 500px`) se muestra un bloqueador a pantall
 
 ## Validacion Pendiente
 
-Esta interfaz ha sido disenada aplicando principios de accesibilidad (WCAG 2.1 AA), estandares SAAC (Fitzgerald Key, targets tactiles, reduccion de fatiga visual) e investigacion publicada sobre consideraciones visuales para soportes AAC. Sin embargo, **debe ser validada por un/a logopeda (terapeuta del habla y lenguaje)** antes de su uso clinico o terapeutico. Los criterios de diseno visual para comunicacion aumentativa requieren evaluacion profesional con usuarios finales reales en contextos de uso autenticos.
+Esta interfaz ha sido disenada aplicando principios de accesibilidad (WCAG 2.2 AA), estandares SAAC (Fitzgerald Key, targets tactiles, reduccion de fatiga visual) e investigacion publicada sobre consideraciones visuales para soportes AAC. Sin embargo, **debe ser validada por un/a logopeda (terapeuta del habla y lenguaje)** antes de su uso clinico o terapeutico. Los criterios de diseno visual para comunicacion aumentativa requieren evaluacion profesional con usuarios finales reales en contextos de uso autenticos.
 
 ## Consecuencias
 

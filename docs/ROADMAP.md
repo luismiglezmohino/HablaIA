@@ -44,7 +44,7 @@
 - ✅ PhraseBar: seleccion pictogramas (max 10), generacion frases via API, variaciones
 - ✅ App shell: header, skip link, aria-live region
 - ✅ Conexion API: fetchCategories + fetchByCategory + generatePhrase
-- ✅ WCAG 2.1 AA: 44x44px touch targets, focus rings, aria-labels, role="tablist"
+- ✅ WCAG 2.2 AA: 44x44px touch targets, focus rings, aria-labels, role="tablist"
 - ✅ Text-to-Speech con Web Speech API (TTSProvider interface, WebSpeechTTS, useTTS composable, SpeakButton)
 - ✅ SearchBar con debounce y búsqueda insensible a acentos: local DB → fallback ARASAAC API (descarga y persiste pictogramas)
 - ✅ Error handling UI: inline feedback (ADR-010), mensajes user-friendly en español, feedback visual en botones (loading/error/retry)

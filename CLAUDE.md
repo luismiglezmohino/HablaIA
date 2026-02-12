@@ -13,7 +13,7 @@
 
 ### Restricciones
 - **Licencia:** Source Available (NO comercial por ARASAAC CC BY-NC-SA 4.0)
-- **Accesibilidad:** WCAG 2.1 AA obligatorio
+- **Accesibilidad:** WCAG 2.2 AA obligatorio
 - **Privacidad:** Datos sensibles (salud/comunicacion) - GDPR estricto
 - **Performance:** Latencia < 200ms en prediccion IA
 - **Offline-first:** Funcionalidad basica sin conexion
@@ -32,12 +32,12 @@ Adopt role mindset for each task. Lee `agents/{rol}.md` para instrucciones detal
 - **@performance_engineer** - Core Web Vitals, p95 < 200ms
 - **@devops** - CI/CD, Docker, conventional commits
 - **@observability_engineer** - Metrics, logs, tracing
-- **@ux_designer** - WCAG 2.1 AA, SAAC interfaces
+- **@ux_designer** - WCAG 2.2 AA, SAAC interfaces
 
 ## Workflow
 
 1. **Analysis** → @product_owner (User Stories, ROI)
-2. **Design** (paralelo): @architect (ADRs) + @ux_designer (WCAG 2.1 AA)
+2. **Design** (paralelo): @architect (ADRs) + @ux_designer (WCAG 2.2 AA)
 3. **Implementation** → @tdd_developer (RED-GREEN-REFACTOR)
 4. **Security** → @security_auditor (OWASP review)
 5. **Quality** → @qa_engineer (coverage 100/80/0)
