@@ -22,6 +22,21 @@ final class InMemoryPictogramRepository implements PictogramRepository
         return $this->pictograms[$id->value()] ?? null;
     }
 
+    /** @param array<PictogramId> $ids
+     *  @return array<Pictogram> */
+    public function findByIds(array $ids): array
+    {
+        $result = [];
+        foreach ($ids as $id) {
+            $pictogram = $this->pictograms[$id->value()] ?? null;
+            if ($pictogram !== null) {
+                $result[] = $pictogram;
+            }
+        }
+
+        return $result;
+    }
+
     /** @return array<Pictogram> */
     public function findByCategoryId(CategoryId $categoryId): array
     {

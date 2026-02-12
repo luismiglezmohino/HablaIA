@@ -37,6 +37,34 @@ final class CyclePictogramRepository implements PictogramRepository
     }
 
     /**
+     * @param array<PictogramId> $ids
+     * @return array<Pictogram>
+     */
+    public function findByIds(array $ids): array
+    {
+        if ($ids === []) {
+            return [];
+        }
+
+        $uuids = array_map(function (PictogramId $id): string {
+            return $id->value();
+        }, $ids);
+
+        /** @var array<PictogramEntity> $entities */
+        $entities = $this->repository
+            ->select()
+            ->where('id', 'IN', $uuids)
+            ->fetchAll();
+
+        return array_map(
+            function (PictogramEntity $entity): Pictogram {
+                return PictogramMapper::toDomain($entity);
+            },
+            $entities
+        );
+    }
+
+    /**
      * @return array<Pictogram>
      */
     public function findByCategoryId(CategoryId $categoryId): array

@@ -36,7 +36,7 @@ describe('PhraseController', function (): void {
             $pictogramId = '550e8400-e29b-41d4-a716-446655440010';
             $pictogram = createTestPictogram($pictogramId, 'comer');
 
-            $pictogramRepo->method('findById')->willReturn($pictogram);
+            $pictogramRepo->method('findByIds')->willReturn([$pictogram]);
             $phraseRepo->method('findBySequenceHash')->willReturn(null);
             $phraseGen->method('generate')->willReturn([
                 'Quiero comer',
@@ -78,7 +78,7 @@ describe('PhraseController', function (): void {
             $pictogramId = '550e8400-e29b-41d4-a716-446655440010';
             $pictogram = createTestPictogram($pictogramId, 'comer');
 
-            $pictogramRepo->method('findById')->willReturn($pictogram);
+            $pictogramRepo->method('findByIds')->willReturn([$pictogram]);
             $phraseRepo->method('findBySequenceHash')->willReturn(null);
             $phraseGen->method('generate')->willReturn(['Quiero comer']);
             $uuidGen->method('generate')->willReturn('550e8400-e29b-41d4-a716-446655440099');
@@ -242,7 +242,7 @@ describe('PhraseController', function (): void {
             $client = static::createClient();
 
             $pictogramRepo = $this->createMock(PictogramRepository::class);
-            $pictogramRepo->method('findById')->willReturn(null);
+            $pictogramRepo->method('findByIds')->willReturn([]);
 
             self::getContainer()->set(PictogramRepository::class, $pictogramRepo);
             self::getContainer()->set(PhraseRepository::class, $this->createMock(PhraseRepository::class));
@@ -274,7 +274,7 @@ describe('PhraseController', function (): void {
             $pictogramId = '550e8400-e29b-41d4-a716-446655440010';
             $pictogram = createTestPictogram($pictogramId, 'comer');
 
-            $pictogramRepo->method('findById')->willReturn($pictogram);
+            $pictogramRepo->method('findByIds')->willReturn([$pictogram]);
             $phraseRepo->method('findBySequenceHash')->willReturn(null);
             $phraseGen->method('generate')->willReturn(['Quiero comer']);
             $uuidGen->method('generate')->willReturn('550e8400-e29b-41d4-a716-446655440099');
@@ -326,14 +326,7 @@ describe('PhraseController', function (): void {
             $pictogram1 = createTestPictogram($pictogramId1, 'yo');
             $pictogram2 = createTestPictogram($pictogramId2, 'comer');
 
-            $pictogramRepo->method('findById')
-                ->willReturnCallback(function (PictogramId $id) use ($pictogram1, $pictogram2) {
-                    return match ($id->value()) {
-                        '550e8400-e29b-41d4-a716-446655440010' => $pictogram1,
-                        '550e8400-e29b-41d4-a716-446655440011' => $pictogram2,
-                        default => null,
-                    };
-                });
+            $pictogramRepo->method('findByIds')->willReturn([$pictogram1, $pictogram2]);
 
             $phraseRepo->method('findBySequenceHash')->willReturn(null);
             $phraseGen->method('generate')->willReturn([
