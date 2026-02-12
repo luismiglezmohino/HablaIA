@@ -136,7 +136,7 @@ function handleCategoryClick() {
 function handleGlobalKeydown(event: KeyboardEvent) {
   const isInInput = event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement
 
-  if (event.key === '/' && !isInInput) {
+  if (event.key === 'b' && !isInInput) {
     event.preventDefault()
     const searchInput = document.getElementById('search-pictograms') as HTMLInputElement | null
     searchInput?.focus()
@@ -159,6 +159,19 @@ function handleGlobalKeydown(event: KeyboardEvent) {
     event.preventDefault()
     const chips = document.querySelectorAll<HTMLElement>('[data-testid="remove-chip"]')
     chips[chips.length - 1]?.focus()
+    return
+  }
+
+  if (!isInInput && event.key === 'g' && phraseStore.canGenerate && !phraseStore.loading) {
+    event.preventDefault()
+    handleGenerate()
+    return
+  }
+
+  if (!isInInput && event.key === 'x' && phraseStore.selectedPictograms.length > 0) {
+    event.preventDefault()
+    phraseStore.clearSelection()
+    actionAnnouncement.value = 'Todos los pictogramas eliminados de la frase'
   }
 }
 
@@ -312,10 +325,12 @@ watch(
   <footer class="hidden xl:fixed xl:bottom-0 xl:left-0 xl:right-0 xl:z-20 xl:block border-t border-surface-100 bg-surface-50 px-4 py-2" aria-label="Atajos de teclado">
     <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-accessible-textLight">
       <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">1</kbd>–<kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">0</kbd> <kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">?</kbd> Categorías</span>
-      <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">/</kbd> Buscar</span>
+      <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">b</kbd> Buscar</span>
       <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">Esc</kbd> Cerrar búsqueda</span>
       <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">←</kbd> <kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">→</kbd> <kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">↑</kbd> <kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">↓</kbd> Mover en pictogramas (con teclado)</span>
       <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">⌫</kbd> Ir a selección</span>
+      <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">g</kbd> Generar frases</span>
+      <span><kbd class="rounded border border-surface-200 bg-white px-1.5 py-0.5 font-mono text-xs shadow-sm">x</kbd> Borrar selección de pictogramas</span>
     </div>
   </footer>
 </template>
