@@ -72,7 +72,7 @@ function getCategoryColor(pictogram: Pictogram): string {
             role="group"
             :aria-label="pictogram.label"
             :style="{ borderLeftColor: getCategoryColor(pictogram), '--tw-border-left-color': getCategoryColor(pictogram) }"
-            class="relative flex shrink-0 items-center gap-1 rounded-full border border-surface-200 border-l-4 bg-white shadow-sm sm:py-1 sm:pl-1 sm:pr-2 tablet-landscape-chip"
+            class="relative flex shrink-0 items-center gap-1 rounded-full border border-surface-400 border-l-4 bg-white shadow-sm sm:py-1 sm:pl-1 sm:pr-2 tablet-landscape-chip"
           >
             <img
               :src="pictogram.imagePath"
