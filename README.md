@@ -204,8 +204,7 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 - **Icons:** Lucide Vue Next
 - **Validacion:** Zod (runtime API response validation)
 - **HTTP:** Fetch API nativo
-- **Utilities:** @vueuse/core
-- **Testing:** Vitest (230 unit) + Playwright (21 E2E)
+- **Testing:** Vitest (263 unit) + Playwright (21 E2E)
 - **E2E Testing:** Playwright (Chromium)
 - **Router:** Vue Router 4
 
@@ -221,10 +220,10 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 - **ElevenLabs API:** Text-to-Speech premium (Fase 4 - futuro)
 - **Voice Cloning:** Clonación de voz del usuario (Fase 6 - futuro)
 
-### Observabilidad & Monitoreo (pendiente integración)
+### Observabilidad & Monitoreo
 
-- **Analytics:** PostHog Cloud free tier (planificado)
-- **Error Tracking:** Sentry Cloud free tier (planificado)
+- **Error Tracking:** Sentry Cloud free tier (integrado: @sentry/vue + sentry-symfony)
+- **Analytics:** PostHog Cloud free tier (planificado Fase 2)
 - **Logs:** Estructurados en JSON con correlationId
 
 ### DevOps & CI/CD
@@ -607,7 +606,8 @@ docs/adrs/
 ├── ADR-009-multi-provider-llm.md
 ├── ADR-010-inline-feedback-over-toasts.md
 ├── ADR-011-visual-design-system.md
-└── ADR-012-cd-pipeline.md
+├── ADR-012-cd-pipeline.md
+└── ADR-013-keyboard-screenreader-accessibility.md
 ```
 
 ---
@@ -635,7 +635,7 @@ docs/adrs/
 | Aspecto | Estado | Descripción |
 |---------|--------|-------------|
 | Clean Architecture | ✅ Completado | Backend: Domain ✅ → Application ✅ → Infrastructure ✅. Frontend: Domain ✅ → Application ✅ → Infrastructure ✅ |
-| TDD | ✅ Completado | 394 tests (backend) + 230 unit + 21 E2E (frontend) = 645 total |
+| TDD | ✅ Completado | 400 tests (backend) + 263 unit + 21 E2E (frontend) = 684 total |
 | Excepciones de Dominio | ✅ Completado | `DomainException` base + excepciones semánticas por módulo |
 | Excepciones de Application | ✅ Completado | `ApplicationException` + `*NotFoundException` |
 | UUID Desacoplado | ✅ Completado | Domain valida (`Uuid`), Infrastructure genera (`UuidGeneratorInterface`) |

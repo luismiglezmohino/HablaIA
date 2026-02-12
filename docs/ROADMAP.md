@@ -29,7 +29,7 @@
 - ✅ Sincronización automática con ARASAAC API (197 palabras core vocabulary)
 - ✅ Health checks para Kubernetes (liveness, readiness)
 - ✅ Rate limiting configurable en generación de frases (per-minute + daily por IP)
-- ✅ Tests: 394 unitarios (PestPHP), PHPStan level 8
+- ✅ Tests: 400 unitarios (PestPHP), PHPStan level 8
 
 ### Frontend (🚧 En Construccion)
 - ✅ Clean Architecture frontend (Domain/Application/Infrastructure)
@@ -37,7 +37,7 @@
 - ✅ Zod schemas para validacion de API responses (Zero Trust)
 - ✅ ApiClient HTTP + repositorios (HttpCategoryRepository, HttpPictogramRepository, HttpPhraseRepository)
 - ✅ Pinia registrado, shadcn-vue configurado (Radix Vue, Lucide Vue)
-- ✅ Tests: 230 unitarios (Vitest) + 21 E2E (Playwright) = 251 frontend
+- ✅ Tests: 263 unitarios (Vitest) + 21 E2E (Playwright) = 284 frontend
 - ✅ Pinia stores: useCategoryStore + usePictogramStore + usePhraseStore
 - ✅ CategoryBar con Fitzgerald Key borders, Lucide icons, keyboard nav
 - ✅ PictogramCard + PictogramGrid con Fitzgerald Key border-top, responsive grid
@@ -211,4 +211,4 @@
 - Las métricas se actualizarán con datos reales conforme se complete cada fase
 - El orden de las fases puede alterarse según prioridades del proyecto
 
-**Última actualización:** 9 de febrero de 2026
+**Última actualización:** 12 de febrero de 2026
