@@ -1,14 +1,14 @@
 ---
 name: accessibility
-description: WCAG 2.1 AA compliance for AAC applications
+description: WCAG 2.2 AA compliance for SAAC applications
 license: MIT
 compatibility: opencode
 metadata:
   type: frontend-ux
-  standard: wcag-2.1-aa
+  standard: wcag-2.2-aa
 ---
 
-# SKILL: Accessibility (WCAG 2.1 AA)
+# SKILL: Accessibility (WCAG 2.2 AA)
 
 ## 🎯 CRITICAL for PictoSpeak AI
 Este proyecto es para usuarios con diversidad funcional. Accesibilidad NO es opcional.
@@ -33,7 +33,7 @@ Este proyecto es para usuarios con diversidad funcional. Accesibilidad NO es opc
 - [ ] Verificar con herramienta (WebAIM Contrast Checker)
 
 ### Tamaño de Click Targets
-- [ ] Mínimo 44x44px (WCAG 2.5.5)
+- [ ] Mínimo 44x44px (WCAG 2.5.8)
 - [ ] Separación 8px entre targets
 
 ### Testing

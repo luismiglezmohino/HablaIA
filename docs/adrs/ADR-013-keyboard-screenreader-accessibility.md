@@ -6,7 +6,7 @@
 
 ## Contexto
 
-HablaIA es un comunicador pictografico para usuarios con TEA, afasia, paralisis cerebral y ELA. Muchos de estos usuarios dependen de teclado, conmutadores (switches) o lectores de pantalla como unica via de interaccion. La interfaz ya cumplia WCAG 2.1 AA en estructura semantica (roles, aria-labels, contraste, targets 44px), pero faltaba gestion de foco tras acciones, anuncios explicitos para screen readers y atajos de teclado para navegacion eficiente.
+HablaIA es un comunicador pictografico para usuarios con TEA, afasia, paralisis cerebral y ELA. Muchos de estos usuarios dependen de teclado, conmutadores (switches) o lectores de pantalla como unica via de interaccion. La interfaz ya cumplia WCAG 2.2 AA en estructura semantica (roles, aria-labels, contraste, targets 44px), pero faltaba gestion de foco tras acciones, anuncios explicitos para screen readers y atajos de teclado para navegacion eficiente.
 
 ## Decision
 

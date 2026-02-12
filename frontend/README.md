@@ -82,7 +82,7 @@ npm run format
 
 ## Accesibilidad
 
-El frontend cumple **WCAG 2.1 AA**:
+El frontend cumple **WCAG 2.2 AA**:
 
 - Contraste mínimo 4.5:1
 - Click targets ≥ 44x44px

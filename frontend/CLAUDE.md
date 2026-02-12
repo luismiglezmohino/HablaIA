@@ -33,7 +33,7 @@ tests/
 
 - **TypeScript strict** (`strict: true` en tsconfig)
 - **Composition API** exclusivamente (no Options API)
-- **WCAG 2.1 AA** obligatorio: click targets >= 44x44px, navegacion por teclado, screen reader compatible
+- **WCAG 2.2 AA** obligatorio: click targets >= 44x44px, navegacion por teclado, screen reader compatible
 - **Tablet-first** responsive design
 - **Coverage:** 100% Domain, 80% Application/Components, E2E en flujos criticos
 
@@ -56,7 +56,7 @@ Lee `skills/{skill}/SKILL.md` antes de implementar:
 - `vue-vitest` - Component testing con Vitest + Testing Library
 - `typescript` - TypeScript + Zod validation
 - `tailwind` - TailwindCSS patterns
-- `accessibility` - WCAG 2.1 AA para interfaces SAAC
+- `accessibility` - WCAG 2.2 AA para interfaces SAAC
 
 ## Patrones del Proyecto
 
