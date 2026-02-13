@@ -1,11 +1,32 @@
-# Auditoria de Seguridad - Phase 1 (Full Stack)
+# Auditoria de Seguridad - FASE 1 (Full Stack)
 
 > Revision de seguridad OWASP Top 10 (2021) del proyecto completo HablaIA
 
-**Ultima revision:** 11 de febrero de 2026
-**Alcance:** Full stack - Backend + Frontend + Docker/Infra + CI/CD
-**Fase:** Phase 1 MVP (comunicador publico, sin autenticacion)
+**Ultima revision:** 13 de febrero de 2026<br>
+**Revision anterior:** 11 de febrero de 2026<br>
+**Alcance:** Full stack - Backend + Frontend + Docker/Infra + CI/CD<br>
+**Fase:** Fase 1 MVP (comunicador publico, sin autenticacion)<br>
 **Evaluador:** @security_auditor
+
+---
+
+## Contenido
+
+- [Metodologia](#metodologia)
+- [Resumen Ejecutivo](#resumen-ejecutivo)
+- [1. Backend - OWASP Top 10](#1-backend---owasp-top-10-2021)
+- [2. Backend - Security Headers](#2-backend---security-headers)
+- [3. Backend - Validacion de Inputs](#3-backend---validacion-de-inputs)
+- [4. Frontend Security](#4-frontend-security)
+- [5. Docker / Infraestructura](#5-docker--infraestructura)
+- [6. GitHub Actions / CI/CD](#6-github-actions--cicd)
+- [7. Hallazgos Corregidos](#7-hallazgos-corregidos-desde-revision-anterior)
+- [8. Notas Informativas](#8-notas-informativas)
+- [9. Areas Verificadas](#9-areas-verificadas-como-correctas)
+- [10. Gestion de Secretos](#10-gestion-de-secretos)
+- [11. Trusted Proxies](#11-trusted-proxies-dockernginx)
+- [12. Trabajo Futuro](#12-trabajo-futuro-de-seguridad)
+- [Conclusion](#conclusion)
 
 ---
 
@@ -13,18 +34,18 @@
 
 ### Proceso
 
-1. Revision completa del backend (Symfony 7.4 + PHP 8.4 + Cycle ORM)
-2. Revision completa del frontend (Vue.js 3 + TypeScript, incluyendo Sentry, accesibilidad, TTS, SearchBar, validacion Zod)
+1. Revision asistida por IA (LLM como @security_auditor) del backend (Symfony 7.4 + PHP 8.4 + Cycle ORM)
+2. Revision del frontend (Vue.js 3 + TypeScript, incluyendo Sentry, accesibilidad, TTS, SearchBar, validacion Zod)
 3. Revision de Docker/infraestructura (Dockerfiles, Nginx, docker-compose, CD pipeline)
 4. Revision de CI/CD (GitHub Actions workflows, pre-commit hooks)
-3. Clasificacion de hallazgos por severidad (Critico/Alto/Medio/Bajo/Informativo)
-4. Separacion de hallazgos con accion requerida vs informativos
+5. Clasificacion de hallazgos por severidad (Critico/Alto/Medio/Bajo/Informativo)
+6. Separacion de hallazgos con accion requerida vs informativos
 
 ### Herramientas
 
 | Herramienta | Uso |
 |-------------|-----|
-| Revision manual de codigo | Analisis de todos los archivos fuente (PHP, TypeScript, Vue, YAML, Dockerfile, nginx.conf) |
+| Revision de codigo asistida por IA | Analisis de todos los archivos fuente (PHP, TypeScript, Vue, YAML, Dockerfile, nginx.conf) |
 | OWASP Top 10 (2021) | Checklist sistematico de categorias de vulnerabilidad |
 | `composer audit` | Verificacion de CVEs en dependencias PHP (integrado en CI: `backend-ci.yml`) |
 | `npm audit --omit=dev` | Verificacion de CVEs en dependencias JS (integrado en CI: `frontend-ci.yml`) |
@@ -40,11 +61,19 @@
 |-----------|-----------|
 | Critico | 0 |
 | Alto | 0 |
-| Medio | 1 |
-| Bajo | 2 |
+| Medio | 0 |
+| Bajo | 0 |
 | Informativo | 6 |
 
-**Veredicto: FUERTE para Phase 1 MVP** - Un hallazgo medio y dos bajos pendientes. Ninguno compromete la seguridad del sistema en produccion actual.
+**Veredicto: FUERTE para FASE 1 MVP** - 0 hallazgos con accion requerida. Los 3 hallazgos de la revision anterior (1 medio, 2 bajos) han sido resueltos o descartados con justificacion.
+
+### Cambios respecto a revision anterior (11 feb 2026)
+
+| Hallazgo | Severidad anterior | Estado actual | PR |
+|----------|-------------------|---------------|-----|
+| SEC-01: Security headers en sub-locations Nginx | Medio | **CORREGIDO** | PR #71 |
+| SEC-02: Sourcemaps en produccion | Bajo | **CORREGIDO** | PR #71 |
+| SEC-03: Sentry 404 filtering | Bajo | **DESCARTADO** (decision deliberada) | - |
 
 ---
 
@@ -52,9 +81,9 @@
 
 ### A01:2021 - Broken Access Control
 
-**Estado: ACEPTABLE para Phase 1**
+**Estado: ACEPTABLE para FASE 1**
 
-No existe autenticacion, lo cual es por diseno para Phase 1 (comunicador AAC publico). Cuentas de usuario previstas en Phase 3.
+No existe autenticacion, lo cual es por diseno (comunicador AAC publico).
 
 - **Rate limiting dual** en `POST /api/phrases/generate`:
   - Per-minute: `sliding_window`, `PHRASE_RATE_LIMIT` (default 30), `PHRASE_RATE_INTERVAL` (default 60s)
@@ -124,9 +153,9 @@ No existe autenticacion, lo cual es por diseno para Phase 1 (comunicador AAC pub
 
 ### A07:2021 - Identification and Authentication Failures
 
-**Estado: NO APLICA para Phase 1**
+**Estado: NO APLICA para FASE 1**
 
-No hay autenticacion. Phase 1 es un comunicador SAAC publico.
+No hay autenticacion. Fase 1 es un comunicador SAAC publico.
 
 ### A08:2021 - Software and Data Integrity Failures
 
@@ -195,7 +224,7 @@ Todas las respuestas HTTP incluyen headers de seguridad via `SecurityHeadersSubs
 - **0 usos de `innerHTML`** en todo el frontend. Verificado via grep en todos los archivos `.ts` y `.vue`.
 - Todos los datos dinamicos se renderizan via interpolacion segura de Vue (`{{ }}`) o bindings de atributos (`:src`, `:alt`, `:aria-label`), que escapan HTML automaticamente.
 - Las variaciones de frases del LLM se renderizan como texto plano: `<span class="text-accessible-text">{{ variation }}</span>`.
-- Los mensajes de error se renderizan como texto plano: `<span class="text-red-600">{{ store.error }}</span>`.
+- Los mensajes de error se renderizan como texto plano: `<span class="text-red-700">{{ store.error }}</span>`.
 - Etiquetas de pictogramas se renderizan como texto plano: `{{ pictogram.label }}`.
 
 ### 4.2 Validacion de Datos de API (Zod Schemas)
@@ -246,6 +275,7 @@ El `ApiClient.get()` y `ApiClient.post()` llaman `schema.parse(data)` en cada re
 - `npm audit --omit=dev` integrado en CI (`frontend-ci.yml` linea 54).
 - Stack: Vue 3.5, Vite 6, TypeScript 5.6, Zod 3.24, Sentry Vue 10.38.
 - No hay dependencias con CVEs conocidos en la ultima ejecucion del CI.
+- `@vueuse/core` eliminado de dependencies (era dependencia sin uso, removida en PR #72).
 
 ---
 
@@ -283,9 +313,21 @@ El `ApiClient.get()` y `ApiClient.post()` llaman `schema.parse(data)` en cada re
 
 ### 5.4 Nginx Production Config
 
-**Estado: PASS con hallazgo MEDIO**
+**Estado: PASS**
 
-Security headers en `nginx.conf`:
+Security headers aplicados correctamente en **todos** los locations via `include /etc/nginx/security-headers.conf`:
+
+| Location | Security headers | Cache headers |
+|----------|-----------------|---------------|
+| Server block (global) | `include security-headers.conf` | - |
+| `/pictograms/` | `include security-headers.conf` | `expires 7d; Cache-Control: public, immutable` |
+| `/assets/` | `include security-headers.conf` | `expires 1y; Cache-Control: public, immutable` |
+| `/health` | `include security-headers.conf` | - |
+| `/index.html` | `include security-headers.conf` | `Cache-Control: no-cache, no-store, must-revalidate` |
+
+**Verificado:** `docker/production/nginx.conf` lineas 24, 64, 75, 85, 93.
+
+Security headers en `security-headers.conf`:
 
 | Header | Valor |
 |--------|-------|
@@ -296,9 +338,7 @@ Security headers en `nginx.conf`:
 | `Content-Security-Policy` | `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://static.arasaac.org data:; connect-src 'self' https://*.ingest.de.sentry.io; font-src 'self'; frame-ancestors 'none'` |
 
 - `server_tokens off` oculta la version de Nginx.
-- CSP permite `'unsafe-inline'` para styles (necesario para `:style` bindings de Vue con Fitzgerald Key colors).
-
-**Hallazgo SEC-01 (MEDIO): Security headers ausentes en sub-locations de Nginx.** Ver seccion de hallazgos.
+- CSP permite `'unsafe-inline'` para styles (necesario para `:style` bindings de Vue con Fitzgerald Key colors — ver INFO-03).
 
 ### 5.5 docker-compose.prod.yml
 
@@ -365,59 +405,47 @@ Security headers en `nginx.conf`:
 
 ---
 
-## 7. Hallazgos con Accion Requerida
+## 7. Hallazgos Corregidos desde Revision Anterior
 
-### SEC-01: Security headers ausentes en sub-locations de Nginx (MEDIO)
+### SEC-01: Security headers en sub-locations Nginx — CORREGIDO (PR #71)
 
-**Ubicacion:** `docker/production/nginx.conf`, locations `/pictograms/`, `/assets/`, `/health`
+**Ubicacion original:** `docker/production/nginx.conf`, locations `/pictograms/`, `/assets/`, `/health`
 
-**Problema:** Nginx `add_header` en un bloque `location` no hereda los `add_header` del bloque `server` padre. Las locations `/pictograms/` (linea 63-69), `/assets/` (linea 74-78) y `/health` (linea 83-86) definen sus propios `add_header`, lo que provoca que los security headers del bloque `server` (X-Frame-Options, X-Content-Type-Options, CSP, etc.) **no se apliquen** a estas rutas.
+**Problema original (11 feb):** Nginx `add_header` en un bloque `location` no hereda los `add_header` del bloque `server` padre. Las locations que definian sus propios `add_header` no incluian los security headers.
 
-**Impacto:** Las respuestas de imagenes de pictogramas y assets estaticos no incluyen headers de seguridad como `X-Content-Type-Options: nosniff` ni `Content-Security-Policy`.
+**Correccion aplicada:** Se creo `docker/production/security-headers.conf` con todos los headers de seguridad, y se agrego `include /etc/nginx/security-headers.conf;` en cada location que define `add_header` propio. Verificado en lineas 24, 64, 75, 85, 93 de `nginx.conf`.
 
-**Recomendacion:** Mover los security headers a un `include` file compartido o repetirlos en cada location que defina `add_header`, o bien usar el modulo `headers-more` de Nginx que soporta herencia correcta.
+**Estado: CORREGIDO.** Verificado en produccion (13 feb 2026): `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, CSP completa, `server_tokens off`, sin `X-Powered-By`.
 
-### SEC-02: Sourcemaps habilitados en produccion (BAJO)
+### SEC-02: Sourcemaps en produccion — CORREGIDO (PR #71)
 
-**Ubicacion:** `frontend/vite.config.ts`, linea 29
+**Ubicacion original:** `frontend/vite.config.ts`, linea 29
 
-**Problema:** La configuracion de build tiene `sourcemap: true`. Los sourcemaps de produccion permiten a cualquier usuario reconstruir el codigo fuente original del frontend desde las DevTools del navegador.
+**Problema original (11 feb):** `sourcemap: true` generaba sourcemaps referenciados desde los JS bundles, accesibles en DevTools del navegador.
 
-**Impacto:** Bajo. El frontend es una SPA sin secretos (API keys en backend). Pero expone la estructura interna del codigo, nombres de funciones, y comentarios, lo que podria facilitar el descubrimiento de vulnerabilidades en futuras fases.
+**Correccion aplicada:** Cambiado a `sourcemap: 'hidden'` (`vite.config.ts` linea 29). Los sourcemaps se generan (disponibles para Sentry upload) pero no se referencian desde los bundles, por lo que no son accesibles en el navegador.
 
-**Recomendacion:** Cambiar a `sourcemap: 'hidden'` para generar sourcemaps que Sentry pueda usar (via upload), pero que no se sirvan al navegador. Alternativamente, configurar Nginx para bloquear `*.map` files:
-```nginx
-location ~* \.map$ {
-    return 404;
-}
-```
+**Estado: CORREGIDO.**
 
-### SEC-03: Sentry backend no filtra errores 404 de bots (BAJO)
+### SEC-03: Sentry 404 filtering — DESCARTADO (decision deliberada)
 
 **Ubicacion:** `backend/config/packages/sentry.yaml`
 
-**Problema:** La configuracion de Sentry es minima (`dsn: '%env(SENTRY_DSN)%'`). No hay filtrado de excepciones `NotFoundHttpException` (404). Bots que escanean rutas comunes (`/wp-admin`, `/wp-login.php`, `/.env`, etc.) generan ruido en el dashboard de Sentry, consumiendo la cuota del free tier (5K errores/mes).
+**Hallazgo original (11 feb, Bajo):** La configuracion de Sentry no filtra excepciones 404. Bots que escanean rutas comunes generan ruido.
 
-**Nota:** Monolog ya excluye 404/405 (`excluded_http_codes: [404, 405]` en `monolog.yaml`), pero Sentry captura excepciones antes de que monolog las filtre.
+**Decision:** Se decidio **no filtrar** los 404 en Sentry. Los errores 404 son utiles para detectar escaneos automatizados y ataques de reconocimiento contra la aplicacion (`/wp-admin`, `/.env`, `/phpinfo.php`, etc.). El coste en cuota de Sentry (5K errores/mes free tier) es aceptable dado el bajo trafico actual.
 
-**Recomendacion:** Configurar `sentry.yaml` para excluir excepciones HTTP no relevantes:
-```yaml
-sentry:
-    dsn: '%env(SENTRY_DSN)%'
-    options:
-        before_send: 'sentry.callback.before_send'
-```
-O usar `register_error_listener: false` y configurar exclusiones especificas.
+**Estado: DESCARTADO por decision informada.**
 
 ---
 
 ## 8. Notas Informativas
 
-> Sin accion requerida para Phase 1. Documentadas para referencia futura.
+> Sin accion requerida para Fase 1. Documentadas para referencia futura.
 
 ### INFO-01: HSTS Header Ausente
 
-`nginx.conf` y `SecurityHeadersSubscriber` no establecen `Strict-Transport-Security`. Correcto para Phase 1 (HTTP en produccion actual). Cuando se configure TLS (Let's Encrypt), anadir HSTS en Nginx:
+`nginx.conf` y `SecurityHeadersSubscriber` no establecen `Strict-Transport-Security`. Correcto para Fase 1 (HTTP en produccion actual). Cuando se configure TLS (Let's Encrypt), anadir HSTS en Nginx:
 ```nginx
 add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
 ```
@@ -428,7 +456,7 @@ El default `change_me_in_production_32_chars!` es aceptable para desarrollo loca
 
 ### INFO-03: CSP con 'unsafe-inline' para Styles
 
-`nginx.conf` permite `style-src 'self' 'unsafe-inline'` porque Vue usa `:style` bindings para los colores Fitzgerald Key de categorias (ej. `:style="{ borderTopColor: category.colorHex }"`). Esto es una concesion aceptable para Phase 1. En Phase 2+, considerar migrar a clases CSS dinamicas o CSS custom properties para eliminar `unsafe-inline`.
+`nginx.conf` permite `style-src 'self' 'unsafe-inline'` porque Vue usa `:style` bindings para los colores Fitzgerald Key de categorias (ej. `:style="{ borderTopColor: category.colorHex }"`). Esto es una concesion aceptable. Eliminar `unsafe-inline` requeriria migrar los estilos dinamicos a clases CSS o custom properties, lo cual no es viable sin cambiar la logica de colores Fitzgerald Key.
 
 ### INFO-04: Sentry DSN Publico en Frontend
 
@@ -436,7 +464,7 @@ El `VITE_SENTRY_DSN` se embebe en el bundle JS de produccion (es una variable `V
 
 ### INFO-05: TLS No Configurado
 
-El despliegue actual en Hetzner usa HTTP (puerto 80). TLS con Let's Encrypt es recomendable antes de uso real por usuarios. No es critico para Phase 1 MVP en evaluacion academica.
+El despliegue actual en Hetzner usa HTTP (puerto 80). TLS con Let's Encrypt es recomendable antes de uso real por usuarios. No es critico para Fase 1 MVP en evaluacion academica.
 
 ### INFO-06: Alcance del Rate Limiting
 
@@ -444,7 +472,30 @@ Solo `POST /api/phrases/generate` tiene rate limiting (dual: por minuto + diario
 
 ---
 
-## 9. Gestion de Secretos
+## 9. Areas Verificadas como Correctas
+
+Las siguientes areas se revisaron exhaustivamente y no presentan hallazgos:
+
+| Area | Verificacion | Resultado |
+|------|-------------|-----------|
+| SQL Injection | Cycle ORM parametrizado + sanitizeQuery() + Fragment con parametros | PASS |
+| Prompt Injection | sanitizeLabel() + resolucion server-side de labels | PASS |
+| SSRF | Allowlist estricta en HttpImageDownloader y ArasaacApiClient | PASS |
+| Path Traversal | Normalizacion de rutas en HttpImageDownloader | PASS |
+| XSS | 0 usos de v-html/innerHTML, interpolacion segura de Vue | PASS |
+| Validacion frontend | Zod schemas en todas las respuestas API | PASS |
+| Secretos en codigo | 0 hardcodeados, todo via env vars | PASS |
+| Containers | Non-root en ambos Dockerfiles de produccion | PASS |
+| CI/CD | Auditorias de deps, tipo estricto, tests, deploy con rollback | PASS |
+| Security headers | Todos los locations incluyen security-headers.conf | PASS |
+| Sourcemaps | `hidden` — no accesibles en navegador | PASS |
+| Rate limiting | Dual (per-minute + daily) en endpoint costoso | PASS |
+| CORS | Mismo origen en produccion, restringido en desarrollo | PASS |
+| Error responses | JSON estructurado via ApiExceptionSubscriber, sin stack traces | PASS |
+
+---
+
+## 10. Gestion de Secretos
 
 | Verificacion | Resultado |
 |-------------|-----------|
@@ -463,7 +514,7 @@ Solo `POST /api/phrases/generate` tiene rate limiting (dual: por minuto + diario
 
 ---
 
-## 10. Trusted Proxies (Docker/Nginx)
+## 11. Trusted Proxies (Docker/Nginx)
 
 Configuracion en `framework.yaml`:
 
@@ -478,31 +529,22 @@ trusted_headers: ['x-forwarded-for', 'x-forwarded-proto']
 
 ---
 
-## 11. Recomendaciones para Futuras Fases
+## 12. Trabajo Futuro de Seguridad
 
-| Fase | Accion de Seguridad Requerida |
-|------|-------------------------------|
-| Phase 2 (Contexto temporal) | Verificar que datos temporales no expongan informacion sensible |
-| Phase 3 (Perfiles usuario) | **Auditoria completa obligatoria**: autenticacion (JWT/sessions), CSRF, password hashing (Argon2id), autorizacion por recurso, GDPR (datos de comunicacion son datos de salud) |
-| Phase 4 (TTS Premium) | Proteger claves ElevenLabs server-side, validar audio responses, rate limit en TTS |
-| Phase 5 (PWA/Offline) | Service Worker security (scope, update mechanism), IndexedDB encryption para datos sensibles |
-| Phase 6 (Voice Cloning) | GDPR compliance estricto, consentimiento explicito para datos biometricos, cifrado de audio, derecho a eliminacion verificable |
+Las siguientes mejoras de seguridad quedan documentadas para cuando el proyecto evolucione:
 
-### Recomendaciones transversales para Phase 2+
-
-1. **TLS/HTTPS obligatorio** con Let's Encrypt + HSTS
-2. **CSP sin `unsafe-inline`** migrando estilos dinamicos a CSS custom properties
-3. **Sourcemaps** tipo `hidden` con upload a Sentry
-4. **Sentry filtering** para 404s de bots
-5. **npm audit / composer audit** en pre-commit ademas de CI
-6. **Dependency updates** automatizados (Dependabot o Renovate)
-7. **Security headers** en todas las locations de Nginx (via include file)
+| Area | Descripcion |
+|------|-------------|
+| TLS/HTTPS | Configurar Let's Encrypt + HSTS cuando se use dominio propio |
+| Autenticacion | Auditoria completa obligatoria si se implementan perfiles de usuario (JWT/sessions, CSRF, Argon2id, GDPR) |
+| CSP | Eliminar `unsafe-inline` migrando estilos dinamicos a CSS custom properties |
+| Dependency updates | Automatizar con Dependabot o Renovate |
 
 ---
 
 ## Conclusion
 
-El proyecto HablaIA demuestra una postura de seguridad madura para un MVP Phase 1 full stack:
+El proyecto HablaIA demuestra una postura de seguridad madura para un MVP Fase 1 full stack:
 
 **Backend:**
 - Validacion de inputs en cada capa (Controller, Application, Domain)
@@ -523,11 +565,13 @@ El proyecto HablaIA demuestra una postura de seguridad madura para un MVP Phase 
 **Infraestructura:**
 - Dockerfiles con usuarios non-root y multi-stage builds
 - CSP completa en Nginx con allowlist para Sentry y ARASAAC
+- Security headers en **todos** los locations (corregido en PR #71)
+- Sourcemaps ocultos en produccion (corregido en PR #71)
 - `server_tokens off`, `expose_php=Off`
 - PostgreSQL sin puertos expuestos en produccion
 - CI con auditorias de seguridad automatizadas en ambos stacks
 - CD con rollback automatico y limpieza de SSH keys
 
-**Hallazgos pendientes:** 1 medio (security headers en sub-locations Nginx), 2 bajos (sourcemaps en produccion, Sentry 404 filtering). Ninguno compromete la seguridad del sistema en su estado actual.
+**Hallazgos pendientes: 0.** Los 3 hallazgos de la revision anterior han sido corregidos (SEC-01, SEC-02) o descartados con justificacion documentada (SEC-03).
 
-**El proyecto esta listo para despliegue de Phase 1 desde perspectiva de seguridad.**
+**El proyecto esta listo para despliegue de Fase 1 desde perspectiva de seguridad.**

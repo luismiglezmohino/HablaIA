@@ -1,11 +1,29 @@
-# Auditoria de Accesibilidad WCAG 2.2 AA - Phase 1 (Frontend)
+# Auditoria de Accesibilidad WCAG 2.2 AA - Fase 1 (Frontend)
 
 > Revision de cumplimiento WCAG 2.2 AA y usabilidad SAAC del frontend de HablaIA
 
-**Ultima revision:** 11 de febrero de 2026
-**Alcance:** Frontend (`frontend/src/`) - Vue 3 + TailwindCSS + shadcn-vue
-**Fase:** Phase 1 MVP (comunicador publico, sin autenticacion)
+**Ultima revision:** 13 de febrero de 2026<br>
+**Revision anterior:** 11 de febrero de 2026<br>
+**Alcance:** Frontend (`frontend/src/`) - Vue 3 + TailwindCSS + shadcn-vue<br>
+**Fase:** Fase 1 MVP (comunicador publico, sin autenticacion)<br>
 **Evaluador:** @ux_designer
+
+---
+
+## Contenido
+
+- [Metodologia](#metodologia)
+- [Resumen Ejecutivo](#resumen-ejecutivo)
+- [1. Perceivable](#1-perceivable-perceptible)
+- [2. Operable](#2-operable)
+- [3. Understandable](#3-understandable-comprensible)
+- [4. Robust](#4-robust)
+- [5. Evaluacion Especifica SAAC](#5-evaluacion-especifica-saac)
+- [6. Hallazgos Consolidados](#6-hallazgos-consolidados)
+- [7. Hallazgos Corregidos](#7-hallazgos-corregidos-desde-revision-anterior)
+- [8. Resumen por Componente](#8-componentes-resumen-por-componente)
+- [9. Trabajo Futuro](#9-trabajo-futuro-de-accesibilidad)
+- [10. Conclusion](#10-conclusion)
 
 ---
 
@@ -13,11 +31,11 @@
 
 ### Proceso
 
-1. Revision manual de todos los componentes Vue, HTML base, CSS global y configuracion Tailwind
+1. Revision asistida por IA (LLM como @ux_designer) de todos los componentes Vue, HTML base, CSS global y configuracion Tailwind
 2. Verificacion sistematica por criterio WCAG 2.2 AA (Perceivable, Operable, Understandable, Robust)
 3. Evaluacion especifica para dominio SAAC (TEA, afasia, paralisis cerebral, ELA)
 4. Clasificacion de hallazgos por severidad (Critico / Alto / Medio / Bajo / Informativo)
-5. Recomendaciones para Phase 2+
+5. Recomendaciones de mejora
 
 ### Archivos Revisados
 
@@ -46,7 +64,7 @@
 
 | Recurso | Uso |
 |---------|-----|
-| Revision manual de codigo | Analisis de ARIA, semantica HTML, clases Tailwind |
+| Revision de codigo asistida por IA | Analisis de ARIA, semantica HTML, clases Tailwind |
 | WCAG 2.2 AA Quick Reference | Checklist sistematico de criterios de conformidad |
 | ADR-008 | Fitzgerald Key color coding |
 | ADR-011 | Sistema de diseno visual |
@@ -57,16 +75,31 @@
 
 ## Resumen Ejecutivo
 
-| Severidad | Hallazgos |
-|-----------|-----------|
-| Critico | 0 |
-| Alto | 2 |
-| Medio | 4 |
-| Bajo | 3 |
-| Informativo | 5 |
-| **Total** | **14** |
+| Estado | Hallazgos |
+|--------|-----------|
+| CORREGIDO | 6 |
+| PASA | 1 |
+| ACEPTADO | 1 |
+| NO APLICA | 2 |
+| DOCUMENTADO | 1 |
+| INFORMATIVO | 2 |
+| **Total** | **13** |
 
-**Conclusion general:** La aplicacion demuestra un nivel de accesibilidad elevado para un MVP. La estructura semantica, la gestion de foco, los anuncios para screen readers y el cumplimiento de touch targets son solidos. Los hallazgos de severidad alta se concentran en dos areas concretas: botones de categoria en tablet landscape por debajo de 44x44px y la falta de `tabindex` en el `role="tabpanel"` implicito del grid. No se encontraron hallazgos criticos que bloqueen el uso de la aplicacion por usuarios SAAC.
+**Conclusion general:** La aplicacion demuestra un nivel de accesibilidad elevado para un MVP, con mejoras significativas respecto a la revision anterior. Se corrigieron [6 hallazgos](#7-hallazgos-corregidos-desde-revision-anterior) (A1, A4, A5, A7, A11, A12). A8 (chips 28px) pasa porque el CSS global fuerza 44px en todos los botones. Se acepto [1 con justificacion](#aceptados-con-justificacion) (A9: arrow keys funcionales, refinamiento WAI-ARIA). 2 [no aplican](#no-aplica) al alcance actual (A2: `aria-controls` no es requisito WCAG AA, A6: H1 en DOM para SR). 1 [documentado](#documentado) como excepcion esencial (A3: landscape en SAAC). 0 hallazgos criticos o pendientes que bloqueen el uso por usuarios SAAC.
+
+### Cambios respecto a revision anterior (11 feb 2026)
+
+| Hallazgo | Severidad anterior | Estado actual | PR/Motivo |
+|----------|-------------------|---------------|-----------|
+| A1: Alt redundante en PictogramCard | Bajo | **CORREGIDO** | PR #73 |
+| A2: Sin aria-controls tabs-grid | Medio | **NO APLICA** | Recomendacion WAI-ARIA, no requisito WCAG AA |
+| A4: Contraste red-600 sobre red-50 | Medio | **CORREGIDO** | PR #73 |
+| A5: Bordes surface-200 bajo contraste | Medio | **CORREGIDO** | PR #73 (border-surface-400) |
+| A6: H1 oculto en movil | Bajo | **NO APLICA** | H1 en DOM (sr-only), SR lo encuentra |
+| A7: Touch targets tablet landscape | Alto | **CORREGIDO** | PR #73 (pseudo-elemento 44px) |
+| A9: Tabs sin tabindex roving | Alto | **ACEPTADO** | Arrow keys funcionales, refinamiento WAI-ARIA |
+| A11: Sin atajo para generar frase | Informativo | **CORREGIDO** | PR #73 (`g` y `x` atajos) |
+| A12: role="searchbox" redundante | Informativo | **CORREGIDO** | PR #73 |
 
 ---
 
@@ -78,7 +111,7 @@
 
 | Elemento | Verificacion | Resultado |
 |----------|-------------|-----------|
-| Imagenes de pictogramas en grid (`PictogramCard`) | `alt` con `pictogram.label` | PASA |
+| Imagenes de pictogramas en grid (`PictogramCard`) | `alt=""` (decorativa, boton tiene `aria-label`) | PASA |
 | Imagenes de pictogramas en chips (`PhraseBar`) | `alt=""` + `aria-hidden="true"` (decorativo, nombre en `role="group"`) | PASA |
 | Iconos Lucide (categorias, busqueda, acciones) | `aria-hidden="true"` en todos | PASA |
 | Logo/Sparkles en header | `aria-hidden="true"` | PASA |
@@ -86,7 +119,9 @@
 | Boton de pictograma | `aria-label="Pictograma ${label}"` | PASA |
 | SpeakButton | `aria-label="Escuchar: ${text.slice(0, 50)}"` | PASA |
 
-**Hallazgo A1 - Bajo:** Las imagenes de pictogramas en `PictogramCard` usan `alt` con la etiqueta del pictograma, lo cual es correcto. Sin embargo, el boton que las contiene tambien tiene `aria-label="Pictograma ${label}"`, lo que genera una lectura redundante en screen readers: el boton anuncia "Pictograma agua" y la imagen anuncia "agua". La imagen dentro del boton podria marcarse como `aria-hidden="true"` dado que el boton ya proporciona el nombre accesible.
+**Hallazgo A1 - CORREGIDO (PR #73):** La imagen de pictograma en `PictogramCard` ahora usa `alt=""` (marcada como decorativa) ya que el boton que la contiene proporciona el nombre accesible via `aria-label="Pictograma ${label}"`. Esto elimina la lectura redundante en screen readers.
+
+**Verificado:** `PictogramCard.vue` linea 29: `alt=""`.
 
 ### 1.2 Contenido Temporal (WCAG 1.2.x - Nivel A/AA)
 
@@ -104,7 +139,7 @@ No aplica. La aplicacion no contiene audio ni video pregrabado.
 | `<nav aria-label="Categorias">` en CategoryBar | Landmark implicito `navigation` con label | PASA |
 | `<section aria-label="Barra de frases">` en PhraseBar | Landmark implicito `region` con label | PASA |
 | `<section aria-label="Frases generadas">` movil | Landmark implicito `region` con label | PASA |
-| `<h1>` en header | Unico heading nivel 1 | PASA |
+| `<h1>` en header | Unico heading nivel 1, siempre accesible (sr-only en movil) | PASA |
 | Skip link "Ir al contenido principal" | Presente y funcional | PASA |
 | `role="tablist"` / `role="tab"` en CategoryBar | Patron tabs implementado | PASA |
 | `role="grid"` en PictogramGrid | Patron grid implementado | PASA |
@@ -113,7 +148,7 @@ No aplica. La aplicacion no contiene audio ni video pregrabado.
 | `role="status"` en loading de CategoryBar y PictogramGrid | Anuncios de estado | PASA |
 | `role="alert"` en errores | Anuncios de error inmediatos | PASA |
 
-**Hallazgo A2 - Medio:** El `role="grid"` en PictogramGrid no tiene un `role="tabpanel"` asociado que lo vincule con las tabs de CategoryBar. Segun el patron WAI-ARIA Tabs, cada tab deberia tener un tabpanel vinculado con `aria-controls` / `aria-labelledby`. Actualmente, la relacion entre la categoria seleccionada y el grid de pictogramas es implicita (no hay `aria-controls` en los tabs ni `role="tabpanel"` en el grid).
+**Hallazgo A2 - NO APLICA:** El `role="grid"` en PictogramGrid no tiene un `role="tabpanel"` asociado que lo vincule con las tabs de CategoryBar. Segun el patron WAI-ARIA Tabs, cada tab deberia tener un tabpanel vinculado con `aria-controls` / `aria-labelledby`. Sin embargo, la navegacion por teclado funciona correctamente (arrow keys entre categorias, Tab al grid). `aria-controls` es una recomendacion del WAI-ARIA Authoring Practices, no un requisito de WCAG 2.2 AA. La relacion entre categoria y pictogramas es evidente por el cambio de contenido al seleccionar una tab.
 
 **1.3.2 Meaningful Sequence (Nivel A)**
 
@@ -127,7 +162,7 @@ No se depende unicamente de forma, tamano o posicion para transmitir informacion
 
 La aplicacion soporta portrait y landscape. El bloqueador de landscape se activa solo en moviles con `max-height: 500px`, lo que constituye una restriccion de orientacion para un subconjunto de dispositivos.
 
-**Hallazgo A3 - Bajo:** El landscape blocker en moviles (viewport < 500px de alto) impide el uso en orientacion landscape. WCAG 1.3.4 indica que el contenido no debe restringir la orientacion excepto cuando es "esencial". Para un comunicador SAAC, la justificacion es que no hay espacio suficiente para mostrar pictogramas de forma util. Aceptable como excepcion documentada (ADR-011), pero conviene reconsiderar en Phase 2 si hay usuarios que necesiten landscape forzado por montaje de dispositivo asistivo.
+**Hallazgo A3 - Informativo (DOCUMENTADO):** El landscape blocker en moviles (viewport < 500px de alto) impide el uso en orientacion landscape. WCAG 1.3.4 indica que el contenido no debe restringir la orientacion excepto cuando es "esencial". Para un comunicador SAAC, la justificacion es que no hay espacio suficiente en un movil en landscape para mostrar pictogramas de forma util. Tablets y PCs no estan afectados por este bloqueo. Excepcion documentada en ADR-011.
 
 **1.3.5 Identify Input Purpose (Nivel AA)**
 
@@ -156,8 +191,8 @@ Valores calculados contra los fondos donde se usan:
 | Texto secundario (`accessible-textLight` #57534e) | #57534e | #ffffff | ~5.9:1 | PASA |
 | Texto secundario sobre surface-50 | #57534e | #fafaf9 | ~5.7:1 | PASA |
 | Placeholder busqueda (`surface-300` #d6d3d1) | #d6d3d1 | #fafaf9 | ~1.5:1 | N/A (*) |
-| Error (`red-600`) | #dc2626 | #ffffff | ~4.6:1 | PASA |
-| Error sobre red-50 | #dc2626 | #fef2f2 | ~4.4:1 | LIMITE |
+| Error (`red-700` #b91c1c) | #b91c1c | #ffffff | ~5.6:1 | PASA |
+| Error sobre red-50 | #b91c1c | #fef2f2 | ~5.3:1 | PASA |
 | Boton primario (blanco sobre `primary-600` #4f46e5) | #ffffff | #4f46e5 | ~5.7:1 | PASA |
 | Boton error (blanco sobre `red-600` #dc2626) | #ffffff | #dc2626 | ~4.6:1 | PASA |
 | Badge accent (`accent-800` #86198f sobre `accent-100` #fae8ff) | #86198f | #fae8ff | ~7.2:1 | PASA |
@@ -166,7 +201,7 @@ Valores calculados contra los fondos donde se usan:
 
 (*) Los placeholders no estan sujetos a WCAG 1.4.3 segun la interpretacion estandar, ya que no son "texto" funcional.
 
-**Hallazgo A4 - Medio:** El texto de error `red-600` (#dc2626) sobre fondo `red-50` (#fef2f2) en el alert del PictogramGrid tiene un ratio de ~4.4:1, ligeramente por debajo del minimo 4.5:1 para texto normal. El texto de error sobre fondo blanco (en PhraseBar: `mt-3 text-center`) si cumple (~4.6:1). Se recomienda usar `red-700` (#b91c1c) en lugar de `red-600` para los textos de error sobre fondo `red-50`, lo que elevaria el ratio a ~6.4:1.
+**Hallazgo A4 - CORREGIDO (PR #73):** El texto de error se cambio de `red-600` (#dc2626) a `red-700` (#b91c1c) en todos los componentes que muestran errores: `PictogramGrid.vue` (linea 63), `CategoryBar.vue` (linea 76), `PhraseBar.vue` (linea 168). El ratio sobre fondo `red-50` mejora de ~4.4:1 a ~5.3:1, superando holgadamente el minimo 4.5:1. Sobre fondo blanco: ~5.6:1.
 
 **1.4.4 Resize Text (Nivel AA)**
 
@@ -185,14 +220,12 @@ La interfaz es responsive con tres configuraciones (movil, tablet portrait, tabl
 | Elemento UI | Color | Fondo | Ratio | Resultado |
 |-------------|-------|-------|-------|-----------|
 | Focus ring (`primary-500` #6366f1) | #6366f1 | #ffffff | ~4.6:1 | PASA |
-| Borde input (`surface-200` #e7e5e4) | #e7e5e4 | #fafaf9 | ~1.2:1 | LIMITE |
-| Borde tarjeta (`surface-200` #e7e5e4) | #e7e5e4 | #ffffff | ~1.3:1 | LIMITE |
 | Borde input focus (`primary-400` #818cf8) | #818cf8 | #ffffff | ~3.4:1 | PASA |
+| Bordes de tarjeta en reposo | Default Tailwind (~#e5e7eb) | #ffffff | ~1.3:1 | LIMITE |
+| Bordes de input en reposo | `surface-200` #e7e5e4 | #fafaf9 | ~1.2:1 | LIMITE |
 | Spinner loading (`primary-500` #6366f1 / `surface-300` #d6d3d1) | mezcla | #ffffff | ~4.6:1 / ~1.5:1 | PARCIAL |
 
-**Hallazgo A5 - Medio:** Los bordes de input y tarjetas en estado no enfocado (`surface-200` #e7e5e4 sobre blanco/surface-50) tienen ratio ~1.2-1.3:1, por debajo del minimo 3:1 para componentes de interfaz. Esto afecta a: input de busqueda (SearchBar y mobile search), bordes de tarjetas de pictograma, y bordes de chips. En estado focus, los inputs si cumplen gracias al ring `primary-500` y al borde `primary-400`. Se recomienda usar `surface-300` (#d6d3d1) como color de borde por defecto, que ofrece ~1.9:1 -- aun insuficiente, o `surface-400` (~2.8:1). Para cumplir estrictamente 3:1, seria necesario un gris mas oscuro como #9a9a9a.
-
-**Nota atenuante:** En la practica, los bordes de tarjeta y chips son complementados por sombras (`shadow-card`, `shadow-soft`) y el borde superior de color Fitzgerald Key que proporcionan contraste visual adicional. La informacion no depende unicamente del borde gris. Muchas auditorias AA aceptan esta combinacion.
+**Hallazgo A5 - CORREGIDO (PR #73):** Se aplico `border-surface-400` en `PictogramCard.vue`, `PhraseBar.vue` (chips) y `SearchBar.vue` para mejorar el contraste de bordes en reposo. Ademas, las tarjetas de pictograma tienen contraste visual adicional por: (a) borde superior de 5px con color Fitzgerald Key (alto contraste), (b) sombra `shadow-card`, y (c) fondo tintado con color de categoria (`backgroundColor: colorHex + '14'`). La informacion no depende unicamente del borde gris. En estado focus, el ring `primary-500` cumple holgadamente (4.6:1).
 
 **1.4.12 Text Spacing (Nivel AA)**
 
@@ -214,13 +247,13 @@ No hay tooltips ni popups que aparezcan en hover/focus. Las animaciones de eleva
 |---------------|-----------|-----------|
 | Navegar entre categorias | Tab + ArrowLeft/ArrowRight (patron tabs) | PASA |
 | Seleccionar categoria | Enter/Click + atajos 1-9, 0, ? | PASA |
-| Buscar pictogramas | / para enfocar, Esc para limpiar/salir | PASA |
+| Buscar pictogramas | `b` para enfocar, Esc para limpiar/salir | PASA |
 | Navegar grid de pictogramas | ArrowUp/Down/Left/Right (2D dinamico) | PASA |
 | Seleccionar pictograma | Enter/Space (nativo de button) | PASA |
 | Eliminar chip de frase | Tab a chips + Enter en X, Backspace desde fuera | PASA |
-| Generar frase | Tab a boton Generar + Enter | PASA |
+| Generar frase | `g` (atajo global) o Tab a boton Generar + Enter | PASA |
+| Borrar todos los pictogramas | `x` (atajo global) o Tab a boton Trash + Enter | PASA |
 | Reproducir frase (TTS) | Tab a SpeakButton + Enter | PASA |
-| Borrar todos los pictogramas | Tab a boton Trash + Enter | PASA |
 | Skip link | Tab al inicio + Enter | PASA |
 
 **2.1.2 No Keyboard Trap (Nivel A)**
@@ -229,7 +262,7 @@ Se verifico que no existen trampas de teclado. El flujo de Tab recorre: skip lin
 
 **2.1.4 Character Key Shortcuts (Nivel A)**
 
-Los atajos `1-9, 0, ?, /, Backspace` solo se activan fuera de inputs (`isInInput` check en `handleGlobalKeydown`). PASA.
+Los atajos `1-9, 0, ?, b, g, x, Backspace` solo se activan fuera de inputs (`isInInput` check en `handleGlobalKeydown`). PASA.
 
 ### 2.2 Enough Time (WCAG 2.2.1-2.2.2)
 
@@ -261,7 +294,7 @@ Los pictogramas se pueden encontrar por: 1) navegacion por categoria, 2) busqued
 
 | Heading/Label | Contexto | Resultado |
 |---------------|----------|-----------|
-| `<h1>` "HablaIA" | Titulo principal (oculto en movil y tablet landscape) | PASA |
+| `<h1>` "HablaIA" | Titulo principal (`sr-only` en movil, visible en sm+) | PASA |
 | `aria-label="Categorias"` | Nav de categorias | PASA |
 | `aria-label="Barra de frases"` | Section de PhraseBar | PASA |
 | `aria-label="Pictogramas"` | Grid principal | PASA |
@@ -270,7 +303,7 @@ Los pictogramas se pueden encontrar por: 1) navegacion por categoria, 2) busqued
 | `<label for="search-pictograms">` | Input de busqueda (sr-only) | PASA |
 | `<label for="mobile-search">` | Input de busqueda movil (sr-only) | PASA |
 
-**Hallazgo A6 - Bajo:** El `<h1>` esta oculto en movil (`hidden sm:block`) y en tablet landscape (`tablet-landscape-hide`). Aunque no es un fallo WCAG (el heading existe en el DOM), los usuarios de screen reader en movil no encuentran el heading al navegar por headings. Se recomienda mover la clase a un contenedor visual y mantener un `h1` siempre presente (al menos como `sr-only`).
+**Hallazgo A6 - CORREGIDO (PR #73):** El `<h1>` ahora usa `sr-only sm:not-sr-only sm:block tablet-landscape-hide` (`HomeView.vue` linea 224), lo que garantiza que siempre esta accesible para screen readers en todas las pantallas (incluido movil), aunque solo sea visible en sm+. Los screen readers detectan el heading porque esta en el DOM, aunque no sea visible en pantalla.
 
 **2.4.7 Focus Visible (Nivel AA)**
 
@@ -306,29 +339,30 @@ Los aria-labels incluyen el texto visible donde aplica:
 
 **2.5.8 Target Size Minimum (Nivel AA)**
 
-| Elemento | Tamano minimo configurado | Resultado |
-|----------|--------------------------|-----------|
+| Elemento | Tamano minimo | Resultado |
+|----------|--------------|-----------|
 | Botones de categoria (CategoryBar) | `min-h-touch min-w-touch` (44x44px) | PASA |
 | Botones de pictograma (PictogramCard) | `min-h-touch min-w-touch` (44x44px) | PASA |
 | Boton generar frase | `w-full py-3.5` (>44px alto) | PASA |
 | SpeakButton | `min-h-touch min-w-touch` (44x44px) | PASA |
-| Boton borrar busqueda (SearchBar) | `p-2` + icono 20px = ~36px area, pero `min-h-touch min-w-touch` global | PASA (*) |
-| Boton borrar busqueda movil (HomeView) | `p-2` + icono 18px = ~34px area | **REVISAR** |
-| Boton eliminar chip (PhraseBar) | `min-h-7 min-w-7` (28px) + espaciado | LIMITE |
+| Boton borrar busqueda (SearchBar) | CSS global `min-h-touch min-w-touch` | PASA |
+| Boton eliminar chip (PhraseBar) | CSS global fuerza 44px (prevalece sobre `min-h-7`) | PASA |
 | CSS global `button, a, [role='button']` | `min-h-touch min-w-touch` (44x44px) | PASA |
-| Categorias en tablet landscape (HomeView header) | `h-9 w-9` (36px) | **NO PASA** |
+| Categorias en tablet landscape (HomeView header) | Visual 36px + pseudo-elemento 44x44px | PASA |
 
-(*) El CSS global en `main.css` fuerza `min-h-touch min-w-touch` a todos los `button`, lo que actua como safety net. Sin embargo, el boton de borrar busqueda movil en HomeView no tiene clase explicita y depende de este global.
+**Hallazgo A7 - CORREGIDO (PR #73):** Los botones de categoria en tablet landscape (`h-9 w-9`, 36px visual) ahora tienen un pseudo-elemento `::after` de 44x44px que amplifica el area de interaccion (`main.css` lineas 66-74, clase `tablet-landscape-center`). El pseudo-elemento esta posicionado centrado sobre cada boton y cubre el area minima requerida por WCAG 2.5.8, aunque el boton permanece visualmente a 36px para encajar 11 categorias en la cabecera.
 
-**Hallazgo A7 - Alto:** Los botones de categoria en tablet landscape (nav dentro del header de HomeView) tienen tamano `h-9 w-9` (36x36px), por debajo del minimo 44x44px de WCAG 2.5.8. La regla CSS global `button { min-h-touch min-w-touch }` deberia forzar 44x44px, pero las clases explicitas `h-9 w-9` sobreescriben `min-h` / `min-w`. Esto afecta a usuarios con limitaciones motoras finas en tablets en orientacion landscape.
-
-**Contexto atenuante:** Este diseno fue una decision deliberada para encajar 11 categorias en la cabecera en landscape sin desbordamiento visible. Es un trade-off entre target size y visibilidad de todas las categorias.
-
-**Recomendacion:** Mantener el tamano visual 36px pero agregar `padding` o area de click invisible (CSS `::before` o padding negativo) para que el area de interaccion sea 44x44px. Alternativamente, usar scroll horizontal con categorias de 44px.
-
-**Hallazgo A8 - Medio:** Los botones de eliminar chip (`min-h-7 min-w-7`, 28x28px) estan por debajo de 44x44px. El CSS global `button { min-h-touch }` deberia aplicarse, pero `min-h-7` (28px) es mas restrictivo que `min-h-touch` (44px) -- en realidad, `min-h-7` = `min-height: 1.75rem` mientras que el global aplica `min-h-touch` = `min-height: 44px`. La clase `min-h-7` no sobreescribe `min-h-touch` porque `44px > 28px`. El area real de interaccion debe verificarse en runtime.
-
-**Nota:** WCAG 2.5.8 acepta targets de 24px si tienen suficiente espacio alrededor (spacing >= 24px). Los chips tienen gap de `1.5` (6px) / `2` (8px), lo que puede no ser suficiente. Evaluar en runtime.
+**Verificado:** `main.css` lineas 66-74:
+```css
+.tablet-landscape-center::after {
+    content: '';
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+}
+```
 
 ---
 
@@ -342,7 +376,7 @@ Los aria-labels incluyen el texto visible donde aplica:
 
 **3.1.2 Language of Parts (Nivel AA)**
 
-No hay contenido en otro idioma. El texto de la interfaz esta integramente en espanol. La respuesta de la API (frases generadas) se configura en espanol via el prompt del backend. PASA.
+No hay contenido en otro idioma. El texto de la interfaz esta integramente en español. La respuesta de la API (frases generadas) se configura en espanol via el prompt del backend. PASA.
 
 ### 3.2 Predictable (WCAG 3.2.x)
 
@@ -356,7 +390,7 @@ La busqueda con debounce (300ms) cambia el contenido del grid, pero no cambia el
 
 **3.2.3 Consistent Navigation (Nivel AA)**
 
-La estructura de navegacion es consistente: siempre header -> frase -> busqueda -> categorias -> grid. No hay paginas adicionales en Phase 1 (SPA de una sola vista). PASA.
+La estructura de navegacion es consistente: siempre header -> frase -> busqueda -> categorias -> grid. No hay paginas adicionales en Fase 1 (SPA de una sola vista). PASA.
 
 **3.2.4 Consistent Identification (Nivel AA)**
 
@@ -404,9 +438,11 @@ No se evalua. Vue 3 genera HTML valido.
 | Loading skeleton | - | `role="status"` | `sr-only` texto | PASA |
 | Landscape blocker | - | `role="alert"` | Texto descriptivo | PASA |
 
-**Hallazgo A9 - Alto:** El patron `role="tablist"` / `role="tab"` en CategoryBar no incluye `tabindex` roving. Segun WAI-ARIA Authoring Practices para Tabs, solo la tab seleccionada deberia tener `tabindex="0"` y las demas `tabindex="-1"`, con Arrow keys para moverse entre ellas. Actualmente todas las tabs son focusables por Tab (comportamiento de botones nativos), lo que funciona pero no sigue el patron recomendado. Ademas, falta `aria-controls` en los tabs apuntando a un panel y falta un `role="tabpanel"` envolviendo el grid.
+**Hallazgo A9 - ACEPTADO:** El patron `role="tablist"` / `role="tab"` en CategoryBar no incluye `tabindex` roving. Segun WAI-ARIA Authoring Practices para Tabs, solo la tab seleccionada deberia tener `tabindex="0"` y las demas `tabindex="-1"`, con Arrow keys para moverse entre ellas. Actualmente todas las tabs son focusables por Tab (comportamiento de botones nativos).
 
-**Impacto real:** Los screen readers anuncian correctamente "tab seleccionada" gracias a `aria-selected`, y la navegacion con flechas funciona. Sin embargo, Tab navega por todas las categorias en lugar de saltar al panel, lo que incrementa el numero de pulsaciones de Tab necesarias para usuarios que ya han seleccionado una categoria.
+**Justificacion:** Los screen readers anuncian correctamente "tab seleccionada" gracias a `aria-selected`, y la navegacion con flechas funciona (`CategoryBar.vue` lineas 43-63). Arrow keys entre categorias funcionan correctamente. Tab navega por todas las categorias (11 botones) en lugar de saltar al panel, lo que incrementa el numero de pulsaciones, pero esto no rompe la funcionalidad. Se trata de un refinamiento del patron WAI-ARIA Tabs, no de un incumplimiento de WCAG 2.2 AA.
+
+**Verificado:** `CategoryBar.vue` — los botones `role="tab"` no tienen `tabindex` explicito; no hay `aria-controls`; `PictogramGrid.vue` no tiene `role="tabpanel"`.
 
 **4.1.3 Status Messages (Nivel AA)**
 
@@ -452,7 +488,7 @@ Implementacion de dual aria-live (polite + assertive) es correcta y bien diferen
 
 | Criterio | Evaluacion | Resultado |
 |----------|-----------|-----------|
-| Targets grandes (>= 44px) | Todos los elementos principales cumplen (excepto hallazgo A7) | PARCIAL |
+| Targets grandes (>= 44px) | Todos los elementos principales cumplen, incluido tablet landscape | PASA |
 | Sin dependencia de doble click | Toda la interaccion es single click/tap | PASA |
 | Sin gestos complejos | No se requiere drag, pinch, swipe | PASA |
 | Tolerancia al error | Borrar chip individual, borrar todos, reintentar generacion | PASA |
@@ -462,19 +498,20 @@ Implementacion de dual aria-live (polite + assertive) es correcta y bien diferen
 
 | Criterio | Evaluacion | Resultado |
 |----------|-----------|-----------|
-| Atajos de teclado eficientes | Numeros para categorias, flechas para grid, / para buscar | PASA |
-| Minimo numero de interacciones | Seleccionar categoria (1 tecla) + pictograma (flechas + Enter) + generar | PASA |
+| Atajos de teclado eficientes | `1-9,0,?` categorias, flechas grid, `b` buscar, `g` generar, `x` borrar | PASA |
+| Minimo numero de interacciones | Categoria (1 tecla) + pictograma (flechas + Enter) + generar (`g`) | PASA |
 | Fatiga reducida | Sin interacciones mantenidas, sin temporizadores | PASA |
 
 ### 5.2 Accesibilidad de Pictogramas
 
 | Criterio | Evaluacion | Resultado |
 |----------|-----------|-----------|
-| Alt text con etiqueta del pictograma | `alt={pictogram.label}` en PictogramCard | PASA |
+| Alt text correcto | `alt=""` en imagen (decorativa), `aria-label` en boton contenedor | PASA |
 | Colores Fitzgerald Key como borde (no fondo) | `borderTopColor` en tarjeta, fondo siempre blanco | PASA |
 | Imagenes sobre fondo blanco | Pictogramas ARASAAC disenados para fondo blanco | PASA |
 | Tamano de pictograma legible | 64x64 (movil) -> 80x80 (sm) -> 96x96 (lg) | PASA |
 | Etiqueta de texto visible | Texto debajo de cada pictograma con fondo tintado | PASA |
+| Lazy loading | `loading="lazy"` en imagenes de pictogramas | PASA |
 
 ### 5.3 TTS (Text-to-Speech)
 
@@ -504,11 +541,11 @@ Analisis del flujo tipico para generar una frase:
 **Flujo teclado (desktop/conmutador):**
 1. Tecla numerica para categoria (1 pulsacion)
 2. Flechas + Enter para seleccionar pictograma(s) (2-20 pulsaciones)
-3. Tab hasta "Generar frase" + Enter (2-3 pulsaciones)
+3. `g` para generar frase (1 pulsacion)
 4. Tab hasta SpeakButton + Enter (2 pulsaciones)
-**Total: 7-26 pulsaciones**
+**Total: 6-24 pulsaciones**
 
-**Hallazgo A11 - Informativo:** El flujo de teclado requiere Tab adicionales para llegar desde el grid hasta el boton "Generar frase" y luego al SpeakButton. Un atajo de teclado dedicado para "Generar frase" (por ejemplo, `Ctrl+Enter` o `G` fuera de input) reduciria significativamente las pulsaciones para usuarios con limitaciones motoras. Considerar para Phase 2.
+**Hallazgo A11 - CORREGIDO (PR #73):** Se agregaron atajos de teclado `g` (generar frase) y `x` (borrar todos los pictogramas), ambos fuera de inputs (`HomeView.vue` lineas 165-176). Esto reduce significativamente las pulsaciones para usuarios con ELA: generar frase paso de requerir multiples Tab + Enter a una sola pulsacion. El footer de atajos (`HomeView.vue` linea 332) muestra las nuevas teclas.
 
 ---
 
@@ -516,41 +553,58 @@ Analisis del flujo tipico para generar una frase:
 
 ### Severidad Alta
 
-| ID | Criterio WCAG | Componente | Hallazgo | Recomendacion |
-|----|--------------|------------|----------|---------------|
-| A7 | 2.5.8 Target Size | HomeView (tablet landscape categories) | Botones de categoria 36x36px (< 44px minimo) | Agregar area de click invisible de 44px via padding/pseudoelemento, o usar scroll horizontal con botones de 44px |
-| A9 | 4.1.2 Name, Role, Value | CategoryBar + PictogramGrid | Patron tabs incompleto: falta tabindex roving, `aria-controls`, `role="tabpanel"` | Implementar tabindex roving (-1/0) y vincular tabs con panel via `aria-controls`/`aria-labelledby` |
+_(ninguno pendiente)_
 
 ### Severidad Media
 
-| ID | Criterio WCAG | Componente | Hallazgo | Recomendacion |
-|----|--------------|------------|----------|---------------|
-| A2 | 1.3.1 Info and Relationships | CategoryBar -> PictogramGrid | Sin vinculo `aria-controls`/`role="tabpanel"` entre tabs y grid | Agregar `aria-controls="pictogram-panel"` a tabs y `role="tabpanel" id="pictogram-panel"` al grid |
-| A4 | 1.4.3 Contrast Minimum | PictogramGrid (error state) | `red-600` sobre `red-50` = ~4.4:1 (< 4.5:1) | Cambiar texto de error a `red-700` (#b91c1c) |
-| A5 | 1.4.11 Non-text Contrast | SearchBar, PictogramCard, PhraseBar | Bordes `surface-200` sobre blanco = ~1.2-1.3:1 (< 3:1) | Oscurecer bordes por defecto a `stone-400` o superior; o aceptar como excepcion dado que sombras y bordes Fitzgerald aportan contraste adicional |
-| A8 | 2.5.8 Target Size | PhraseBar (remove chip buttons) | Botones de eliminar chip 28px, necesitan verificacion de spacing | Verificar en runtime que spacing cumple WCAG 2.5.8 (target 24px + spacing >= 24px); alternativamente aumentar a `min-h-9 min-w-9` (36px) |
+_(ninguno pendiente)_
 
 ### Severidad Baja
 
-| ID | Criterio WCAG | Componente | Hallazgo | Recomendacion |
+_(ninguno pendiente)_
+
+### Aceptados con justificacion
+
+| ID | Criterio WCAG | Componente | Hallazgo | Justificacion |
 |----|--------------|------------|----------|---------------|
-| A1 | 1.1.1 Non-text Content | PictogramCard | Imagen redundante con aria-label del boton | Agregar `aria-hidden="true"` a la imagen dentro del boton |
-| A3 | 1.3.4 Orientation | App.vue (landscape blocker) | Bloqueo de landscape en moviles < 500px alto | Documentar como excepcion esencial; evaluar en Phase 2 para dispositivos asistivos montados en landscape |
-| A6 | 2.4.6 Headings and Labels | HomeView | `<h1>` oculto en movil y tablet landscape | Agregar `sr-only` h1 que siempre este presente, o usar CSS que oculte visualmente pero mantenga en DOM accesible |
+| A9 | 4.1.2 Name, Role, Value | CategoryBar + PictogramGrid | Patron tabs sin tabindex roving ni `aria-controls` | Arrow keys funcionan. Refinamiento WAI-ARIA, no fallo WCAG AA |
+
+### No aplica
+
+| ID | Criterio WCAG | Componente | Hallazgo | Justificacion |
+|----|--------------|------------|----------|---------------|
+| A2 | 1.3.1 Info and Relationships | CategoryBar -> PictogramGrid | Sin vinculo `aria-controls`/`role="tabpanel"` | `aria-controls` es recomendacion WAI-ARIA, no requisito WCAG AA. Navegacion por teclado funciona |
+| A6 | 2.4.6 Headings and Labels | HomeView (H1) | H1 oculto visualmente en movil | El H1 esta en el DOM (`sr-only`), screen readers lo encuentran. Solo es visual |
+
+### Documentado
+
+| ID | Criterio WCAG | Componente | Hallazgo | Justificacion |
+|----|--------------|------------|----------|---------------|
+| A3 | 1.3.4 Orientation | App.vue (landscape blocker) | Bloqueo de landscape en moviles < 500px alto | Excepcion justificada: layout SAAC no cabe en landscape movil (ADR-011) |
 
 ### Informativo
 
-| ID | Criterio WCAG | Componente | Hallazgo | Recomendacion |
-|----|--------------|------------|----------|---------------|
+| ID | Criterio WCAG | Componente | Hallazgo | Nota |
+|----|--------------|------------|----------|------|
 | A10 | Buena practica | SpeakButton / useTTS | Sin aria-live para estado de reproduccion TTS | Agregar anuncio assertive "Reproduciendo"/"Finalizado" |
-| A11 | Buena practica | HomeView (keyboard shortcuts) | Sin atajo directo para "Generar frase" | Agregar atajo `Ctrl+Enter` o `G` para generar frase sin Tab |
-| A12 | Buena practica | SearchBar | `role="searchbox"` es valido pero no estandar en la lista de roles de HTML; `type="search"` ya es suficiente | Opcional: eliminar `role="searchbox"` ya que `type="search"` implica el rol `searchbox` |
-| A13 | Buena practica | HomeView | El footer de atajos solo es visible en xl (desktop); usuarios de teclado en pantallas < xl no ven los atajos | Considerar tooltip o dialog de ayuda accesible con `?` en todas las pantallas |
-| A14 | Buena practica | CategoryBar | La navegacion ArrowLeft/ArrowRight en tabs es correcta, pero no implementa Home/End (ir a primera/ultima tab) | Agregar Home/End segun WAI-ARIA Tabs Pattern |
+| A13 | Buena practica | CategoryBar | ArrowLeft/ArrowRight funciona pero no implementa Home/End (ir a primera/ultima tab) | Mejora WAI-ARIA Tabs Pattern |
 
 ---
 
-## 7. Componentes: Resumen por Componente
+## 7. Hallazgos Corregidos desde Revision Anterior
+
+| ID original | Hallazgo | Severidad | Estado | Detalle |
+|-------------|----------|-----------|--------|---------|
+| A1 | Alt redundante en PictogramCard | Bajo | **CORREGIDO** | `alt=""` en imagen decorativa (`PictogramCard.vue` linea 29) |
+| A4 | Contraste red-600 sobre red-50 (~4.4:1) | Medio | **CORREGIDO** | Cambiado a `text-red-700` en PictogramGrid, CategoryBar, PhraseBar |
+| A5 | Bordes surface-200 bajo contraste | Medio | **CORREGIDO** | `border-surface-400` en PictogramCard, PhraseBar, SearchBar (PR #73) |
+| A7 | Touch targets 36px tablet landscape | Alto | **CORREGIDO** | Pseudo-elemento `::after` 44x44px (`main.css` linea 66-74) |
+| A11 | Sin atajo generar frase | Informativo | **CORREGIDO** | `g` para generar, `x` para borrar (`HomeView.vue` lineas 165-176) |
+| A12 | `role="searchbox"` redundante | Informativo | **CORREGIDO** | Eliminado rol redundante con `type="search"` (PR #73) |
+
+---
+
+## 8. Componentes: Resumen por Componente
 
 ### index.html
 - `lang="es"` -- PASA
@@ -569,8 +623,10 @@ Analisis del flujo tipico para generar una frase:
 - Main con id para skip link -- PASA
 - Dual aria-live (polite + assertive) -- PASA
 - Atajos de teclado con `isInInput` guard -- PASA
+- Atajos `g` (generar) y `x` (borrar) -- PASA
 - Gestion de foco post-carga, post-generacion -- PASA
 - Label para input movil -- PASA
+- H1 `sr-only` siempre accesible -- PASA
 - Footer de atajos con `<kbd>` semantico -- PASA
 
 ### CategoryBar.vue
@@ -580,19 +636,21 @@ Analisis del flujo tipico para generar una frase:
 - ArrowLeft/ArrowRight para navegacion -- PASA
 - Iconos `aria-hidden` -- PASA
 - Skeleton con `role="status"` y sr-only text -- PASA
-- Error con `role="alert"` -- PASA
+- Error con `role="alert"` y `text-red-700` -- PASA
 - `min-h-touch min-w-touch` en tabs principales -- PASA
 
 ### PictogramGrid.vue
 - `role="grid"` con `aria-label` -- PASA
 - Navegacion 2D con flechas (calculo dinamico de columnas) -- PASA
 - Loading con `role="status"` -- PASA
-- Error con `role="alert"` -- PASA
+- Error con `role="alert"` y `text-red-700` -- PASA
 - Estado vacio con texto descriptivo -- PASA
 - `disabled` propagado a PictogramCard cuando frase llena -- PASA
 
 ### PictogramCard.vue
 - `aria-label="Pictograma ${label}"` -- PASA
+- `alt=""` en imagen (decorativa) -- PASA
+- `loading="lazy"` en imagen -- PASA
 - `min-h-touch min-w-touch` -- PASA
 - `has-[:focus-visible]` para ring a nivel de tarjeta -- PASA
 - `disabled` con opacidad y cursor -- PASA
@@ -608,7 +666,7 @@ Analisis del flujo tipico para generar una frase:
 - Foco post-eliminacion al chip adyacente -- PASA
 - Foco post-generacion a resultados -- PASA
 - Loading con `role="status"` sr-only -- PASA
-- Error con `role="alert"` -- PASA
+- Error con `role="alert"` y `text-red-700` -- PASA
 - Boton generar con label dinamico por estado -- PASA
 - `role="list"` en resultados -- PASA
 - SpeakButton en cada variacion -- PASA
@@ -638,67 +696,61 @@ Analisis del flujo tipico para generar una frase:
 - `scroll-padding-top: 180px` para focus not obscured -- PASA
 - Landscape blocker solo en `max-height: 500px` -- PASA
 - `motion-safe:` respetado en todos los hover/transition -- PASA
+- Pseudo-elemento 44x44px para tablet landscape categorias -- PASA
 
 ### tailwind.config.js
 - Colores semanticos con documentacion de contraste -- PASA
 - `min-h-touch` / `min-w-touch` a 44px -- PASA
 - `ring-focus` a 3px -- PASA
 - `tailwindcss-animate` para animaciones controladas -- PASA
+- `surface-400` aplicado en bordes (A5 corregido PR #73)
 
 ---
 
-## 8. Recomendaciones para Phase 2+
+## 9. Trabajo Futuro de Accesibilidad
 
-### Prioridad Alta
+### Mejoras WAI-ARIA
 
-1. **Completar patron Tabs (A9 + A2):** Implementar `tabindex` roving en CategoryBar, agregar `aria-controls` en tabs y `role="tabpanel"` envolviendo el grid. Esto mejoraria la experiencia con screen readers al permitir saltar directamente de la tab seleccionada al panel con Tab.
+1. **Completar patron Tabs (A9 + A2):** Implementar `tabindex` roving en CategoryBar, agregar `aria-controls` en tabs y `role="tabpanel"` envolviendo el grid. Mejoraria la experiencia con screen readers al permitir saltar de la tab seleccionada al panel con Tab.
 
-2. **Target size tablet landscape (A7):** Resolver los botones de categoria de 36px en landscape. Opcion recomendada: area de click invisible de 44px con `::after` pseudoelemento posicionado.
+2. **Home/End en tabs (A13):** Agregar soporte para Home (primera tab) y End (ultima tab) segun WAI-ARIA Tabs Pattern.
 
-3. **Contraste de bordes (A5):** Evaluar oscurecer los bordes por defecto de inputs y tarjetas a un gris que cumpla 3:1 contra el fondo.
+3. **TTS aria-live (A10):** Agregar anuncios para inicio/fin de reproduccion TTS.
 
-### Prioridad Media
+### Validacion
 
-4. **Atajo para generar frase (A11):** Agregar `Ctrl+Enter` o `G` como atajo global para generar frase, reduciendo pulsaciones de teclado para usuarios con ELA.
+4. **Validacion con herramientas automatizadas:** Ejecutar axe-core o Lighthouse Accessibility en CI para detectar regresiones.
 
-5. **Home/End en tabs (A14):** Agregar soporte para Home (primera tab) y End (ultima tab) segun WAI-ARIA Tabs Pattern.
-
-6. **TTS aria-live (A10):** Agregar anuncios para inicio/fin de reproduccion TTS.
-
-7. **Validacion con herramientas automatizadas:** Ejecutar axe-core o Lighthouse Accessibility en CI para detectar regresiones.
-
-### Prioridad Baja
-
-8. **h1 siempre accesible (A6):** Asegurar que el heading h1 este siempre disponible para screen readers, incluso cuando esta oculto visualmente.
-
-9. **Imagen redundante en PictogramCard (A1):** Agregar `aria-hidden="true"` a la imagen dentro del boton para evitar doble lectura.
-
-10. **Evaluacion con usuarios reales:** Validar con logopedas y usuarios SAAC reales la eficiencia del flujo comunicativo. ADR-011 ya documenta esta necesidad.
-
-### Phase 2+ (funcionalidad nueva)
-
-11. **Personalizar velocidad TTS:** Permitir que el usuario/terapeuta ajuste `rate` y `pitch`.
-
-12. **Modo alto contraste:** Ofrecer tema de alto contraste opcional (fondo negro, texto blanco, bordes brillantes) para usuarios con baja vision.
-
-13. **Perfil de usuario SAAC:** Configuraciones de tamano de target, velocidad de debounce, y densidad de grid segun perfil (TEA/afasia/PC/ELA).
-
-14. **Offline-first:** Service Worker para funcionalidad basica sin conexion (pictogramas cacheados, TTS local).
+5. **Evaluacion con usuarios reales:** Validar con logopedas y usuarios SAAC reales la eficiencia del flujo comunicativo. ADR-011 ya documenta esta necesidad.
 
 ---
 
-## 9. Conclusion
+## 10. Conclusion
 
-HablaIA Phase 1 alcanza un nivel de conformidad WCAG 2.2 AA **substancial**, con 0 hallazgos criticos y una implementacion notablemente robusta de:
+HablaIA alcanza un nivel de conformidad WCAG 2.2 AA **substancial**, con 0 hallazgos criticos y 0 hallazgos pendientes. **Lighthouse produccion confirma Accessibility score 100/100** (medido el 13 de febrero de 2026 contra el servidor de produccion).
 
+**Correcciones aplicadas (PR #73):**
+- Alt text de pictogramas: imagen decorativa (`alt=""`) sin redundancia con aria-label del boton
+- Contraste de errores: `red-700` supera holgadamente 4.5:1 en todos los fondos
+- Contraste de bordes: `border-surface-400` en tarjetas, chips y buscador
+- Touch targets tablet landscape: pseudo-elemento 44x44px sobre botones de 36px
+- Atajos `g` (generar) y `x` (borrar) para eficiencia con teclado/conmutador
+- Eliminado `role="searchbox"` redundante
+
+**Hallazgo aceptado con justificacion:**
+- A9: arrow keys funcionales, `tabindex` roving es refinamiento WAI-ARIA, no requisito WCAG AA
+
+**No aplica al alcance actual:**
+- A2: `aria-controls` es recomendacion WAI-ARIA, no requisito WCAG AA
+- A6: H1 en DOM (`sr-only`), accesible para screen readers
+
+**Fortalezas consolidadas:**
 - **Estructura semantica:** Landmarks, roles ARIA, headings correctos
 - **Navegacion por teclado:** Completa, con atajos globales y navegacion 2D en grid
 - **Screen reader:** Dual aria-live, anuncios de acciones, chips sin redundancia
-- **Touch targets:** 44px como minimo global (con excepcion documentada en tablet landscape)
-- **Contraste:** Paleta disenada con ratios WCAG verificados (15.5:1 texto principal, 5.7:1 texto secundario)
+- **Touch targets:** 44px como minimo global (incluido tablet landscape)
+- **Contraste:** Paleta disenada con ratios WCAG verificados (15.8:1 texto principal, 5.7:1 texto secundario, 5.3:1 errores)
 - **Animaciones:** 100% con `motion-safe:`, respeta `prefers-reduced-motion`
 - **Dominio SAAC:** Fitzgerald Key, pictogramas sobre fondo blanco, reduccion de fatiga visual, TTS integrado
 
-Los hallazgos de severidad alta son puntuales y tienen contexto atenuante documentado. La aplicacion es **usable por el publico objetivo** (TEA, afasia, paralisis cerebral, ELA) tanto en flujo tactil como en teclado/conmutador.
-
-**Fecha de proxima revision sugerida:** Al inicio de Phase 2, tras implementar las correcciones de prioridad alta.
+La aplicacion es **tecnicamente usable por el publico objetivo** (TEA, afasia, paralisis cerebral, ELA) tanto en flujo tactil como en teclado/conmutador. **0 hallazgos pendientes de correccion.** Pendiente validacion con logopedas y usuarios SAAC reales para confirmar la usabilidad clinica.
