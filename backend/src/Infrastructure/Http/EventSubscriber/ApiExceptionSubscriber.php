@@ -34,10 +34,12 @@ final class ApiExceptionSubscriber implements EventSubscriberInterface
             : 500;
 
         $message = match (true) {
+            $status === 400 => 'Bad Request',
             $status === 404 => 'Not Found',
             $status === 405 => 'Method Not Allowed',
+            $status === 429 => 'Too Many Requests',
             $status >= 500 => 'Internal Server Error',
-            default => $exception->getMessage(),
+            default => 'An error occurred',
         };
 
         $event->setResponse(new JsonResponse(

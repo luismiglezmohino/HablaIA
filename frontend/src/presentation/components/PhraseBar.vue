@@ -93,7 +93,7 @@ function getCategoryColor(pictogram: Pictogram): string {
             role="group"
             :aria-label="pictogram.label"
             :style="{ borderLeftColor: getCategoryColor(pictogram), '--tw-border-left-color': getCategoryColor(pictogram) }"
-            class="relative flex shrink-0 items-center gap-1 rounded-full border border-surface-400 border-l-4 bg-white shadow-sm sm:py-1 sm:pl-1 sm:pr-2 tablet-landscape-chip"
+            class="relative flex shrink-0 items-center gap-1 rounded-full border border-surface-400 border-l-4 bg-white shadow-sm sm:py-1 sm:pl-1 sm:pr-2"
           >
             <img
               :src="pictogram.imagePath"
@@ -105,7 +105,7 @@ function getCategoryColor(pictogram: Pictogram): string {
             <button
               data-testid="remove-chip"
               :aria-label="`Eliminar ${pictogram.label}`"
-              class="ml-0.5 min-h-7 min-w-7 rounded-full p-1 text-surface-400 hover:bg-surface-100 hover:text-accessible-text focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 sm:ml-1 tablet-landscape-chip-x"
+              class="ml-0.5 min-h-7 min-w-7 rounded-full p-1 text-surface-400 hover:bg-surface-100 hover:text-accessible-text focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 sm:ml-1"
               @click="handleRemoveChip(index)"
               @keydown="handleChipKeydown($event, index)"
             >
@@ -133,7 +133,7 @@ function getCategoryColor(pictogram: Pictogram): string {
             :class="store.error ? 'bg-red-600' : 'bg-primary-600'"
             @click="emit('generate')"
           >
-            <Loader2 v-if="store.loading" :size="14" class="animate-spin" aria-hidden="true" />
+            <Loader2 v-if="store.loading" :size="14" class="motion-safe:animate-spin" aria-hidden="true" />
             <Sparkles v-else :size="14" aria-hidden="true" />
             Generar
           </button>
@@ -150,7 +150,7 @@ function getCategoryColor(pictogram: Pictogram): string {
           :class="store.error ? 'bg-red-600 hover:bg-red-700 hover:shadow-lg' : 'bg-primary-600 hover:bg-primary-700 motion-safe:hover:shadow-glow motion-safe:active:scale-[0.98]'"
           @click="emit('generate')"
         >
-          <Loader2 v-if="store.loading" :size="18" class="animate-spin" aria-hidden="true" />
+          <Loader2 v-if="store.loading" :size="18" class="motion-safe:animate-spin" aria-hidden="true" />
           <RefreshCw v-else-if="store.error" :size="18" aria-hidden="true" />
           <Sparkles v-else :size="18" aria-hidden="true" />
           {{ store.loading ? 'Generando...' : store.error ? 'Reintentar' : 'Generar frase' }}

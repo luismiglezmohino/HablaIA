@@ -23,6 +23,11 @@ services:
         arguments:
             $phraseGeneratorLimiter: '@limiter.phrase_generator'
 
+    # Rate limiter for pictogram search endpoint
+    App\Infrastructure\Http\Controller\PictogramController:
+        arguments:
+            $pictogramSearchLimiter: '@limiter.pictogram_search'
+
     # Vocabulary Loader for ARASAAC sync command
     App\Infrastructure\Service\VocabularyLoaderInterface:
         class: App\Infrastructure\Service\YamlVocabularyLoader
