@@ -37,7 +37,7 @@ Decisiones arquitectonicas documentadas con contexto, alternativas y consecuenci
 |-----|--------|------|
 | [ADR-001](adrs/ADR-001-clean-architecture.md) | Clean Architecture | Separacion en capas Domain/Application/Infrastructure |
 | [ADR-002](adrs/ADR-002-openai-integration.md) | OpenAI Integration | Integracion con OpenAI para generacion de frases |
-| [ADR-003](adrs/ADR-003-arasaac-pictograms.md) | ARASAAC Pictograms | Integracion con API de pictogramas ARASAAC |
+| [ADR-003](adrs/ADR-003-arasaac-pictograms.md) | ARASAAC Pictograms | Pictogramas ARASAAC: estrategia local-first, busqueda accent-insensitive y categoria "Sin categoria" |
 | [ADR-004](adrs/ADR-004-tts-strategy.md) | TTS Strategy | Estrategia de Text-to-Speech progresiva |
 | [ADR-005](adrs/ADR-005-phrase-caching.md) | Phrase Caching | Cache de frases generadas con hash SHA-256 |
 | [ADR-006](adrs/ADR-006-uuid-agnostic-domain.md) | UUID Agnostic Domain | Dominio agnostico de implementacion UUID |
@@ -48,6 +48,7 @@ Decisiones arquitectonicas documentadas con contexto, alternativas y consecuenci
 | [ADR-011](adrs/ADR-011-visual-design-system.md) | Visual Design System | Sistema de diseno visual moderno con paleta Indigo y responsive |
 | [ADR-012](adrs/ADR-012-cd-pipeline.md) | CD Pipeline | Despliegue continuo con GitHub Actions, SSH y Docker Compose |
 | [ADR-013](adrs/ADR-013-keyboard-screenreader-accessibility.md) | Keyboard & Screen Reader | Navegacion por teclado, atajos, gestion de foco y anuncios SR |
+| [ADR-014](adrs/ADR-014-monorepo-structure.md) | Monorepo Structure | Monorepo con stacks independientes y Docker Compose como union |
 
 ---
 

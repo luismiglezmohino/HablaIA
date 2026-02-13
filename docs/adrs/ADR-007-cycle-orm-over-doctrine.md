@@ -1,12 +1,12 @@
 # ADR-007: Cycle ORM sobre Doctrine ORM
 
-**Estado:** Aceptado
-**Fecha:** 2025-02-03
-**Contexto:** HablaIA - SAAC con IA
+**Estado:** Aceptado<br>
+**Fecha:** 2026-02-03<br>
+**Contexto:** HablaIA - SAAC con IA<br>
 
 ## Contexto
 
-Durante la implementación de la capa de Infrastructure, se evaluó el uso de Doctrine ORM (estándar en Symfony) para la persistencia de datos. Tras implementar la Fase 1 (Custom Types para Value Objects), se identificaron varios problemas:
+Durante la implementación de la capa de Infrastructure, se evaluó el uso de Doctrine ORM (estándar en Symfony) para la persistencia de datos. Tras implementar los Custom Types para Value Objects, se identificaron varios problemas:
 
 1. **Boilerplate excesivo**: Cada Value Object requiere una clase Type separada (~50 líneas por tipo)
 2. **Configuración verbose**: Registro manual de tipos en `doctrine.yaml`

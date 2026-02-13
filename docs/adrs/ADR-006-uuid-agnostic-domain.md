@@ -1,8 +1,8 @@
 # ADR-006: UUID Agnóstico en Dominio
 
-**Estado:** Aceptado
-**Fecha:** 2026-02-01
-**Contexto:** HablaIA - Independencia del Dominio
+**Estado:** Aceptado<br>
+**Fecha:** 2026-02-01<br>
+**Contexto:** HablaIA - Independencia del Dominio<br>
 
 ## Contexto
 
@@ -117,20 +117,20 @@ final readonly class PictogramId {
 
 ### 1. Seguir con Symfony Uuid
 
-**Pros:** Mantenido por comunidad, menos código propio
-**Contras:** Viola Clean Architecture, Dominio depende de Infrastructure
+**Pros:** Mantenido por comunidad, menos código propio<br>
+**Contras:** Viola Clean Architecture, Dominio depende de Infrastructure<br>
 **Rechazo:** Incompatible con principio de Dominio puro
 
 ### 2. Usar Ramsey/Uuid
 
-**Pros:** Librería especializada, bien mantenida
-**Contras:** Sigue siendo dependencia externa en Dominio
+**Pros:** Librería especializada, bien mantenida<br>
+**Contras:** Sigue siendo dependencia externa en Dominio<br>
 **Rechazo:** Mismo problema que Symfony
 
 ### 3. Generar UUID en Dominio (implementación propia)
 
-**Pros:** Todo centralizado
-**Contras:** Dominio con responsabilidad de generación (no debería)
+**Pros:** Todo centralizado<br>
+**Contras:** Dominio con responsabilidad de generación (no debería)<br>
 **Rechazo:** El Dominio solo debe validar, no generar
 
 ## Referencias
