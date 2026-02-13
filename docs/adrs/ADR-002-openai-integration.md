@@ -1,8 +1,8 @@
 # ADR-002: OpenAI API para Humanización de Frases
 
-**Estado:** Aceptado
-**Fecha:** 2026-01-31
-**Contexto:** HablaIA - IA contextual para SAAC
+**Estado:** Aceptado<br>
+**Fecha:** 2026-01-31<br>
+**Contexto:** HablaIA - IA contextual para SAAC<br>
 
 ## Contexto
 
@@ -17,7 +17,7 @@ Esto deshumaniza al usuario. Queremos:
 
 ## Decisión
 
-Usar **OpenAI API (GPT-4o-mini)** para generar 3 variaciones de frase humanizada.
+Usar **OpenAI API (GPT-4o-mini)** para generar 3 variaciones de frases humanizadas.
 
 ### Prompt Engineering
 
@@ -98,21 +98,25 @@ Frontend (Vue)
 
 ### 1. Templates Hardcodeados
 
-**Pros:** Sin coste, latencia 0ms
-**Contras:** No escala, mantenimiento manual, poca variabilidad
-**Rechazo:** No cumple objetivo de "humanizar"
+**Pros:** Sin coste, latencia 0ms<br>
+**Contras:** No escala, mantenimiento manual, poca variabilidad<br>
+**Rechazo:** No cumple objetivo de "humanizar"<br>
 
 ### 2. Modelo Local (LLaMA, Mistral)
 
-**Pros:** Sin coste recurrente, privacidad total
-**Contras:** Requiere GPU, complejidad deploy, calidad inferior
-**Rechazo:** Para MVP, overkill
+**Pros:** Sin coste recurrente, privacidad total<br>
+**Contras:** Requiere GPU, complejidad deploy, calidad inferior<br>
+**Rechazo:** Para MVP, overkill<br>
 
 ### 3. Claude API (Anthropic)
 
-**Pros:** Calidad similar, mejor en español
-**Contras:** Más caro ($3/1M vs $0.15/1M), menor adopción
-**Rechazo:** OpenAI es suficiente y más barato
+**Pros:** Calidad similar, mejor en español<br>
+**Contras:** Más caro ($3/1M vs $0.15/1M), menor adopción<br>
+**Rechazo:** OpenAI es suficiente y más barato<br>
+
+## Nota
+
+Este ADR documenta la decisión inicial. Ver [ADR-009](ADR-009-multi-provider-llm.md) para la evolución a soporte multi-proveedor (OpenAI + Gemini).
 
 ## Referencias
 

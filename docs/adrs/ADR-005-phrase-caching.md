@@ -1,8 +1,8 @@
 # ADR-005: Caché de Frases Generadas por IA
 
-**Estado:** Aceptado
-**Fecha:** 2026-01-31
-**Contexto:** HablaIA - Performance y costes OpenAI
+**Estado:** Aceptado<br>
+**Fecha:** 2026-01-31<br>
+**Contexto:** HablaIA - Performance y costes OpenAI<br>
 
 ## Contexto
 

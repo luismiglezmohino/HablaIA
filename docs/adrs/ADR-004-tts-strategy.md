@@ -1,8 +1,8 @@
 # ADR-004: Estrategia de Text-to-Speech Progresiva
 
-**Estado:** Aceptado
-**Fecha:** 2026-01-31
-**Contexto:** HablaIA - Síntesis de voz para SAAC
+**Estado:** Aceptado<br>
+**Fecha:** 2026-01-31<br>
+**Contexto:** HablaIA - Síntesis de voz para SAAC<br>
 
 ## Contexto
 
@@ -16,7 +16,7 @@ El comunicador debe convertir frases a audio. Usuarios con ELA, parálisis cereb
 
 ## Decisión
 
-Estrategia **progresiva en 3 fases** (mismo código, backends intercambiables):
+Estrategia **progresiva** (mismo código, backends intercambiables):
 
 ### Fase 1 (MVP): Web Speech API
 
@@ -35,7 +35,7 @@ speechSynthesis.speak(utterance);
 - Calidad variable (depende navegador/OS)
 - Voces limitadas
 
-### Fase 2 (Post-MVP): ElevenLabs API
+### Evolución futura: ElevenLabs API
 
 ```typescript
 // infrastructure/tts/ElevenLabsTTS.ts
@@ -67,7 +67,7 @@ audioEl.play();
 - Coste: $0.30/1,000 caracteres
 - Requiere internet
 
-### Fase 3 (Futuro): Voice Cloning
+### Evolución futura: Voice Cloning
 
 ```typescript
 // 1. Grabar voz del usuario (5 min audio)
@@ -75,7 +75,7 @@ audioEl.play();
 // 3. Síntesis con voz clonada
 
 const clonedVoiceId = 'user-123-cloned-voice';
-// Mismo código que Fase 2, pero con voice-id custom
+// Mismo código que ElevenLabs, pero con voice-id custom
 ```
 
 **Características:**
@@ -116,7 +116,7 @@ class PlayAudioUseCase {
 ### Positivas
 
 - **Inicio rápido:** Web Speech gratis permite MVP funcional día 1
-- **Mejora incremental:** Cada fase mejora calidad sin reescribir código
+- **Mejora incremental:** Cada evolución mejora calidad sin reescribir código
 - **Fallback robusto:** Si ElevenLabs cae, fallback a Web Speech
 - **Diferenciador:** Voice Cloning es único (competencia no lo tiene)
 
@@ -154,11 +154,11 @@ class PlayAudioUseCase {
 
 ## Plan de Rollout
 
-| Fase | Provider | Coste/mes (1K usuarios) |
-|------|----------|-------------------------|
-| MVP | Web Speech | $0 |
-| Post-MVP | ElevenLabs | $300 |
-| Avanzado | Voice Cloning | $99 one-time/usuario |
+| Etapa | Provider | Coste/mes (1K usuarios) |
+|-------|----------|-------------------------|
+| Actual (MVP) | Web Speech | $0 |
+| Futuro | ElevenLabs | $300 |
+| Futuro | Voice Cloning | $99 one-time/usuario |
 
 **Feature Toggle:** Usuarios deciden qué TTS usar (configuración en perfil)
 

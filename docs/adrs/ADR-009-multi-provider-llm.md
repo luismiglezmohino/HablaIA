@@ -1,8 +1,8 @@
 # ADR-009: Soporte Multi-proveedor LLM (OpenAI + Gemini)
 
-**Estado:** Aceptado
-**Fecha:** 2026-02-05
-**Contexto:** HablaIA - Validación práctica de Clean Architecture
+**Estado:** Aceptado<br>
+**Fecha:** 2026-02-05<br>
+**Contexto:** HablaIA - Validación práctica de Clean Architecture<br>
 
 ## Contexto
 
@@ -107,9 +107,9 @@ Esto valida empíricamente la premisa de ADR-001: **el dominio permanece puro an
 ## Alternativas Consideradas
 ### 1. Solo OpenAI sin alternativa
 
-**Pros:** Ya implementado, calidad probada
-**Contras:** Coste en cada demo y test. Sin free tier, cada prueba del profesor o del tribunal cuesta dinero.
-**Rechazo:** Para un MVP que se va a demostrar repetidamente, depender de un servicio de pago no es práctico.
+**Pros:** Ya implementado, calidad probada<br>
+**Contras:** Coste en cada demo y test. Sin free tier, cada prueba del profesor o del tribunal cuesta dinero.<br>
+**Rechazo:** Para un MVP que se va a demostrar repetidamente, depender de un servicio de pago no es práctico.<br>
 
 ## Referencias
 

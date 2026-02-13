@@ -1,12 +1,12 @@
 # ADR-001: Adopción de Clean Architecture
 
-**Estado:** Aceptado
-**Fecha:** 2026-01-31
-**Contexto:** HablaIA - MVP SAAC con IA
+**Estado:** Aceptado<br>
+**Fecha:** 2026-01-31<br>
+**Contexto:** HablaIA - MVP SAAC con IA<br>
 
 ## Contexto
 
-Necesitamos una arquitectura escalable que permita evolucionar el proyecto desde un MVP hasta un producto maduro con voice cloning y sincronización multi-dispositivo (6 fases). La arquitectura debe:
+Necesitamos una arquitectura escalable que soporte evolución a largo plazo (voice cloning, sincronización multi-dispositivo, etc.). La arquitectura debe:
 
 1. Facilitar testing (TDD obligatorio)
 2. Permitir cambiar infraestructura sin afectar lógica de negocio
@@ -90,15 +90,15 @@ namespace App\Infrastructure\Persistence\Doctrine\Mapping;
 
 ### 1. MVC Tradicional (Symfony estándar)
 
-**Pros:** Rápido para MVP, menos código
-**Contras:** Difícil testear, acoplado a framework, migración difícil
-**Rechazo:** No escala a 6 fases
+**Pros:** Rápido para MVP, menos código<br>
+**Contras:** Difícil testear, acoplado a framework, migración difícil<br>
+**Rechazo:** Dificulta el testing y acopla la lógica de negocio al framework<br>
 
 ### 2. Hexagonal Architecture (Ports & Adapters)
 
-**Pros:** Similar a Clean, desacoplado
-**Contras:** Más complejo que Clean Architecture, no aporta ventajas adicionales
-**Rechazo:** Clean Architecture es suficiente y más conocido
+**Pros:** Similar a Clean, desacoplado<br>
+**Contras:** Más complejo que Clean Architecture, no aporta ventajas adicionales<br>
+**Rechazo:** Clean Architecture es suficiente y más conocido<br>
 
 ## Referencias
 

@@ -1,241 +1,171 @@
 # ADR-003: ARASAAC como Fuente de Pictogramas
 
-**Estado:** Aceptado
-**Fecha:** 2026-01-31
-**Contexto:** HablaIA - Pictogramas para SAAC
+**Estado:** Aceptado<br>
+**Fecha:** 2026-01-31<br>
+**Contexto:** HablaIA - Comunicador SAAC con IA<br>
 
 ## Contexto
 
-Necesitamos pictogramas para el comunicador. Opciones:
-1. Crear propios (diseño custom)
-2. Comprar licencia (Symbolstix, SymbolWorld)
-3. Usar recursos libres (ARASAAC, Mulberry Symbols)
+HablaIA necesita pictogramas para su comunicador aumentativo. Las opciones principales son: crear pictogramas propios, comprar licencia comercial (Symbolstix, SymbolWorld) o usar recursos libres (ARASAAC, Mulberry Symbols).
 
 **Requisitos:**
-- Alto contraste y claridad
-- Multilingüe (español prioridad)
-- Cobertura amplia (>10,000 conceptos)
-- Licencia compatible con MVP educativo/terapéutico
+
+- Alto contraste y claridad visual
+- Multilingüe (español como prioridad)
+- Cobertura amplia (>10.000 conceptos)
+- Licencia compatible con proyecto educativo/terapéutico
+- Disponibilidad crítica: una aplicación SAAC no puede depender de un servicio externo en tiempo real
+
+Los usuarios SAAC (personas con TEA, afasia, parálisis cerebral, ELA) pueden no escribir acentos correctamente, por lo que la búsqueda debe ser tolerante a variaciones ortográficas.
 
 ## Decisión
 
-Usar **ARASAAC** (ARAgonese System of Augmentative and Alternative Communication).
+Usar **ARASAAC** (ARAgonese System of Augmentative and Alternative Communication) como fuente de pictogramas, con una estrategia local-first que garantiza disponibilidad independiente de la API externa.
 
-### API ARASAAC
+### Estrategia Local-first con Fallback ARASAAC
 
-**Endpoint de búsqueda:**
-```http
-GET https://api.arasaac.org/api/pictograms/es/search/comer
-```
+El sistema mantiene 194 pictogramas pre-cargados en 11 categorías (10 curadas + "Sin categoría") que cubren el vocabulario base SAAC (core vocabulary). Para pictogramas fuera de ese vocabulario, el caso de uso `SearchPictogram` implementa un flujo en dos pasos:
 
-**Respuesta:**
-```json
-[
-  {
-    "_id": 4887,
-    "keywords": [
-      {"keyword": "comer", "type": 1}
-    ],
-    "synsets": ["eat-01"],
-    "categories": ["alimentos"]
-  }
-]
-```
+1. **Búsqueda local:** Consultar la base de datos PostgreSQL con `LIKE` + `unaccent()` (insensible a acentos)
+2. **Fallback ARASAAC:** Solo si la búsqueda local devuelve cero resultados, consultar la API ARASAAC
 
-**Descarga de imagen:**
-```http
-GET https://api.arasaac.org/api/pictograms/4887?download=false
-```
+Los pictogramas obtenidos de ARASAAC se descargan (imagen a disco) y se persisten en base de datos, funcionando como caché permanente. Búsquedas futuras con el mismo término los encontrarán localmente sin volver a consultar ARASAAC. Esto permite que el vocabulario crezca orgánicamente según el uso real.
 
-### Arquitectura de Sincronización
+### Constantes del caso de uso SearchPictogram
 
-#### Estrategia de Almacenamiento: Híbrida (Local + CDN)
+| Constante | Valor | Propósito |
+|-----------|-------|-----------|
+| `MAX_RESULTS` | 10 | Límite de resultados por búsqueda |
+| `MIN_QUERY_LENGTH` | 2 | Mínimo caracteres para buscar |
+| `MAX_QUERY_LENGTH` | 100 | Máximo caracteres permitidos |
+| `DEFAULT_CATEGORY_ID` | `00000000-0000-4000-8000-000000000000` | UUID fijo para "Sin categoría" |
+| `DEFAULT_LANGUAGE` | `es` | Idioma de búsqueda en ARASAAC |
 
-**Problema:** Si ARASAAC cae, la app sería inutilizable. Para una aplicación SAAC esto es inaceptable.
+### Categoría "Sin categoría"
 
-**Solución:**
-- **Vocabulario base (80% uso diario):** ~150 pictogramas descargados localmente
-- **Búsquedas nuevas (20%):** CDN de ARASAAC + descarga local tras primer uso
+Los pictogramas importados desde ARASAAC no encajan en ninguna de las 10 categorías curadas. Se asignan a una categoría especial con UUID fijo:
 
-```
-backend/
-├── config/
-│   └── vocabulary/
-│       └── core_vocabulary.yaml    # 150 palabras del core vocabulary SAAC
-└── public/
-    └── pictograms/
-        └── {arasaac_id}.png        # Imágenes descargadas (~50MB total)
-```
+| Propiedad | Valor |
+|-----------|-------|
+| UUID | `00000000-0000-4000-8000-000000000000` (UUID v4 válido con bytes fijos) |
+| Icono | `help-circle` |
+| Color | `#9CA3AF` (gris neutro) |
+| display_order | 99 (siempre última en CategoryBar) |
+| Migración | V005 |
 
-#### Core Vocabulary SAAC
+El UUID fijo y conocido permite distinguir programáticamente los pictogramas importados de los curados. En el frontend, los pictogramas de esta categoría muestran borde gris, diferenciándolos visualmente de las categorías con codificación Fitzgerald.
 
-El **core vocabulary** en SAAC representa las ~200 palabras que cubren el 80% de la comunicación diaria:
+### Búsqueda insensible a acentos
 
-| Categoría | Ejemplos | Cantidad |
-|-----------|----------|----------|
-| Personas | yo, tú, mamá, papá, familia, amigo | ~20 |
-| Acciones | querer, ir, comer, beber, jugar, ayudar | ~35 |
-| Emociones | feliz, triste, enfadado, cansado, miedo | ~15 |
-| Lugares | casa, colegio, parque, baño, hospital | ~15 |
-| Objetos | agua, comida, juguete, libro, teléfono | ~25 |
-| Comida | pan, leche, fruta, galleta, zumo | ~20 |
-| Transporte | coche, autobús, tren, avión | ~10 |
-| Social | hola, adiós, gracias, por favor, sí, no | ~10 |
+La búsqueda tolera ausencia o presencia de acentos en ambas direcciones:
 
-**Fuente:** Basado en estudios de core vocabulary de ARASAAC y literatura SAAC.
+- **PostgreSQL:** Extensión `unaccent` habilitada en `docker/postgres/init.sql` y migración V006. Query: `WHERE unaccent(LOWER(label)) LIKE unaccent(?)`
+- **Tests (InMemoryPictogramRepository):** PHP `Normalizer::FORM_D` + eliminación de marcas diacríticas con regex `\p{Mn}`
 
-#### Comando de Sincronización
+### Filtro de pictogramas AAC
 
-```bash
-# Sincronizar vocabulario base completo (150 pictogramas)
-php bin/console app:arasaac:sync --all
-
-# Sincronizar keywords específicos
-php bin/console app:arasaac:sync comer beber dormir --category=Acciones
-
-# Ver qué se sincronizaría (sin ejecutar)
-php bin/console app:arasaac:sync --all --dry-run
-```
-
-#### Flujo de Sincronización
-
-```php
-// 1. Leer vocabulario desde config/vocabulary/core_vocabulary.yaml
-// 2. Por cada keyword:
-//    a. GET https://api.arasaac.org/v1/pictograms/es/search/{keyword}
-//    b. Descargar imagen: GET https://static.arasaac.org/pictograms/{id}/{id}_500.png
-//    c. Guardar en: public/pictograms/{arasaac_id}.png
-//    d. Insertar en DB con path local: /pictograms/{arasaac_id}.png
-```
-
-#### Flujo Principal: Grid de Pictogramas (80% vocabulario base)
-
-El frontend muestra el vocabulario base directamente en el grid por categorías:
-
-```
-INICIO (Carga de app)
-        │
-        ▼
-Frontend: GET /api/categories
-        │
-        ▼
-Frontend: GET /api/pictograms?categoryId={id}
-        │
-        ▼
-Backend retorna pictogramas desde DB local
-(path: /pictograms/{arasaac_id}.png)
-        │
-        ▼
-Frontend muestra grid con vocabulario base (80%)
-```
-
-#### Flujo de Búsqueda: Pictogramas adicionales (20% restante)
-
-Cuando el usuario necesita un pictograma fuera del vocabulario base:
-
-```
-Usuario busca "dinosaurio"
-        │
-        ▼
-Frontend: GET /api/pictograms/search?q=dinosaurio
-        │
-        ▼
-¿Existe en DB local? ───Sí──► Retornar (path local)
-        │
-        No
-        ▼
-Backend busca en API ARASAAC
-        │
-        ▼
-¿Encontrado? ───No──► Retornar vacío
-        │
-        Sí
-        ▼
-Descargar imagen a /public/pictograms/
-        │
-        ▼
-Guardar en DB (cachear para futuro)
-        │
-        ▼
-Retornar pictograma
-```
-
-> **Nota:** La búsqueda permite que el vocabulario crezca orgánicamente según el uso real. Los pictogramas buscados se guardan localmente para futuras consultas.
+ARASAAC contiene pictogramas genéricos además de los diseñados específicamente para comunicación aumentativa. El cliente de la API filtra por el campo `aac: true` de la respuesta. Si ningún resultado tiene `aac: true`, se devuelven todos los resultados como fallback.
 
 ### Licencia: Creative Commons BY-NC-SA 4.0
 
 **Permite:**
-- Uso educativo
-- Uso terapéutico sin ánimo de lucro
+
+- Uso educativo y terapéutico sin ánimo de lucro
 - Modificación (adaptación visual)
 - Redistribución (con misma licencia)
 
 **Prohibe:**
+
 - Uso comercial (venta del software)
 - Eliminar atribución
 
-**Implicación:** HablaIA debe ser **NO comercial** en Fase 1-4.
+**Implicación:** HablaIA debe ser NO comercial mientras use pictogramas ARASAAC.
 
 ## Consecuencias
 
 ### Positivas
 
-- **Calidad:** Pictogramas profesionales diseñados por terapeutas
-- **Cobertura:** >30,000 pictogramas en español
-- **Coste:** Gratuito
-- **Comunidad:** Estándar de facto en España (terapeutas lo conocen)
-- **API estable:** Mantenida por Gobierno de Aragón
+- Pictogramas profesionales diseñados por terapeutas
+- Cobertura de más de 30.000 pictogramas en español
+- Coste gratuito
+- Estándar de facto en España (terapeutas lo conocen)
+- API estable mantenida por Gobierno de Aragón
+- Búsqueda local con latencia mínima (< 50ms para 194 pictogramas)
+- Caché permanente: cada pictograma de ARASAAC se descarga una sola vez
+- Búsqueda accent-insensitive mejora usabilidad para usuarios SAAC
+- "Sin categoría" no interfiere visualmente con las categorías curadas
 
 ### Negativas
 
-- **Restricción comercial:** No podemos vender HablaIA con ARASAAC
-- **Dependencia API:** Si cae, debemos tener fallback local
-- **Estilo visual único:** No personalizable (todos usan mismo estilo)
+- Restricción comercial: no se puede vender HablaIA con pictogramas ARASAAC
+- Primera búsqueda de un término nuevo tiene latencia mayor (llamada a ARASAAC + descarga de imágenes)
+- Los pictogramas importados carecen de categorización semántica (todos en "Sin categoría")
+- Estilo visual único no personalizable
+- El almacenamiento en disco crece con cada búsqueda nueva
+- La query `unaccent(LOWER(...))` impide el uso de índices B-tree convencionales
 
 ### Mitigaciones
 
-- **Restricción comercial:**
-  - Fase 1-4: Free, educativo (compatible con ARASAAC)
-  - Fase 5-6 (comercial): Migrar a Mulberry Symbols (GPL) o pedir permiso a ARASAAC
-- **Dependencia API:**
-  - Caché local de imágenes descargadas
-  - Sincronización inicial + updates periódicos (no en tiempo real)
-- **Estilo visual:**
-  - Fase 6: Permitir upload de pictogramas custom del usuario
+- **Restricción comercial:** Mientras el proyecto sea educativo/terapéutico es compatible. Si se comercializa: migrar a Mulberry Symbols (GPL) o solicitar permiso a ARASAAC
+- **Latencia primera búsqueda:** Amortiguada con debounce de 300ms en frontend y límite de 10 resultados
+- **Categorización:** En el futuro se podría implementar clasificación automática de pictogramas importados
+- **Estilo visual:** En el futuro se podría permitir upload de pictogramas custom del usuario
+- **Almacenamiento:** Con 194 pictogramas base, el volumen adicional es marginal (imágenes de 500px)
+- **Índices:** Con el tamaño actual de la tabla (~200 filas), sequential scan con `unaccent()` es eficiente. Si crece significativamente, se puede añadir un índice funcional GIN con `pg_trgm`
 
 ## Alternativas Consideradas
 
 ### 1. Mulberry Symbols (GPL)
 
-**Pros:** Licencia GPL (comercial OK), 3,500+ símbolos
+**Pros:** Licencia GPL (uso comercial permitido), 3.500+ símbolos
 **Contras:** Menor cobertura que ARASAAC, menos conocido en España
 **Rechazo:** Para MVP, ARASAAC es mejor (más conocido por terapeutas)
 
 ### 2. Symbolstix (Commercial)
 
-**Pros:** 12,000+ símbolos, muy completo
+**Pros:** 12.000+ símbolos, muy completo
 **Contras:** $49/año licencia, comercial desde día 1
 **Rechazo:** Coste prohibitivo para MVP educativo
 
-### 3. Pictogramas Propios (Diseño Custom)
+### 3. Pictogramas propios (diseño custom)
 
 **Pros:** Control total, branding
-**Contras:** $1,000+ diseño, 6+ meses producción
-**Rechazo:** Inviable para MVP
+**Contras:** Requiere validación por terapeutas, los pictogramas ARASAAC ya están validados clínicamente
+**Rechazo:** Inviable para MVP, aunque con IA generativa se reduciría el tiempo de diseño
+
+### 4. Solo API ARASAAC (sin base de datos local)
+
+**Pros:** Siempre actualizado, sin almacenamiento local, implementación simple
+**Contras:** Dependencia total de ARASAAC (si cae, la app es inutilizable), latencia en cada búsqueda (100-500ms), sin soporte offline
+**Rechazo:** Inaceptable para una aplicación SAAC donde la disponibilidad es crítica
+
+### 5. Solo base de datos local (sin fallback ARASAAC)
+
+**Pros:** Máxima velocidad, funciona offline, control total del contenido
+**Contras:** Limitado a 194 pictogramas pre-cargados, no escala sin intervención manual
+**Rechazo:** 194 pictogramas cubren el 80% del uso diario pero no los términos específicos que cada usuario necesita
+
+### 6. Motor de búsqueda dedicado (Elasticsearch / Meilisearch)
+
+**Pros:** Búsqueda full-text avanzada, fuzzy matching, relevancia por scoring
+**Contras:** Infraestructura adicional, complejidad operacional, over-engineering para ~200 pictogramas
+**Rechazo:** El volumen actual no justifica un motor de búsqueda dedicado
 
 ## Plan de Migración Futura
 
-Si en Fase 5 decidimos comercializar:
+Si se decide comercializar el proyecto:
 
-**Opción A:** Solicitar permiso a ARASAAC (arasaac@aragon.es)
-**Opción B:** Migrar a Mulberry Symbols (GPL, libre comercial)
-**Opción C:** Híbrido - ARASAAC por defecto, Mulberry para usuarios premium
+- **Opción A:** Solicitar permiso a ARASAAC (arasaac@aragon.es)
+- **Opción B:** Migrar a Mulberry Symbols (GPL, libre comercial)
+- **Opción C:** Híbrido (ARASAAC por defecto, Mulberry para usuarios premium)
 
-**Esfuerzo estimado:** 1-2 días (código ya abstrae `PictogramProviderInterface`)
+Esfuerzo estimado: 1-2 días (el código ya abstrae `PictogramProviderInterface`).
 
 ## Referencias
 
 - [ARASAAC](https://arasaac.org)
-- [API Docs](https://arasaac.org/developers/api)
-- [Licencia CC BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+- [ARASAAC API Docs](https://arasaac.org/developers/api)
+- [Licencia CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 - [Mulberry Symbols](https://mulberrysymbols.org/)
+- [PostgreSQL unaccent](https://www.postgresql.org/docs/16/unaccent.html)
+- ADR-008: Codificación de Color Fitzgerald Key
