@@ -6,12 +6,12 @@
 
 ## Contexto
 
-HablaIA es un proyecto académico (TFM) desarrollado por un solo desarrollador con un plazo de MVP de 14 días. El sistema consta de dos stacks tecnológicos distintos (Symfony 7 backend, Vue.js 3 frontend) que comparten un contrato API (OpenAPI), documentación, configuración Docker y pipelines CI/CD. Se necesita decidir cómo organizar el código fuente: un único repositorio o repositorios separados.
+HablaIA es un proyecto académico (TFM) desarrollado por un solo desarrollador con un plazo ajustado para el MVP. El sistema consta de dos stacks tecnológicos distintos (Symfony 7 backend, Vue.js 3 frontend) que comparten un contrato API (OpenAPI), documentación, configuración Docker y pipelines CI/CD. Se necesita decidir cómo organizar el código fuente: un único repositorio o repositorios separados.
 
 Las restricciones principales son:
 
 1. Un solo desarrollador: minimizar overhead de gestión de repositorios
-2. MVP rápido: cambios frecuentes en API contract que afectan ambos stacks
+2. Iteración rápida: cambios frecuentes en API contract que afectan ambos stacks
 3. Despliegue conjunto: Docker Compose orquesta backend + frontend + PostgreSQL en un mismo servidor
 4. Documentación centralizada: ADRs, auditorías, diagramas y OpenAPI spec compartidos
 5. CI/CD unificado: un único pipeline de CD despliega todo junto
@@ -113,19 +113,13 @@ El directorio `docs/` es el punto único de verdad para toda la documentación d
 
 **Pros:** Historial limpio por stack, CI/CD completamente independiente, permisos granulares
 **Contras:** Cambios que afectan ambos stacks requieren coordinar dos PRs, versionado del API contract duplicado, Docker Compose debe referenciar repos externos, documentación dispersa
-**Rechazo:** El overhead de coordinación entre repos es injustificable para un solo desarrollador con un MVP de 14 días. Los cambios atómicos cross-stack son frecuentes en fase de desarrollo activo.
+**Rechazo:** El overhead de coordinación entre repos es injustificable para un solo desarrollador con un plazo ajustado. Los cambios atómicos cross-stack son frecuentes en fase de desarrollo activo.
 
 ### 2. Npm Workspaces / Turborepo
 
 **Pros:** Gestores de dependencias optimizados, caching de builds, ejecución paralela de tasks
 **Contras:** Solo beneficia si hay paquetes compartidos entre frontend y backend (no es el caso: PHP + TypeScript). Turborepo añade complejidad de configuración sin beneficio real cuando los stacks usan lenguajes diferentes. El root `package.json` ya resuelve la orquestación necesaria con scripts simples.
 **Rechazo:** No hay código compartido entre stacks (lenguajes diferentes). La complejidad adicional no aporta valor.
-
-### 3. Monorepo con herramienta dedicada (Nx, Lerna)
-
-**Pros:** Grafos de dependencias, caching distribuido, ejecución incremental, generadores de código
-**Contras:** Curva de aprendizaje significativa, configuración inicial pesada, overkill para dos stacks sin dependencias compartidas. Nx y Lerna están diseñados para ecosistemas JavaScript/TypeScript con decenas de paquetes interrelacionados.
-**Rechazo:** El proyecto tiene exactamente dos stacks sin código compartido. Los path filters de GitHub Actions ya proporcionan ejecución incremental. La inversión en configurar Nx no se amortiza.
 
 ## Referencias
 

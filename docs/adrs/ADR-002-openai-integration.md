@@ -114,6 +114,10 @@ Frontend (Vue)
 **Contras:** Más caro ($3/1M vs $0.15/1M), menor adopción<br>
 **Rechazo:** OpenAI es suficiente y más barato<br>
 
+## Nota
+
+Este ADR documenta la decisión inicial. Ver [ADR-009](ADR-009-multi-provider-llm.md) para la evolución a soporte multi-proveedor (OpenAI + Gemini).
+
 ## Referencias
 
 - [OpenAI Pricing](https://openai.com/pricing)

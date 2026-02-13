@@ -130,8 +130,8 @@ ARASAAC contiene pictogramas genéricos además de los diseñados específicamen
 ### 3. Pictogramas propios (diseño custom)
 
 **Pros:** Control total, branding
-**Contras:** $1.000+ diseño, 6+ meses producción
-**Rechazo:** Inviable para MVP
+**Contras:** Requiere validación por terapeutas, los pictogramas ARASAAC ya están validados clínicamente
+**Rechazo:** Inviable para MVP, aunque con IA generativa se reduciría el tiempo de diseño
 
 ### 4. Solo API ARASAAC (sin base de datos local)
 
