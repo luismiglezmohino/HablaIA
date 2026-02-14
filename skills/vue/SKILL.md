@@ -72,3 +72,53 @@ function saveUser(user: unknown) {
   }
 }
 ```
+
+### C. Pinia Store (Composition API)
+```typescript
+// stores/usePictogramStore.ts
+import { ref, computed } from 'vue'
+import { defineStore } from 'pinia'
+import type { Pictogram } from '@/domain/entities/Pictogram'
+
+export const usePictogramStore = defineStore('pictogram', () => {
+  const items = ref<Pictogram[]>([])
+  const loading = ref(false)
+  const error = ref<string | null>(null)
+
+  const isEmpty = computed(() => items.value.length === 0)
+
+  async function fetchByCategory(categoryId: string): Promise<void> {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await fetch(`/api/pictograms?categoryId=${categoryId}`)
+      items.value = await response.json()
+    } catch (e) {
+      error.value = 'Error al cargar pictogramas'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  return { items, loading, error, isEmpty, fetchByCategory }
+})
+```
+
+### D. Componente Accesible (WCAG 2.2 AA)
+```vue
+<script setup lang="ts">
+defineProps<{ label: string; imageSrc: string }>()
+defineEmits<{ select: [] }>()
+</script>
+
+<template>
+  <button
+    class="min-h-[44px] min-w-[44px] rounded-lg focus-visible:ring-2 focus-visible:ring-indigo-500"
+    :aria-label="label"
+    @click="$emit('select')"
+  >
+    <img :src="imageSrc" :alt="label" />
+    <span class="text-sm">{{ label }}</span>
+  </button>
+</template>
+```

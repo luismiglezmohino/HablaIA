@@ -36,7 +36,18 @@ it('should display the primary button correctly', () => {
 // se centrarán en la lógica y la renderización de clases correctas,
 // no en la apariencia visual directa de Tailwind.
 ```
-### B. Secure UI Patterns (Avoiding Injection)
+### B. Responsive Tablet-First
+```html
+<!-- Mobile: 2 columnas, Tablet portrait: 4, Tablet landscape: 6, Desktop: 8 -->
+<div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+  <button class="min-h-[44px] min-w-[44px] p-2 rounded-lg
+    focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2">
+    <!-- Contenido -->
+  </button>
+</div>
+```
+
+### C. Secure UI Patterns (Avoiding Injection)
 La seguridad en CSS se enfoca más en prevenir inyecciones a través de contenido dinámico.
 
 ```html

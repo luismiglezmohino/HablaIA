@@ -11,8 +11,9 @@ metadata:
 # SKILL: PostgreSQL
 
 ## 🛠 Tech Stack
-- **Database:** PostgreSQL 15+
-- **Migrations:** Doctrine Migrations (Symfony) o herramientas nativas
+- **Database:** PostgreSQL 16
+- **ORM:** Cycle ORM (ver skill `cycle-orm`)
+- **Migrations:** SQL nativas gestionadas por Cycle ORM
 
 ## ⚡ Arquitectura & Logs
 1.  **Connection Pooling:** Usar PgBouncer en producción.
@@ -31,28 +32,19 @@ doctrine:
             1009: '%env(resolve:DATABASE_SSL_CA)%'
 ```
 
-### B. Migraciones con Doctrine
-```php
-// migrations/Version20240101000000.php
-use Doctrine\DBAL\Schema\Schema;
-use Doctrine\Migrations\AbstractMigration;
+### B. Migraciones SQL (Cycle ORM)
+```sql
+-- migrations/V001__initial_schema.sql
+CREATE TABLE categories (
+    id UUID PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    icon VARCHAR(50),
+    color_hex VARCHAR(7) NOT NULL DEFAULT '#6B7280',
+    display_order INT NOT NULL DEFAULT 0,
+    CONSTRAINT uq_categories_name UNIQUE (name)
+);
 
-final class Version20240101000000 extends AbstractMigration
-{
-    public function up(Schema $schema): void
-    {
-        $this->addSql('CREATE TABLE users (
-            id UUID PRIMARY KEY,
-            email VARCHAR(255) UNIQUE NOT NULL,
-            created_at TIMESTAMP NOT NULL
-        )');
-        
-        $this->addSql('CREATE INDEX idx_users_email ON users(email)');
-    }
-
-    public function down(Schema $schema): void
-    {
-        $this->addSql('DROP TABLE users');
-    }
-}
+CREATE INDEX idx_categories_display_order ON categories(display_order);
 ```
+
+> **Nota:** Este proyecto usa Cycle ORM, no Doctrine. Ver skill `cycle-orm` para patrones de mapeo.

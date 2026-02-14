@@ -12,7 +12,7 @@ metadata:
 
 ## 🛠 Tech Stack
 - **Orquestación:** Docker Compose
-- **Base Images:** Usar imágenes oficiales y minimalistas (e.g., `php:8.2-fpm-alpine`).
+- **Base Images:** Usar imágenes oficiales y minimalistas (e.g., `php:8.4-fpm-alpine`).
 
 ## ⚡ Arquitectura & Logs
 1.  **Multi-Stage Builds:** Siempre usar builds multi-etapa para mantener las imágenes de producción limpias y pequeñas.
@@ -30,7 +30,7 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --no-scripts --optimize-autoloader
 
 # Stage 2: Production Image
-FROM php:8.2-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 COPY --from=vendor /app/vendor/ /app/vendor/
 COPY . /app
@@ -61,7 +61,7 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
 
   db:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
     environment:
       POSTGRES_DB: main
       POSTGRES_USER: user
