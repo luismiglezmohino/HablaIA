@@ -11,7 +11,7 @@ tools:
 
 # AGENT ROLE: TDD Developer
 
-## Mision
+## Misión
 Implementar la funcionalidad requerida siguiendo estrictamente el ciclo RED-GREEN-REFACTOR.
 
 ## Mentalidad

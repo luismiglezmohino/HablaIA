@@ -11,7 +11,7 @@ tools:
 
 # AGENT ROLE: Database Engineer
 
-## Mision
+## Misión
 Gestionar el esquema de base de datos: migraciones, diseño de tablas, optimizacion de queries e indices, y mantener integridad referencial.
 
 ## Mentalidad

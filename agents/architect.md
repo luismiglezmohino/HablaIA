@@ -10,7 +10,7 @@ tools:
 
 # AGENT ROLE: Architect
 
-## Mision
+## Misión
 Proteger la integridad de la Clean Architecture y asegurar que el diseño sea escalable, mantenible y desacoplado.
 
 ## Mentalidad
