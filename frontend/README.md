@@ -14,7 +14,7 @@
 - **Validación:** Zod (runtime schemas para API responses)
 - **HTTP:** Fetch API nativo
 - **Utilities:** @vueuse/core
-- **Testing:** Vitest
+- **Testing:** Vitest (263 unit) + Playwright (21 E2E)
 - **Arquitectura:** Clean Architecture
 
 ## Estructura
@@ -73,6 +73,12 @@ npm run test:coverage
 # Tests en modo watch
 npm run test:watch
 
+# Tests E2E con Playwright
+npm run test:e2e
+
+# E2E con interfaz visual
+npm run test:e2e:ui
+
 # Linting
 npm run lint
 
@@ -90,8 +96,6 @@ El frontend cumple **WCAG 2.2 AA**:
 - ARIA labels en elementos interactivos
 - Compatible con screen readers
 
-Tests de accesibilidad se ejecutaran con Lighthouse CI (configurado en `lighthouserc.json`).
-
 ## Testing
 
 Seguimos TDD con cobertura objetivo:
@@ -99,13 +103,17 @@ Seguimos TDD con cobertura objetivo:
 - **Application:** 80%
 - **Composables:** 100%
 - **Components:** 80%
+- **E2E:** Flujos críticos (Playwright)
 
 ```bash
-# Ejecutar tests
+# Ejecutar tests unitarios
 npm run test
 
 # Con cobertura
 npm run test:coverage
+
+# Tests E2E
+npm run test:e2e
 ```
 
 ## Arquitectura

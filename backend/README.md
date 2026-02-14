@@ -28,7 +28,7 @@ src/
 │   └── Exception/              # ApplicationException, *NotFoundException
 └── Infrastructure/             # Implementaciones tecnicas
     ├── Console/                # Comandos CLI (app:fixtures:load, app:arasaac:sync)
-    ├── DataFixtures/           # CategoryFixtures (10 categorias SAAC, colores Fitzgerald Key)
+    ├── DataFixtures/           # CategoryFixtures (10 categorias curadas + "Sin categoria" = 11 total)
     ├── ExternalApi/            # Clientes externos
     │   ├── Arasaac/            # ArasaacApiClient (PictogramProviderInterface)
     │   ├── Gemini/             # GeminiPhraseGenerator (PhraseGeneratorInterface)
@@ -291,7 +291,7 @@ PICTOGRAMS_DIRECTORY="%kernel.project_dir%/public/pictograms"
 ## ADRs Relacionados
 
 - [ADR-001: Clean Architecture](../docs/adrs/ADR-001-clean-architecture.md)
-- [ADR-003: Infrastructure Layer](../docs/adrs/ADR-003-infrastructure-layer.md)
+- [ADR-003: ARASAAC Pictograms](../docs/adrs/ADR-003-arasaac-pictograms.md)
 - [ADR-007: Cycle ORM over Doctrine](../docs/adrs/ADR-007-cycle-orm-over-doctrine.md)
 - [ADR-008: Modified Fitzgerald Key Color Coding](../docs/adrs/ADR-008-fitzgerald-key-color-coding.md)
 - [ADR-009: Multi-provider LLM (OpenAI + Gemini)](../docs/adrs/ADR-009-multi-provider-llm.md)

@@ -2,7 +2,7 @@
 
 > Guia de navegacion de toda la documentacion del proyecto
 
-**Ultima actualizacion:** 13 de febrero de 2026
+**Ultima actualizacion:** 14 de febrero de 2026
 
 ---
 
@@ -11,11 +11,13 @@
 | Documento | Descripcion |
 |-----------|-------------|
 | [README.md](../README.md) | Descripcion del proyecto, stack, instalacion, estructura y funcionalidades |
-| [ROADMAP.md](ROADMAP.md) | Plan de evolucion en 6 fases con metricas de exito |
+| [ROADMAP.md](ROADMAP.md) | Plan de evolucion en 7 fases |
+| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Solucion de problemas comunes de instalacion |
 | [SECURITY.md](SECURITY.md) | Resumen de postura de seguridad (OWASP Top 10) |
 | [PERFORMANCE.md](PERFORMANCE.md) | Resumen de rendimiento y Core Web Vitals |
 | [QUALITY.md](QUALITY.md) | Resumen de calidad, tests y gates 100/80/0 |
 | [ACCESSIBILITY.md](ACCESSIBILITY.md) | Resumen de conformidad WCAG 2.2 AA |
+| [competitive-analysis.md](competitive-analysis.md) | Analisis comparativo HablaIA vs comunicadores SAAC existentes |
 | [openapi.yaml](openapi.yaml) | Especificacion OpenAPI 3.0 de la API REST |
 
 ---
@@ -76,6 +78,14 @@ Informes de auditoria por fase del proyecto.
 | [phase1-performance-audit.md](audits/phase1-performance-audit.md) | [PERFORMANCE.md](PERFORMANCE.md) | Auditoria de rendimiento y Core Web Vitals - Phase 1 |
 | [phase1-qa-review.md](audits/phase1-qa-review.md) | [QUALITY.md](QUALITY.md) | Revision de calidad, cobertura de tests y gates - Phase 1 |
 | [phase1-accessibility-audit.md](audits/phase1-accessibility-audit.md) | [ACCESSIBILITY.md](ACCESSIBILITY.md) | Auditoria WCAG 2.2 AA - Phase 1 (frontend) |
+
+---
+
+## Testing y Validacion
+
+| Documento | Descripcion |
+|-----------|-------------|
+| [prompt-tuning-validation.md](testing/prompt-tuning-validation.md) | Validacion de prompt tuning LLM con 19 test cases (100%) |
 
 ---
 

@@ -12,18 +12,13 @@
     "test:frontend": "cd frontend && npm run test",
     "test:backend": "cd backend && ./vendor/bin/pest",
     "check": "npm run lint:frontend && npm run test:frontend -- --run",
-    "ci": "npm run lint:frontend && cd frontend && npm run type-check && npm run test:coverage && npm run build && cd .. && npm run lint:backend && npm run test:backend",
-    "release": "standard-version",
-    "release:minor": "standard-version --release-as minor",
-    "release:major": "standard-version --release-as major",
-    "release:first": "standard-version --first-release"
+    "ci": "npm run lint:frontend && cd frontend && npm run type-check && npm run test:coverage && npm run build && cd .. && npm run lint:backend && npm run test:backend"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^20.4.1",
     "husky": "^9.1.7",
-    "lint-staged": "^15.2.11",
-    "standard-version": "^9.5.0"
+    "lint-staged": "^15.2.11"
   },
   "engines": {
     "node": ">=20.0.0"
