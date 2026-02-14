@@ -1,37 +1,39 @@
 # HablaIA - Roadmap de Desarrollo
 
-> Plan de evolución del proyecto en 6 fases incrementales
+> Plan de evolución del proyecto en 7 fases incrementales
 
 ## Estado General del Proyecto
 
 | Fase | Estado | Descripción |
 |------|--------|-------------|
-| **Fase 1** | 🚧 EN DESARROLLO | Core funcional (pictogramas + IA + TTS básico) |
-| **Fase 2** | 📅 Planificada | Contexto temporal y mejoras UX |
-| **Fase 3** | 📅 Planificada | Personalización y perfiles de usuario |
-| **Fase 4** | 📅 Planificada | TTS Premium (ElevenLabs) |
-| **Fase 5** | 📅 Planificada | Modo offline y PWA |
-| **Fase 6** | 📅 Planificada | Voice Cloning del usuario |
+| **Fase 1** | ✅ COMPLETADA | Core funcional (pictogramas + IA + TTS básico) |
+| **Fase 2** | 📅 Planificada | Mejoras de comunicación y emergencia |
+| **Fase 3** | 📅 Planificada | Autenticación y multiusuario |
+| **Fase 4** | 📅 Planificada | Comunicación personalizada |
+| **Fase 5** | 📅 Planificada | Gestión de pictogramas y categorías |
+| **Fase 6** | 📅 Planificada | Modo terapeuta |
+| **Fase 7** | 📅 Planificada | Visualización, compartir y exportación |
+| **Futuro** | 💡 Exploración | PWA y modo offline, TTS Premium, Voice Cloning, PostHog, métodos de entrada alternativos |
 
 ---
 
-## Fase 1 - Core Funcional (🚧 EN DESARROLLO)
+## Fase 1 - Core Funcional (✅ COMPLETADA)
 
 **Objetivo:** MVP funcional con las capacidades básicas del comunicador.
 
 ### Backend (✅ Completado)
 - ✅ API REST con Symfony 7 + Cycle ORM + PostgreSQL
-- ✅ Grid de pictogramas por categorías (10 categorías SAAC, colores Fitzgerald Key)
+- ✅ Grid de pictogramas por categorías (11 categorías SAAC, colores Fitzgerald Key)
 - ✅ Integración LLM multi-proveedor (`PHRASE_PROVIDER`: gemini, openai, fake)
 - ✅ Prompt tuning: 20 ejemplos few-shot, reglas semánticas, auto-validación logopeda
 - ✅ Fallback automático entre modelos Gemini (Flash → Flash Lite = 40 RPD/día)
 - ✅ Caché de frases en PostgreSQL (SHA256 hash, solo frases generadas por IA)
-- ✅ Sincronización automática con ARASAAC API (197 palabras core vocabulary)
-- ✅ Health checks para Kubernetes (liveness, readiness)
+- ✅ Sincronización automática con ARASAAC API (194 pictogramas core vocabulary)
+- ✅ Health checks (`/api/health`)
 - ✅ Rate limiting configurable en generación de frases (per-minute + daily por IP)
 - ✅ Tests: 400 unitarios (PestPHP), PHPStan level 8
 
-### Frontend (🚧 En Construccion)
+### Frontend (✅ Completado)
 - ✅ Clean Architecture frontend (Domain/Application/Infrastructure)
 - ✅ Domain entities: Category, Pictogram, PhraseResponse + repository interfaces
 - ✅ Zod schemas para validacion de API responses (Zero Trust)
@@ -64,151 +66,164 @@
 
 ---
 
-## Fase 2 - Contexto Temporal y Mejoras UX (📅 FUTURO)
+## Fase 2 - Mejoras de Comunicación y Emergencia (📅 FUTURO)
 
-**Objetivo:** Hacer la IA más contextual y mejorar la experiencia de usuario.
+**Objetivo:** Mejorar la comunicación del usuario SAAC sin depender de autenticación ni perfiles.
 
 **Funcionalidades planificadas:**
 - 🔜 Contexto temporal inteligente:
   - Hora del día: "Buenos días" (mañana), "Buenas tardes" (tarde), "Buenas noches" (noche)
   - Día de la semana: "Feliz fin de semana" (sábado/domingo), "Buen inicio de semana" (lunes)
-  - Estaciones del año: Adaptar sugerencias según temporada
-- 🔜 Historial de frases frecuentes:
-  - Top 10 frases más usadas accesibles con 1 click
-  - Persistencia en base de datos
-- 🔜 Mejoras UX:
-  - Botón "Repetir última frase" (el 40% de uso en SAAC es repetición)
-  - Animaciones de feedback visual
-  - Loading states más informativos
-- 🔜 Analytics básico:
-  - Dashboard de uso (pictogramas más usados, frases más generadas)
-  - PostHog event tracking
+- 🔜 Predicción de pictogramas:
+  - Sugerir pictogramas probables según el contexto de selección actual
+  - Heurísticas gramaticales SAAC (Sujeto-Verbo-Objeto) desde el primer uso
+- 🔜 Categoría de emergencia:
+  - Categoría especial con frases urgentes pregeneradas ("Me duele", "Necesito ayuda", "Necesito ir al baño")
+  - Acceso rápido con un toque (sin buscar pictogramas individualmente)
+  - Frases precargadas en caché para acceso inmediato
 
-**Impacto esperado:** Reducir tiempo de comunicación en 30% mediante acceso rápido a frases frecuentes.
+**Impacto esperado:** Comunicación más rápida y natural desde el primer uso. Acceso inmediato a frases de emergencia para seguridad del paciente. No requiere autenticación.
 
 ---
 
-## Fase 3 - Personalización (📅 FUTURO)
+## Fase 3 - Autenticación y Multiusuario (📅 FUTURO)
 
-**Objetivo:** Permitir que cada usuario adapte el comunicador a sus necesidades específicas.
+**Objetivo:** Establecer el sistema de usuarios como base para toda la personalización posterior.
+
+**¿Por qué ahora?** Sin usuarios identificados, el historial de frases, favoritos, perfiles y modo terapeuta no pueden funcionar por usuario. En tablets compartidas (centros de terapia, colegios), sin autenticación todos los datos se mezclan. Es el prerequisito técnico para que las fases siguientes sean per-user desde el inicio, evitando migraciones de datos posteriores.
 
 **Funcionalidades planificadas:**
-- 🔜 Perfiles de usuario:
-  - Múltiples usuarios en un mismo dispositivo
-  - Configuración individual (voz, velocidad, categorías visibles)
-- 🔜 Favoritos personalizables:
-  - Marcar pictogramas favoritos
-  - Categoría custom "Mis Favoritos"
+- 🔜 Autenticación de dos niveles:
+  - Logopeda/terapeuta: login real (email + contraseña), gestiona perfiles y configuración
+  - Paciente SAAC: contraseña por pictogramas (seleccionar 3-4 pictogramas en orden, ~7M combinaciones). Más seguro que PIN y accesible para usuarios no verbales
+  - El logopeda puede desactivar la contraseña por pictogramas para pacientes con bajo nivel cognitivo (decisión documentada)
+  - Bloqueo tras intentos fallidos (logopeda desbloquea)
+- 🔜 Dos paneles de la aplicación:
+  - Panel general: selector de perfiles (nombres y avatares, sin datos personales visibles)
+  - Panel personalizado: la app con los datos del usuario (historial, pictogramas descargados, preferencias)
+- 🔜 Soporte multiusuario en tablet:
+  - Cambio rápido de usuario desde el panel personalizado al selector de perfiles
+  - Pensado para tablets compartidas en centros de terapia y colegios
+  - El logopeda crea y gestiona perfiles de pacientes desde un panel de administración
+  - Investigar rol de familiar/cuidador que pueda crear y gestionar perfiles sin depender de un logopeda (uso doméstico)
+- 🔜 Asociación de datos por usuario:
+  - Pictogramas descargados vinculados al usuario que los buscó
+  - Tracking de uso de frases cacheadas por usuario (la caché global se mantiene)
+  - Preferencias básicas por usuario (configuración TTS, etc.)
+- 🔜 Seguridad de datos de salud:
+  - Datos de comunicación son datos sensibles (GDPR)
+  - Cada usuario solo accede a sus propios datos
+  - Sesión del logopeda requiere re-autenticación para modo terapeuta
+  - Gestión de sesión adaptada al contexto SAAC (equilibrio entre seguridad y disponibilidad de comunicación)
+
+**Impacto esperado:** Base técnica sólida que habilita personalización real en todas las fases siguientes. Protección de datos de salud en dispositivos compartidos.
+
+**Principio:** El comunicador básico (seleccionar pictogramas, generar frase, TTS) funciona sin autenticación. Los perfiles habilitan funciones personalizadas (historial, favoritos, predicción) pero no son requisito para comunicar. Un usuario SAAC siempre puede usar la app sin depender de un logopeda ni de un perfil configurado.
+
+**Nota:** Esta fase requiere investigación adicional. La gestión del login, los roles (logopeda, familiar/cuidador, paciente), la política de sesiones y la protección GDPR de datos de salud son aspectos que deben diseñarse con cuidado. Existe una tensión entre facilidad de uso para el usuario SAAC (que puede tener dificultades motoras y cognitivas) y el cumplimiento GDPR (datos de comunicación son datos de salud sensibles). El diseño final debe equilibrar ambos requisitos.
+
+---
+
+## Fase 4 - Comunicación Personalizada (📅 FUTURO)
+
+**Objetivo:** Acelerar la comunicación aprovechando los datos de uso de cada usuario.
+
+**Funcionalidades planificadas:**
+- 🔜 Historial de frases frecuentes:
+  - Top 10 frases más usadas accesibles con 1 click
+  - Persistencia en base de datos por usuario
+- 🔜 Personalización TTS básica:
+  - Velocidad de voz ajustable (slider)
+  - Persistencia de la preferencia por usuario
+- 🔜 Predicción de pictogramas por frecuencia:
+  - Refinamiento de la predicción (Fase 2) con datos de uso real del usuario
+  - Sugerencias cada vez más precisas conforme se acumulan datos
+
+**Impacto esperado:** Reducir tiempo de comunicación mediante acceso rápido a frases frecuentes y predicción adaptada al usuario.
+
+---
+
+## Fase 5 - Gestión de Pictogramas y Categorías (📅 FUTURO)
+
+**Objetivo:** Permitir que cada usuario adapte el vocabulario a sus necesidades específicas.
+
+**Funcionalidades planificadas:**
+- 🔜 Gestión de pictogramas:
+  - Clasificación automática de pictogramas importados (por IA o tags ARASAAC)
+  - Añadir pictogramas propios (fotos de familia, objetos del entorno)
+  - Marcar pictogramas favoritos (categoría "Mis Favoritos")
 - 🔜 Personalización de categorías:
   - Crear categorías propias (ej: "Escuela", "Familia", "Hobbies")
   - Reorganizar pictogramas entre categorías
+  - Generación automática de categorías según uso
+- 🔜 Tableros de comunicación:
+  - Biblioteca de categorías sugeridas que el logopeda puede activar por paciente
+  - Ejemplos: médico, colegio, restaurante, casa, festividades, deportes, emociones avanzadas
+  - Secuencias de pictogramas frecuentes preparadas por contexto (ej: en "médico", [yo, dolor, cabeza] listo para generar frase sin buscar pictograma a pictograma)
+
+**Impacto esperado:** Vocabulario adaptado a cada usuario (TEA prefiere consistencia, afasia necesita simplicidad, ELA requiere eficiencia).
+
+---
+
+## Fase 6 - Modo Terapeuta (📅 FUTURO)
+
+**Objetivo:** Herramientas para logopedas en seguimiento de terapia.
+
+**Funcionalidades planificadas:**
+- 🔜 Dashboard de uso del paciente:
+  - Pictogramas más usados, frases generadas, frecuencia de uso
+  - Consultas sobre datos existentes en base de datos (sin infraestructura adicional)
+- 🔜 Gestión de frases:
+  - Aprobar, rechazar o sobrescribir variaciones generadas por el LLM para cada paciente
+
+**Impacto esperado:** Herramienta útil para logopedas en seguimiento de terapia y control de calidad de las frases generadas.
+
+---
+
+## Fase 7 - Visualización, Compartir y Exportación (📅 FUTURO)
+
+**Objetivo:** Personalización visual avanzada e intercambio de configuraciones.
+
+**Funcionalidades planificadas:**
+- 🔜 Configuración avanzada por usuario:
+  - Categorías visibles por perfil (ocultar las que no usa)
+  - Orden personalizado de categorías
 - 🔜 Modos de visualización:
   - Modo noche / alto contraste
   - Tamaño de pictogramas ajustable (pequeño, mediano, grande)
   - Densidad de grid (2x2, 3x3, 4x4)
+- 🔜 Compartir tableros y configuraciones:
+  - El logopeda prepara tableros y categorías personalizadas para el paciente
+  - Envío directo al dispositivo del paciente
 - 🔜 Exportación de datos:
   - Exportar configuración y favoritos (JSON)
   - Importar en otro dispositivo
+- 🔜 App instalable:
+  - Web App Manifest para instalar en pantalla de inicio (sin necesidad de abrir navegador ni escribir URL)
+  - Requiere conexión a internet para funcionar
 
-**Impacto esperado:** Adaptación a necesidades individuales (TEA prefiere consistencia, afasia necesita simplicidad, ELA requiere eficiencia).
-
----
-
-## Fase 4 - TTS Premium (📅 FUTURO)
-
-**Objetivo:** Mejorar la calidad de la síntesis de voz con voces premium.
-
-**Funcionalidades planificadas:**
-- 🔜 Integración ElevenLabs API:
-  - Voces en español de calidad premium (indistinguibles de humano)
-  - Selección de voz (masculina, femenina, infantil)
-  - Control de entonación y velocidad
-- 🔜 Fallback automático:
-  - Si ElevenLabs falla → Web Speech API (sin interrupción)
-  - Indicador visual del proveedor TTS activo
-- 🔜 Caché de audio:
-  - Guardar MP3 de frases generadas
-  - Reproducción instantánea en hits de caché
-- 🔜 Configuración por usuario:
-  - Elegir proveedor TTS (Web Speech vs ElevenLabs)
-  - Modelo freemium (Web Speech gratis, ElevenLabs premium)
-
-**Impacto esperado:** Voz 10x más natural, especialmente valorado por usuarios con afasia post-ictus y ELA (adultos que rechazan voces robotizadas).
+**Impacto esperado:** Adaptación visual a necesidades individuales. Flujo de trabajo logopeda-paciente simplificado.
 
 ---
 
-## Fase 5 - Modo Offline y PWA (📅 FUTURO)
+## Trabajo Futuro (💡 EXPLORACIÓN)
 
-**Objetivo:** Funcionalidad completa sin conexión a internet.
+Ideas y funcionalidades que podrían explorarse a largo plazo, sin fase asignada:
 
-**Funcionalidades planificadas:**
-- 🔜 Progressive Web App (PWA):
-  - Instalable en dispositivos móviles y tablets
-  - Funciona como app nativa
-  - Icono en pantalla de inicio
-- 🔜 Service Workers:
-  - Caché de assets (CSS, JS, imágenes de pictogramas)
-  - Estrategia offline-first
-- 🔜 Sincronización offline:
-  - Guardar frases generadas cuando no hay internet
-  - Sync automático cuando se recupera conexión
-- 🔜 Base de datos local:
-  - IndexedDB para pictogramas y frases frecuentes
-  - 200+ pictogramas más usados precargados
-- 🔜 Indicadores de conectividad:
-  - Banner "Sin conexión" cuando no hay internet
-  - Modo offline explícito (sin llamadas a OpenAI)
-
-**Impacto esperado:** Uso en entornos sin internet (colegios rurales, actividades al aire libre, viajes).
-
----
-
-## Fase 6 - Voice Cloning (📅 FUTURO)
-
-**Objetivo:** Preservar la identidad vocal del usuario mediante clonación de voz.
-
-**Funcionalidades planificadas:**
-- 🔜 Grabación de voz del usuario:
-  - Asistente guiado para grabar 5 minutos de audio
-  - Validación de calidad de grabación
-  - Frases predefinidas para maximizar cobertura fonética
-- 🔜 Entrenamiento de modelo ElevenLabs:
-  - Upload de audio a ElevenLabs Voice Cloning
-  - Notificación cuando la voz esté lista
-- 🔜 Síntesis con voz clonada:
-  - Integración transparente (mismo código que Fase 4)
-  - Fallback a voz premium si cloning falla
-- 🔜 Gestión de voces clonadas:
-  - Dashboard de voces (ver, reproducir muestra, eliminar)
-  - Cambio rápido entre voces (voz propia vs voces premium)
-- 🔜 Privacidad:
-  - Audio de entrenamiento encriptado
-  - Consentimiento explícito GDPR
-  - Derecho a eliminar voz clonada
-
-**Impacto esperado:** Máxima humanización. Especialmente valioso para personas con ELA que pierden progresivamente la voz (pueden preservar su identidad vocal antes de perderla).
-
-**Restricción comercial:** Voice Cloning requiere ElevenLabs Professional Plan. Solo viable en modelo premium o institucional.
-
----
-
-## Métricas de Éxito por Fase
-
-| Fase | Métrica Clave | Objetivo |
-|------|---------------|----------|
-| **Fase 1** | Latencia p95 generación de frase | < 2s (primera vez), < 200ms (caché) |
-| **Fase 2** | % Uso de frases frecuentes | > 40% |
-| **Fase 3** | Usuarios con perfil personalizado | > 60% |
-| **Fase 4** | Satisfacción con calidad de voz | > 8/10 |
-| **Fase 5** | % Sesiones offline | > 20% |
-| **Fase 6** | Usuarios con voz clonada | > 10% (early adopters) |
+- **PWA y modo offline (en valoración):** App instalable (icono, pantalla completa), Service Worker para assets, IndexedDB con datos del usuario, sincronización offline. Problemática: sin internet el LLM no humaniza combinaciones nuevas (solo concatenación de etiquetas), y sin IndexedDB los pictogramas no se muestran offline. La mayoría de dispositivos tienen conexión constante, lo que reduce el valor frente a la complejidad. En valoración: decidir si el beneficio justifica la implementación o si basta con que la app funcione siempre con conexión.
+- **TTS Premium (ElevenLabs):** Voces en español de mayor calidad, selección de voz (masculina, femenina, infantil), caché de audio MP3. Valorado por usuarios con afasia y ELA (adultos que rechazan voces robotizadas), pero Web Speech API en 2026 ya ofrece calidad aceptable. Modelo freemium (Web Speech gratis, ElevenLabs premium).
+- **Voice Cloning:** Clonación de voz del usuario (ElevenLabs). Caso de uso nicho: personas con ELA que pierden progresivamente la voz y desean preservar su identidad vocal. No aporta valor a la mayoría de usuarios SAAC (TEA, afasia, parálisis cerebral). Requiere ElevenLabs Professional Plan y consideraciones GDPR.
+- **Analytics avanzado (PostHog):** Event tracking, heatmaps y session recordings para optimizar UX a escala. Requiere infraestructura adicional (self-hosted) o coste (cloud). Los datos básicos de uso ya se recogen en la base de datos.
+- **Métodos de entrada alternativos:** Eye tracking, switch scanning y otros dispositivos de acceso para usuarios con movilidad muy reducida.
+- **LLM en navegador:** Modelos ligeros ejecutados localmente (WebGPU/WebAssembly) para humanización offline. Actualmente la calidad en español de los modelos pequeños es insuficiente para SAAC, pero la tecnología evoluciona rápidamente.
+- **LLM self-hosted:** Modelos de lenguaje ejecutados en servidor propio (Ollama, vLLM) para eliminar dependencia de APIs externas (Gemini, OpenAI). Reduciría costes recurrentes y latencia, pero requiere infraestructura con GPU y mantenimiento del modelo. Investigar viabilidad según volumen de uso y coste de GPU vs coste de API.
 
 ---
 
 ## Notas
 
-- Algunas fases pueden sufrir modificaciones según feedback de usuarios
+- Algunas fases pueden sufrir modificaciones según feedback de usuarios, logopedas o por decisión del desarrollador
 - Las métricas se actualizarán con datos reales conforme se complete cada fase
 - El orden de las fases puede alterarse según prioridades del proyecto
 
-**Última actualización:** 12 de febrero de 2026
+**Última actualización:** 14 de febrero de 2026
