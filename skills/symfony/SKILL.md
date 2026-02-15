@@ -91,7 +91,7 @@ php bin/console cache:clear
 ```
 
 ### 2. Servicio factory no se resuelve
-**Problema:** Un servicio creado via `factory:` no es autowireable.
+**Problema:** Un servicio creado vía `factory:` no es autowireable.
 **Solución:** Registrar el servicio explícitamente con argumentos nombrados:
 ```yaml
 services:
@@ -101,7 +101,7 @@ services:
         factory: ['@Some\Factory', 'create']
         arguments: [SomeEntity]
 
-    # Wrapper publico que usa el servicio factory
+    # Wrapper público que usa el servicio factory
     App\MyService:
         arguments:
             $internalService: '@my.service.internal'

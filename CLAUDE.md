@@ -7,16 +7,16 @@
 
 ## Contexto del Proyecto
 
-**Dominio:** Comunicacion Aumentativa y Alternativa (SAAC) con IA
-**Usuario Final:** Personas con TEA, afasia, paralisis cerebral, ELA
+**Dominio:** Comunicación Aumentativa y Alternativa (SAAC) con IA
+**Usuario Final:** Personas con TEA, afasia, parálisis cerebral, ELA
 **Objetivo:** Comunicador pictografico con IA humanizante que mejora autonomia comunicativa
 
 ### Restricciones
 - **Licencia:** Source Available (NO comercial por ARASAAC CC BY-NC-SA 4.0)
 - **Accesibilidad:** WCAG 2.2 AA obligatorio
-- **Privacidad:** Datos sensibles (salud/comunicacion) - GDPR estricto
-- **Performance:** Latencia < 200ms en prediccion IA
-- **Offline-first:** Funcionalidad basica sin conexion
+- **Privacidad:** Datos sensibles (salud/comunicación) - GDPR estricto
+- **Performance:** Latencia < 200ms en predicción IA
+- **Offline-first:** Funcionalidad básica sin conexión
 
 ## Roles
 
@@ -41,7 +41,7 @@ Adopt role mindset for each task. Lee `agents/{rol}.md` para instrucciones detal
 3. **Implementation** → @tdd_developer (RED-GREEN-REFACTOR)
 4. **Security** → @security_auditor (OWASP review)
 5. **Quality** → @qa_engineer (coverage 100/80/0)
-6. **Observability** → @observability_engineer (instrumentar metricas)
+6. **Observability** → @observability_engineer (instrumentar métricas)
 7. **Performance** → @performance_engineer (optimizar con datos)
 8. **Deploy** → @devops (CI/CD, release)
 
@@ -110,7 +110,7 @@ cd frontend && npm run test:coverage
 ## Agent Sync
 
 Los agentes se definen en `agents/` y se sincronizan:
-- **OpenCode**: enlaces simbolicos (`.opencode/agents`)
-- **Claude Code**: conversion de formato (`.claude/agents/`)
+- **OpenCode**: enlaces simbólicos (`.opencode/agents`)
+- **Claude Code**: conversión de formato (`.claude/agents/`)
 
 Despues de modificar un agente: `./sync-to-claude-code.sh`

@@ -37,7 +37,7 @@ Crear y mantener documentación técnica clara, completa y actualizada: ADRs, RE
 ## Context
 Necesitamos decidir arquitectura para el sistema de facturas.
 
-## Decision
+## Decisión
 Monolito modular con posibilidad de evolucionar.
 
 ## Consequences

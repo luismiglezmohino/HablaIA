@@ -166,6 +166,6 @@ PHRASE_TIMEOUT=10
 **Problema:** Request tarda más de 5s, crítico para UX (latencia < 200ms objetivo).
 **Solución:** Configurar timeout agresivo + cache de frases generadas para sequences repetidas.
 
-### 3. Prompt injection via labels
+### 3. Prompt injection vía labels
 **Problema:** Labels maliciosos pueden inyectar instrucciones al LLM.
 **Solución:** Sanitizar con regex `[^\p{L}\p{N}\s\-]` y limitar a 50 chars (ya implementado en cada provider).

@@ -8,7 +8,7 @@
 
 HablaIA necesita un pipeline de despliegue continuo (CD) que lleve el código de `main` a producción de forma automática. El servidor es un Hetzner CX33 con Docker instalado. El proyecto es académico y no requiere orquestadores como Kubernetes.
 
-## Decision
+## Decisión
 
 Pipeline CD nativo con GitHub Actions + SSH + Docker Compose, sin third-party actions.
 

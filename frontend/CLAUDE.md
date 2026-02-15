@@ -3,18 +3,18 @@
 ## Stack
 
 - **Framework:** Vue 3 (Composition API + TypeScript) - SPA reactiva
-- **State:** Pinia - store global (sesion usuario, pictogramas seleccionados, config TTS)
+- **State:** Pinia - store global (sesión usuario, pictogramas seleccionados, config TTS)
 - **CSS:** TailwindCSS - utility-first, responsive tablet-first
 - **UI Components:** shadcn-vue - componentes preconstruidos accesibles (Dialog, Popover, Toast, etc.). El `style` en `components.json` solo afecta a componentes generados con `npx shadcn-vue add <componente>`; los ya existentes no se actualizan. Se puede cambiar en cualquier momento.
 - **Primitives:** Radix Vue - primitivas headless accesibles (base de shadcn-vue, WAI-ARIA built-in)
-- **Icons:** Lucide Vue - iconos SVG ligeros para categorias y UI
-- **Validation:** Zod - validacion de schemas en runtime (formularios, API responses)
+- **Icons:** Lucide Vue - iconos SVG ligeros para categorías y UI
+- **Validation:** Zod - validación de schemas en runtime (formularios, API responses)
 - **HTTP:** Fetch nativo - peticiones API sin dependencias extra
 - **Utilities:** @vueuse/core - composables reactivos (useSpeechSynthesis, useLocalStorage, useFocusTrap, useMediaQuery)
 - **Speech:** Web Speech API - sintesis de voz para lectura de frases generadas
-- **Build:** Vite - bundler rapido con HMR
-- **Test Unit:** Vitest + Testing Library - tests de componentes y logica
-- **Test E2E:** Playwright - tests de flujos criticos en navegador real
+- **Build:** Vite - bundler rápido con HMR
+- **Test Unit:** Vitest + Testing Library - tests de componentes y lógica
+- **Test E2E:** Playwright - tests de flujos críticos en navegador real
 
 ## Architecture (Clean Architecture)
 
@@ -33,9 +33,9 @@ tests/
 
 - **TypeScript strict** (`strict: true` en tsconfig)
 - **Composition API** exclusivamente (no Options API)
-- **WCAG 2.2 AA** obligatorio: click targets >= 44x44px, navegacion por teclado, screen reader compatible
+- **WCAG 2.2 AA** obligatorio: click targets >= 44x44px, navegación por teclado, screen reader compatible
 - **Tablet-first** responsive design
-- **Coverage:** 100% Domain, 80% Application/Components, E2E en flujos criticos
+- **Coverage:** 100% Domain, 80% Application/Components, E2E en flujos críticos
 
 ## Commands
 
@@ -136,18 +136,18 @@ describe('PictogramCard', () => {
 
 - Todos los botones de pictogramas: `min-h-[44px] min-w-[44px]`
 - Todos los elementos interactivos: `focus:ring-2` visible
-- Navegacion completa por teclado (Tab, Enter, Escape, Arrow keys)
+- Navegación completa por teclado (Tab, Enter, Escape, Arrow keys)
 - `aria-label` en pictogramas e iconos
 - `role="status"` para feedback de voz/TTS
-- Contraste minimo 4.5:1 (texto) y 3:1 (UI components)
+- Contraste mínimo 4.5:1 (texto) y 3:1 (UI components)
 
 ### Colores Fitzgerald Key (ADR-008)
 
-Las categorias usan el sistema Modified Fitzgerald Key (estandar SAAC). Reglas criticas:
+Las categorías usan el sistema Modified Fitzgerald Key (estándar SAAC). Reglas críticas:
 
 - **`colorHex` de la API se usa como borde/acento** (`border-color`, `border-top`), NUNCA como `background-color` completo
-- **Fondo blanco obligatorio** en tarjetas de pictogramas (pictogramas ARASAAC disenados sobre blanco)
-- **Texto negro sobre blanco** (contraste 21:1, sin depender del color de categoria)
+- **Fondo blanco obligatorio** en tarjetas de pictogramas (pictogramas ARASAAC diseñados sobre blanco)
+- **Texto negro sobre blanco** (contraste 21:1, sin depender del color de categoría)
 - Tonos claros (ej. Amber-400) no pasan WCAG AA como fondo, si como borde
 
 ```vue
@@ -158,4 +158,4 @@ Las categorias usan el sistema Modified Fitzgerald Key (estandar SAAC). Reglas c
 <div :style="{ backgroundColor: category.colorHex }">
 ```
 
-Ver `docs/adrs/ADR-008-fitzgerald-key-color-coding.md` para el mapeo completo de colores por categoria.
+Ver `docs/adrs/ADR-008-fitzgerald-key-color-coding.md` para el mapeo completo de colores por categoría.

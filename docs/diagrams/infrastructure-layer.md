@@ -517,7 +517,7 @@ sequenceDiagram
     end
 ```
 
-## Flujo de Sincronizacion ARASAAC
+## Flujo de Sincronización ARASAAC
 
 ```mermaid
 sequenceDiagram
@@ -564,34 +564,34 @@ sequenceDiagram
 
 ## Resumen de Componentes
 
-| Categoria | Componente | Responsabilidad |
+| Categoría | Componente | Responsabilidad |
 |-----------|------------|-----------------|
 | **Http** | `HealthController` | Health checks para orquestadores |
-| **Http** | `CategoryController` | CRUD de categorias |
-| **Http** | `PictogramController` | CRUD y busqueda de pictogramas |
-| **Http** | `PhraseController` | Generacion de frases con rate limiting |
-| **Console** | `LoadFixturesCommand` | Carga de categorias SAAC |
-| **Console** | `SyncArasaacCommand` | Sincronizacion con ARASAAC |
+| **Http** | `CategoryController` | CRUD de categorías |
+| **Http** | `PictogramController` | CRUD y búsqueda de pictogramas |
+| **Http** | `PhraseController` | Generación de frases con rate limiting |
+| **Console** | `LoadFixturesCommand` | Carga de categorías SAAC |
+| **Console** | `SyncArasaacCommand` | Sincronización con ARASAAC |
 | **ExternalApi** | `ArasaacApiClient` | Cliente ARASAAC API |
 | **ExternalApi** | `GeminiPhraseGenerator` | Generador con Gemini (default) |
 | **ExternalApi** | `OpenAIPhraseGenerator` | Generador con OpenAI |
 | **Phrase** | `FakePhraseGenerator` | Fake para desarrollo (templates sin API) |
 | **ExternalApi** | `PhraseGeneratorFactory` | Factory multi-proveedor |
 | **ExternalApi** | `PhrasePrompt` | Constantes de prompt compartidas |
-| **Persistence** | `CycleCategoryRepository` | Persistencia de categorias |
+| **Persistence** | `CycleCategoryRepository` | Persistencia de categorías |
 | **Persistence** | `CyclePictogramRepository` | Persistencia de pictogramas |
 | **Persistence** | `CyclePhraseRepository` | Persistencia de frases (cache) |
-| **Health** | `CycleDatabaseHealthChecker` | Verificacion de conectividad DB |
+| **Health** | `CycleDatabaseHealthChecker` | Verificación de conectividad DB |
 | **Service** | `YamlVocabularyLoader` | Carga de vocabulario |
-| **Service** | `HttpImageDownloader` | Descarga de imagenes |
-| **Shared** | `SymfonyUuidGenerator` | Generacion de UUIDs |
+| **Service** | `HttpImageDownloader` | Descarga de imágenes |
+| **Shared** | `SymfonyUuidGenerator` | Generación de UUIDs |
 
 ## Principios Aplicados
 
-| Principio | Aplicacion |
+| Principio | Aplicación |
 |-----------|------------|
 | **Dependency Inversion** | Controllers dependen de Use Cases, no de Repositories |
-| **Interface Segregation** | Interfaces especificas: `ImageDownloaderInterface`, `VocabularyLoaderInterface` |
-| **Single Responsibility** | Cada servicio tiene una unica responsabilidad |
+| **Interface Segregation** | Interfaces específicas: `ImageDownloaderInterface`, `VocabularyLoaderInterface` |
+| **Single Responsibility** | Cada servicio tiene una única responsabilidad |
 | **Open/Closed** | Gemini añadido sin modificar Domain/Application (validado) |
 | **Liskov Substitution** | `FakePhraseGenerator` intercambiable con proveedor LLM (OpenAI/Gemini) |

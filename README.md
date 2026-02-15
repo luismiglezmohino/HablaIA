@@ -74,7 +74,7 @@ Los comunicadores SAAC tradicionales (Tobii Dynavox, Proloquo2Go) ofrecen pictog
 
 ### Solución: HablaIA
 
-HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia Artificial contextual** (multi-proveedor configurable via `PHRASE_PROVIDER`: Gemini, OpenAI, Fake) y **síntesis de voz** para crear un comunicador que:
+HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia Artificial contextual** (multi-proveedor configurable vía `PHRASE_PROVIDER`: Gemini, OpenAI, Fake) y **síntesis de voz** para crear un comunicador que:
 
 1. **Permite seleccionar pictogramas** de forma visual e intuitiva
 2. **Genera 3 variaciones de frase humanizada** usando IA
@@ -130,7 +130,7 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 
 ### Inteligencia Artificial y APIs Externas
 
-- **LLM para generación de frases:** Multi-proveedor configurable via `PHRASE_PROVIDER`:
+- **LLM para generación de frases:** Multi-proveedor configurable vía `PHRASE_PROVIDER`:
   - `gemini` - Gemini 2.5 Flash Lite (free tier)
   - `openai` - OpenAI GPT-4o-mini
   - `fake` - Respuestas simuladas (sin API key)

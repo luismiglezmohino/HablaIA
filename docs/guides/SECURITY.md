@@ -56,16 +56,16 @@ Interceptor Symfony (`kernel.response`) que añade a todas las respuestas:
 
 ### CORS
 
-- Origen restringido por regex (configurable via `CORS_ALLOW_ORIGIN`)
+- Origen restringido por regex (configurable vía `CORS_ALLOW_ORIGIN`)
 - Métodos limitados a `GET` y `POST`
 
 ### Rate limiting
 
 - `POST /api/phrases/generate`: doble protección por IP para evitar abuso de costes LLM (Gemini/OpenAI). Protege también peticiones cacheadas como efecto colateral
-  - **Per-minute:** 30 req/60s (sliding window) via `PHRASE_RATE_LIMIT` / `PHRASE_RATE_INTERVAL`
-  - **Daily:** 500 req/día (fixed window) via `PHRASE_DAILY_LIMIT`
+  - **Per-minute:** 30 req/60s (sliding window) vía `PHRASE_RATE_LIMIT` / `PHRASE_RATE_INTERVAL`
+  - **Daily:** 500 req/día (fixed window) vía `PHRASE_DAILY_LIMIT`
 - `GET /api/pictograms/search`: protección por IP para evitar abuso de peticiones a ARASAAC y escritura en disco
-  - **Per-minute:** 30 req/60s (sliding window) via `SEARCH_RATE_LIMIT` / `SEARCH_RATE_INTERVAL`
+  - **Per-minute:** 30 req/60s (sliding window) vía `SEARCH_RATE_LIMIT` / `SEARCH_RATE_INTERVAL`
 
 ### Trusted Proxies (Docker/Nginx)
 
@@ -87,4 +87,4 @@ Interceptor Symfony (`kernel.response`) que añade a todas las respuestas:
 
 - **Autenticación JWT** (Fase 3)
 - **Paginación** en endpoints de listado
-- **HSTS** via Nginx cuando se configure HTTPS en producción
+- **HSTS** vía Nginx cuando se configure HTTPS en producción

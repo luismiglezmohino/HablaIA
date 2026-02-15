@@ -45,16 +45,16 @@ Lee `skills/{skill}/SKILL.md` antes de implementar:
 - `symfony` - Framework patterns, DI, errores comunes
 - `symfony-pest` - PestPHP + WebTestCase, errores comunes
 - `cycle-orm` - Entity mapping, Fragment, JSON typecast, DI factories
-- `postgresql` - Schema design, indices, optimizacion
+- `postgresql` - Schema design, índices, optimización
 - `llm-integration` - Multi-provider LLM (OpenAI, Gemini, Factory pattern)
 
 ## Coverage Targets
 
-- **Domain:** 100% (entidades, value objects, logica de negocio)
+- **Domain:** 100% (entidades, value objects, lógica de negocio)
 - **Application:** 80% (use cases, services)
-- **Infrastructure:** Tests funcionales en endpoints criticos
+- **Infrastructure:** Tests funcionales en endpoints críticos
 
-## Configuracion Clave
+## Configuración Clave
 
 ### Rate Limiting
 ```yaml
@@ -66,7 +66,7 @@ rate_limiter:
     interval: '60 seconds' # PHRASE_RATE_INTERVAL
   phrase_daily:
     policy: fixed_window
-    limit: 500           # PHRASE_DAILY_LIMIT (req/dia, 9999 en dev)
+    limit: 500           # PHRASE_DAILY_LIMIT (req/día, 9999 en dev)
     interval: '1 day'
 ```
 

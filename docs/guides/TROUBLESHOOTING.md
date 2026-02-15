@@ -27,4 +27,4 @@ chmod +x scripts/*.sh
 
 ## Frontend no conecta con Backend
 
-En Docker, el proxy de Vite usa `http://backend:8000` (configurado via `VITE_API_TARGET` en docker-compose). Fuera de Docker, usa `http://localhost:8080` por defecto.
+En Docker, el proxy de Vite usa `http://backend:8000` (configurado vía `VITE_API_TARGET` en docker-compose). Fuera de Docker, usa `http://localhost:8080` por defecto.

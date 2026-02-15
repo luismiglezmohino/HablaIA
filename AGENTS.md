@@ -245,17 +245,17 @@ it('should [behavior]', () => {
 - **Observability**: PostHog self-hosted + Sentry Cloud for SAAC context
 - **Git**: Use conventional commits (feat:, fix:, docs:, test:, etc.)
 
-## Sincronizacion de Agentes
+## Sincronización de Agentes
 
 Los agentes se definen en `agents/` (formato OpenCode) y se sincronizan:
 
 ```
 agents/             ← Fuente (formato OpenCode)
 skills/             ← Fuente (compatible ambos)
-.opencode/agents    → ../agents (enlace simbolico)
-.opencode/skills    → ../skills (enlace simbolico)
+.opencode/agents    → ../agents (enlace simbólico)
+.opencode/skills    → ../skills (enlace simbólico)
 .claude/agents/     ← Generado (formato Claude Code)
-.claude/skills      → ../skills (enlace simbolico)
+.claude/skills      → ../skills (enlace simbólico)
 ```
 
 Despues de modificar un agente en `agents/`, ejecutar:

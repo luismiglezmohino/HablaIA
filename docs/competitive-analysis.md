@@ -71,7 +71,7 @@ Transforma secuencias de pictogramas en frases naturales en español y catalán 
 
 ### Evidencia de demanda
 
-El estudio **"The less I type, the better"** (Google, CHI 2023) probó sugerencias de texto con IA en 12 usuarios SAAC. Conclusión: los usuarios valoran el ahorro de tiempo y esfuerzo, pero piden que las sugerencias reflejen su estilo personal. Esto valida que hay demanda real de IA en comunicación aumentativa.
+El estudio **"The less I type, the better"** (Google, CHI 2023) probó sugerencias de texto con IA en 12 usuarios SAAC. Conclusión: los usuarios valoran el ahorro de tiempo y esfuerzo, pero piden que las sugerencias reflejen su estilo personal. Esto válida que hay demanda real de IA en comunicación aumentativa.
 
 **Dato clave:** La tasa de comunicación en SAAC es de 8-15 palabras/minuto frente a 130-250 del habla típica. Cada paso cognitivo adicional (elegir conjugaciones, gestionar gramática) amplía esa brecha.
 
