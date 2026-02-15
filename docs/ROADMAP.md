@@ -36,33 +36,33 @@
 ### Frontend (✅ Completado)
 - ✅ Clean Architecture frontend (Domain/Application/Infrastructure)
 - ✅ Domain entities: Category, Pictogram, PhraseResponse + repository interfaces
-- ✅ Zod schemas para validacion de API responses (Zero Trust)
+- ✅ Zod schemas para validación de API responses (Zero Trust)
 - ✅ ApiClient HTTP + repositorios (HttpCategoryRepository, HttpPictogramRepository, HttpPhraseRepository)
 - ✅ Pinia registrado, shadcn-vue configurado (Radix Vue, Lucide Vue)
 - ✅ Tests: 263 unitarios (Vitest) + 21 E2E (Playwright) = 284 frontend
 - ✅ Pinia stores: useCategoryStore + usePictogramStore + usePhraseStore
 - ✅ CategoryBar con Fitzgerald Key borders, Lucide icons, keyboard nav
 - ✅ PictogramCard + PictogramGrid con Fitzgerald Key border-top, responsive grid
-- ✅ PhraseBar: seleccion pictogramas (max 10), generacion frases via API, variaciones
+- ✅ PhraseBar: selección pictogramas (max 10), generación frases via API, variaciones
 - ✅ App shell: header, skip link, aria-live region
-- ✅ Conexion API: fetchCategories + fetchByCategory + generatePhrase
+- ✅ Conexión API: fetchCategories + fetchByCategory + generatePhrase
 - ✅ WCAG 2.2 AA: 44x44px touch targets, focus rings, aria-labels, role="tablist"
 - ✅ Text-to-Speech con Web Speech API (TTSProvider interface, WebSpeechTTS, useTTS composable, SpeakButton)
 - ✅ SearchBar con debounce y búsqueda insensible a acentos: local DB → fallback ARASAAC API (descarga y persiste pictogramas)
 - ✅ Error handling UI: inline feedback (ADR-010), mensajes user-friendly en español, feedback visual en botones (loading/error/retry)
 - ✅ Rediseño visual moderno (ADR-011): paleta Indigo, fuente Inter, sombras, motion-safe, Badge/Skeleton shadcn-vue, WCAG 2.2
-- ✅ Responsive tres configuraciones: movil, tablet portrait, tablet landscape (media query custom con clases utilitarias independientes)
-- ✅ Tablet landscape compacto: busqueda + categorias en header, PhraseBar inline con scroll horizontal, proteccion landscape movil
-- ✅ CD pipeline: GitHub Actions SSH deploy a Hetzner CX33, Docker Compose produccion (PHP-FPM + nginx + PostgreSQL), health check con rollback automatico
+- ✅ Responsive tres configuraciones: móvil, tablet portrait, tablet landscape (media query custom con clases utilitarias independientes)
+- ✅ Tablet landscape compacto: búsqueda + categorías en header, PhraseBar inline con scroll horizontal, protección landscape móvil
+- ✅ CD pipeline: GitHub Actions SSH deploy a Hetzner CX33, Docker Compose producción (PHP-FPM + nginx + PostgreSQL), health check con rollback automático
 - ✅ E2E tests con Playwright (21 tests): app load, pictogram flow, search, phrase limits, error handling, responsive (5 viewports), video on failure
 
-**Entregables tecnicos:**
+**Entregables técnicos:**
 - ✅ Clean Architecture backend (Domain/Application/Infrastructure)
 - ✅ API REST funcional (Symfony 7)
 - ✅ SPA responsiva (Vue 3 + TypeScript) - data layer + categories + pictograms + phrase flow + TTS + search + error feedback + diseño visual moderno + responsive 3 configuraciones
 - ✅ Docker Compose con todos los servicios
 - ✅ CI/CD con GitHub Actions
-- ✅ Documentacion completa (ADRs, guias de desarrollo)
+- ✅ Documentación completa (ADRs, guías de desarrollo)
 
 ---
 

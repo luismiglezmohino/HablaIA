@@ -5,9 +5,9 @@
 ## Stack
 
 - **Framework:** Vue.js 3.5 (Composition API)
-- **Lenguaje:** TypeScript 5.3
-- **Bundler:** Vite 5
-- **CSS:** Tailwind CSS 3.4
+- **Lenguaje:** TypeScript 5.6
+- **Bundler:** Vite 6
+- **CSS:** TailwindCSS 3.4
 - **State Management:** Pinia
 - **UI Components:** shadcn-vue (Radix Vue primitives)
 - **Icons:** Lucide Vue Next
@@ -24,19 +24,19 @@ src/
 ├── domain/           # Capa de Dominio (TypeScript puro, sin dependencias)
 │   ├── entities/     # Category, Pictogram, PhraseResponse
 │   ├── repositories/ # Interfaces: CategoryRepository, PictogramRepository, PhraseRepository
-│   └── services/     # Interfaces: TTSProvider (futuro)
+│   └── services/     # Interfaces: TTSProvider
 ├── application/      # Capa de Aplicación
-│   ├── schemas/      # Zod schemas para validacion de API responses
-│   ├── stores/       # Pinia stores (futuro)
-│   └── composables/  # Vue composables (futuro)
+│   ├── schemas/      # Zod schemas para validación de API responses
+│   ├── stores/       # Pinia stores (useCategoryStore, usePictogramStore, usePhraseStore)
+│   └── composables/  # Vue composables (useTTS)
 ├── infrastructure/   # Implementaciones
 │   ├── http/         # ApiClient + HTTP repositories
 │   ├── storage/      # LocalStorage/IndexedDB (futuro)
-│   └── tts/          # Text-to-Speech (futuro)
+│   └── tts/          # WebSpeechTTS (Web Speech API)
 ├── presentation/     # UI Layer (Vue)
 │   ├── components/   # Componentes Vue
-│   ├── views/        # Paginas/Vistas
-│   ├── layouts/      # Layouts (futuro)
+│   ├── views/        # Páginas/Vistas
+│   ├── layouts/      # Layouts
 │   └── router/       # Vue Router
 └── lib/              # Utilidades (cn helper para shadcn-vue)
 ```
@@ -92,7 +92,7 @@ El frontend cumple **WCAG 2.2 AA**:
 
 - Contraste mínimo 4.5:1
 - Click targets ≥ 44x44px
-- Navegación por teclado
+- Navegación completa por teclado
 - ARIA labels en elementos interactivos
 - Compatible con screen readers
 

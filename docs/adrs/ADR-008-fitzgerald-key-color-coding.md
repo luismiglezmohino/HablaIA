@@ -182,7 +182,7 @@ private function validateDisplayOrder(int $displayOrder): void
 
 - [Modified Fitzgerald Key - ARASAAC](https://arasaac.org/aac/es) - Sistema de colores estándar en SAAC
 - [ARASAAC - Categorías de pictogramas](https://arasaac.org/pictograms/search) - Clasificación de pictogramas por tipo gramatical
-- [WCAG 2.1 - Criterio 1.4.3 Contraste mínimo (AA)](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html) - Ratio mínimo 4.5:1 para texto sobre fondo de color
-- [WCAG 2.1 - Criterio 1.4.1 Uso del color](https://www.w3.org/WAI/WCAG21/Understanding/use-of-color.html) - El color no debe ser el único canal de información
+- [WCAG 2.2 - Criterio 1.4.3 Contraste mínimo (AA)](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) - Ratio mínimo 4.5:1 para texto sobre fondo de color
+- [WCAG 2.2 - Criterio 1.4.1 Uso del color](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html) - El color no debe ser el único canal de información
 - [Fitzgerald Key - Wikipedia](https://en.wikipedia.org/wiki/Fitzgerald_Key) - Historia y aplicación del sistema original
 - [Tailwind CSS Color Palette](https://tailwindcss.com/docs/customizing-colors) - Escala de tonos utilizada para las variaciones

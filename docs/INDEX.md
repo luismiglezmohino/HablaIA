@@ -1,30 +1,30 @@
-# Documentacion - HablaIA
+# Documentación - HablaIA
 
-> Guia de navegacion de toda la documentacion del proyecto
+> Guía de navegación de toda la documentación del proyecto
 
-**Ultima actualizacion:** 14 de febrero de 2026
+**Última actualización:** 14 de febrero de 2026
 
 ---
 
-## Documentacion General
+## Documentación General
 
-| Documento | Descripcion |
+| Documento | Descripción |
 |-----------|-------------|
-| [README.md](../README.md) | Descripcion del proyecto, stack, instalacion, estructura y funcionalidades |
-| [ROADMAP.md](ROADMAP.md) | Plan de evolucion en 7 fases |
-| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Solucion de problemas comunes de instalacion |
-| [SECURITY.md](SECURITY.md) | Resumen de postura de seguridad (OWASP Top 10) |
-| [PERFORMANCE.md](PERFORMANCE.md) | Resumen de rendimiento y Core Web Vitals |
-| [QUALITY.md](QUALITY.md) | Resumen de calidad, tests y gates 100/80/0 |
-| [ACCESSIBILITY.md](ACCESSIBILITY.md) | Resumen de conformidad WCAG 2.2 AA |
-| [competitive-analysis.md](competitive-analysis.md) | Analisis comparativo HablaIA vs comunicadores SAAC existentes |
-| [openapi.yaml](openapi.yaml) | Especificacion OpenAPI 3.0 de la API REST |
+| [README.md](../README.md) | Descripción del proyecto, stack, instalación, estructura y funcionalidades |
+| [ROADMAP.md](ROADMAP.md) | Plan de evolución en 7 fases |
+| [TROUBLESHOOTING.md](guides/TROUBLESHOOTING.md) | Solución de problemas comunes de instalación |
+| [SECURITY.md](guides/SECURITY.md) | Resumen de postura de seguridad (OWASP Top 10) |
+| [PERFORMANCE.md](guides/PERFORMANCE.md) | Resumen de rendimiento y Core Web Vitals |
+| [QUALITY.md](guides/QUALITY.md) | Resumen de calidad, tests y gates 100/80/0 |
+| [ACCESSIBILITY.md](guides/ACCESSIBILITY.md) | Resumen de conformidad WCAG 2.2 AA |
+| [competitive-analysis.md](competitive-analysis.md) | Análisis comparativo HablaIA vs comunicadores SAAC existentes |
+| [openapi.yaml](openapi.yaml) | Especificación OpenAPI 3.0 de la API REST |
 
 ---
 
 ## Backend y Frontend
 
-| Documento | Descripcion |
+| Documento | Descripción |
 |-----------|-------------|
 | [backend/README.md](../backend/README.md) | Setup, arquitectura, comandos y testing del backend Symfony |
 | [frontend/README.md](../frontend/README.md) | Setup y desarrollo del frontend Vue.js |
@@ -33,24 +33,24 @@
 
 ## ADRs (Architecture Decision Records)
 
-Decisiones arquitectonicas documentadas con contexto, alternativas y consecuencias.
+Decisiones arquitectónicas documentadas con contexto, alternativas y consecuencias.
 
-| ADR | Titulo | Tema |
+| ADR | Título | Tema |
 |-----|--------|------|
-| [ADR-001](adrs/ADR-001-clean-architecture.md) | Clean Architecture | Separacion en capas Domain/Application/Infrastructure |
-| [ADR-002](adrs/ADR-002-openai-integration.md) | OpenAI Integration | Integracion con OpenAI para generacion de frases |
-| [ADR-003](adrs/ADR-003-arasaac-pictograms.md) | ARASAAC Pictograms | Pictogramas ARASAAC: estrategia local-first, busqueda accent-insensitive y categoria "Sin categoria" |
+| [ADR-001](adrs/ADR-001-clean-architecture.md) | Clean Architecture | Separación en capas Domain/Application/Infrastructure |
+| [ADR-002](adrs/ADR-002-openai-integration.md) | OpenAI Integration | Integración con OpenAI para generación de frases |
+| [ADR-003](adrs/ADR-003-arasaac-pictograms.md) | ARASAAC Pictograms | Pictogramas ARASAAC: estrategia local-first, búsqueda accent-insensitive y categoría "Sin categoría" |
 | [ADR-004](adrs/ADR-004-tts-strategy.md) | TTS Strategy | Estrategia de Text-to-Speech progresiva |
-| [ADR-005](adrs/ADR-005-phrase-caching.md) | Phrase Caching | Cache de frases generadas con hash SHA-256 |
-| [ADR-006](adrs/ADR-006-uuid-agnostic-domain.md) | UUID Agnostic Domain | Dominio agnostico de implementacion UUID |
-| [ADR-007](adrs/ADR-007-cycle-orm-over-doctrine.md) | Cycle ORM over Doctrine | Eleccion de Cycle ORM frente a Doctrine |
-| [ADR-008](adrs/ADR-008-fitzgerald-key-color-coding.md) | Fitzgerald Key Color Coding | Sistema de colores por categoria segun Fitzgerald Key |
+| [ADR-005](adrs/ADR-005-phrase-caching.md) | Phrase Caching | Caché de frases generadas con hash SHA-256 |
+| [ADR-006](adrs/ADR-006-uuid-agnostic-domain.md) | UUID Agnostic Domain | Dominio agnóstico de implementación UUID |
+| [ADR-007](adrs/ADR-007-cycle-orm-over-doctrine.md) | Cycle ORM over Doctrine | Elección de Cycle ORM frente a Doctrine |
+| [ADR-008](adrs/ADR-008-fitzgerald-key-color-coding.md) | Fitzgerald Key Color Coding | Sistema de colores por categoría según Fitzgerald Key |
 | [ADR-009](adrs/ADR-009-multi-provider-llm.md) | Multi-Provider LLM | Arquitectura multi-proveedor para LLM (OpenAI, Gemini, Fake) |
 | [ADR-010](adrs/ADR-010-inline-feedback-over-toasts.md) | Inline Feedback over Toasts | Feedback visual inline en vez de toasts para accesibilidad SAAC |
-| [ADR-011](adrs/ADR-011-visual-design-system.md) | Visual Design System | Sistema de diseno visual moderno con paleta Indigo y responsive |
+| [ADR-011](adrs/ADR-011-visual-design-system.md) | Visual Design System | Sistema de diseño visual moderno con paleta Indigo y responsive |
 | [ADR-012](adrs/ADR-012-cd-pipeline.md) | CD Pipeline | Despliegue continuo con GitHub Actions, SSH y Docker Compose |
-| [ADR-013](adrs/ADR-013-keyboard-screenreader-accessibility.md) | Keyboard & Screen Reader | Navegacion por teclado, atajos, gestion de foco y anuncios SR |
-| [ADR-014](adrs/ADR-014-monorepo-structure.md) | Monorepo Structure | Monorepo con stacks independientes y Docker Compose como union |
+| [ADR-013](adrs/ADR-013-keyboard-screenreader-accessibility.md) | Keyboard & Screen Reader | Navegación por teclado, atajos, gestión de foco y anuncios SR |
+| [ADR-014](adrs/ADR-014-monorepo-structure.md) | Monorepo Structure | Monorepo con stacks independientes y Docker Compose como unión |
 
 ---
 
@@ -58,34 +58,34 @@ Decisiones arquitectonicas documentadas con contexto, alternativas y consecuenci
 
 Diagramas Mermaid de la arquitectura del sistema.
 
-| Diagrama | Descripcion |
+| Diagrama | Descripción |
 |----------|-------------|
 | [domain-layer.md](diagrams/domain-layer.md) | Entidades, Value Objects, repositorios y servicios del dominio |
-| [application-layer.md](diagrams/application-layer.md) | Use Cases, DTOs y flujo de la capa de aplicacion |
+| [application-layer.md](diagrams/application-layer.md) | Use Cases, DTOs y flujo de la capa de aplicación |
 | [infrastructure-layer.md](diagrams/infrastructure-layer.md) | Controllers, persistencia, APIs externas y servicios |
-| [api-flow.md](diagrams/api-flow.md) | Flujo de peticiones HTTP a traves de las capas |
+| [api-flow.md](diagrams/api-flow.md) | Flujo de peticiones HTTP a través de las capas |
 | [docker-infrastructure.md](diagrams/docker-infrastructure.md) | Contenedores Docker, red interna, Nginx reverse proxy y trusted proxies |
 
 ---
 
-## Auditorias
+## Auditorías
 
-Informes de auditoria por fase del proyecto.
+Informes de auditoría por fase del proyecto.
 
-| Informe | Resumen | Descripcion |
+| Informe | Resumen | Descripción |
 |---------|---------|-------------|
-| [phase1-security-audit.md](audits/phase1-security-audit.md) | [SECURITY.md](SECURITY.md) | Auditoria de seguridad OWASP Top 10 - Phase 1 |
-| [phase1-performance-audit.md](audits/phase1-performance-audit.md) | [PERFORMANCE.md](PERFORMANCE.md) | Auditoria de rendimiento y Core Web Vitals - Phase 1 |
-| [phase1-qa-review.md](audits/phase1-qa-review.md) | [QUALITY.md](QUALITY.md) | Revision de calidad, cobertura de tests y gates - Phase 1 |
-| [phase1-accessibility-audit.md](audits/phase1-accessibility-audit.md) | [ACCESSIBILITY.md](ACCESSIBILITY.md) | Auditoria WCAG 2.2 AA - Phase 1 (frontend) |
+| [phase1-security-audit.md](audits/phase1-security-audit.md) | [SECURITY.md](guides/SECURITY.md) | Auditoría de seguridad OWASP Top 10 - Fase 1 |
+| [phase1-performance-audit.md](audits/phase1-performance-audit.md) | [PERFORMANCE.md](guides/PERFORMANCE.md) | Auditoría de rendimiento y Core Web Vitals - Fase 1 |
+| [phase1-qa-review.md](audits/phase1-qa-review.md) | [QUALITY.md](guides/QUALITY.md) | Revisión de calidad, cobertura de tests y gates - Fase 1 |
+| [phase1-accessibility-audit.md](audits/phase1-accessibility-audit.md) | [ACCESSIBILITY.md](guides/ACCESSIBILITY.md) | Auditoría WCAG 2.2 AA - Fase 1 (frontend) |
 
 ---
 
-## Testing y Validacion
+## Testing y Validación
 
-| Documento | Descripcion |
+| Documento | Descripción |
 |-----------|-------------|
-| [prompt-tuning-validation.md](testing/prompt-tuning-validation.md) | Validacion de prompt tuning LLM con 19 test cases (100%) |
+| [prompt-tuning-validation.md](testing/prompt-tuning-validation.md) | Validación de prompt tuning LLM con 19 test cases (100%) |
 
 ---
 

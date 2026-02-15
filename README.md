@@ -5,18 +5,18 @@
 [![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 [![Portfolio Project](https://img.shields.io/badge/Portfolio-TFM-blueviolet.svg)]()
 [![Development Status](https://img.shields.io/badge/Status-Fase%201%20Completada-brightgreen.svg)]()
-[![Phase](https://img.shields.io/badge/Fase-1%2F7-blue.svg)]()
+[![Fase](https://img.shields.io/badge/Fase-1%2F7-blue.svg)]()
 [![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php)](https://php.net)
 [![Symfony](https://img.shields.io/badge/Symfony-7.4-000000?logo=symfony)](https://symfony.com)
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.5-4FC08D?logo=vue.js)](https://vuejs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?logo=typescript)](https://typescriptlang.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript)](https://typescriptlang.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql)](https://postgresql.org)
 
 ---
 
 ## 1. Idea General del Proyecto
 
-**HablaIA** es un comunicador aumentativo y alternativo (SAAC) diseñado para personas con dificultades en el habla o la comunicación verbal. A diferencia de los comunicadores tradicionales que generan frases robotizadas y repetitivas, HablaIA utiliza **Inteligencia Artificial** para humanizar la comunicación, generando múltiples variaciones naturales de cada frase y adaptándose al contexto temporal del usuario.
+**HablaIA** es un comunicador aumentativo y alternativo (SAAC) diseñado para personas con dificultades en el habla o la comunicación verbal. A diferencia de los comunicadores tradicionales que generan frases robotizadas y repetitivas, HablaIA utiliza **Inteligencia Artificial** para humanizar la comunicación, generando múltiples variaciones naturales de cada frase. En Fase 2 se añadirá adaptación al contexto temporal (hora del día, día de la semana).
 
 ### Visión
 
@@ -39,7 +39,7 @@ Proporcionar una herramienta de comunicación que **devuelva la voz** a personas
 | **Carga gramatical para el usuario** | Total | Alta (elegir formas) | Media (auto-conjuga) | Media (navegación) | **Mínima (solo pictogramas)** |
 | **Inserción automática artículos/preposiciones** | No | Manual | No | No | **Automática** |
 | **Variaciones naturales** | No | No | No | No | **3 por petición** |
-| **Adaptación al contexto temporal** | No | No | No | No | **Hora del día, día de la semana** |
+| **Adaptación al contexto temporal** | No | No | No | No | **Planificado Fase 2** (hora del día, día de la semana) |
 | **Coste** | Gratuito | ~250 EUR | ~600 EUR + hardware | ~15.000 EUR (prescripción médica) | **Proyecto académico (web)** |
 
 Los comunicadores comerciales de gama alta (Tobii Dynavox, Irisbond) requieren **prescripción médica** y plazos de 6-12 meses para su obtención. HablaIA funciona en cualquier tablet/móvil con navegador, sin hardware especializado.
@@ -48,7 +48,7 @@ Los comunicadores comerciales de gama alta (Tobii Dynavox, Irisbond) requieren *
 
 #### Ejemplo de Frase Generada
 
-**Input:** Pictogramas ["yo", "querer", "comer"] — Contexto: Mañana, 09:30 AM
+**Input:** Pictogramas ["yo", "querer", "comer"]
 
 | Comunicador | Output |
 |-------------|--------|
@@ -77,10 +77,9 @@ Los comunicadores SAAC tradicionales (Tobii Dynavox, Proloquo2Go) ofrecen pictog
 HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia Artificial contextual** (multi-proveedor configurable via `PHRASE_PROVIDER`: Gemini, OpenAI, Fake) y **síntesis de voz** para crear un comunicador que:
 
 1. **Permite seleccionar pictogramas** de forma visual e intuitiva
-2. **Genera 3 variaciones de frase humanizada** usando IA contextual
-3. **Adapta el lenguaje al momento del día** (mañana, tarde, noche, día de la semana)
-4. **Sintetiza voz** con Web Speech API
-5. **Aprende y mejora** con el uso mediante caché inteligente
+2. **Genera 3 variaciones de frase humanizada** usando IA
+3. **Sintetiza voz** con Web Speech API
+4. **Aprende y mejora** con el uso mediante caché inteligente
 
 ### Alcance del MVP
 
@@ -118,8 +117,8 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 ### Frontend - Single Page Application
 
 - **Framework:** Vue.js 3.5 (Composition API)
-- **Lenguaje:** TypeScript 5.3
-- **Bundler:** Vite 5
+- **Lenguaje:** TypeScript 5.6
+- **Bundler:** Vite 6
 - **CSS Framework:** Tailwind CSS 3.4
 - **State Management:** Pinia
 - **UI Components:** shadcn-vue (Radix Vue primitives, WAI-ARIA)
@@ -242,13 +241,13 @@ composer install
 #### 5. Ejecutar Migraciones de Base de Datos
 
 ```bash
-php bin/console doctrine:migrations:migrate --no-interaction
+php bin/console cycle:migrate
 ```
 
 #### 6. Sincronizar Pictogramas desde ARASAAC
 
 ```bash
-php bin/console app:sync-arasaac
+php bin/console app:arasaac:sync --all
 ```
 
 Este comando descargará 194 pictogramas (197 palabras core vocabulary) desde la API de ARASAAC y los almacenará en la base de datos.
@@ -266,7 +265,7 @@ npm install
 - **Backend API:** http://localhost:8080/api
 - **Swagger UI:** http://localhost:8081 (requiere `docker compose --profile dev up`)
 
-> Para problemas comunes de instalación, ver [Troubleshooting](docs/TROUBLESHOOTING.md).
+> Para problemas comunes de instalación, ver [Troubleshooting](docs/guides/TROUBLESHOOTING.md).
 
 ### Scripts Disponibles
 
@@ -514,7 +513,7 @@ docs/adrs/
 - **[Architecture Decision Records](docs/adrs/):** 14 decisiones de arquitectura documentadas
 - **[Diagramas de Arquitectura](docs/diagrams/):** Domain, Application, Infrastructure, API Flow, Docker
 - **[Roadmap](docs/ROADMAP.md):** Plan de desarrollo en 7 fases
-- **[Troubleshooting](docs/TROUBLESHOOTING.md):** Solución de problemas comunes
+- **[Troubleshooting](docs/guides/TROUBLESHOOTING.md):** Solución de problemas comunes
 
 ---
 
