@@ -25,9 +25,13 @@ classDiagram
         -CategoryId id
         -string name
         -string? icon
+        -string colorHex
+        -int displayOrder
         +id() CategoryId
         +name() string
         +icon() string?
+        +colorHex() string
+        +displayOrder() int
     }
 
     class CategoryId {
@@ -125,6 +129,7 @@ classDiagram
         <<interface>>
         +findById(PictogramId) Pictogram?
         +findByCategoryId(CategoryId) array~Pictogram~
+        +findByIds(array~PictogramId~) array~Pictogram~
         +findAll() array~Pictogram~
         +save(Pictogram) void
     }
@@ -184,7 +189,9 @@ graph TB
         subgraph CategoryModule["Category"]
             C_Entity[Category]
             C_VO[CategoryId]
-            C_Exc[InvalidCategoryNameException]
+            C_Exc1[InvalidCategoryNameException]
+            C_Exc2[InvalidCategoryColorException]
+            C_Exc3[InvalidCategoryDisplayOrderException]
             C_Repo[CategoryRepository]
         end
 
@@ -205,7 +212,9 @@ graph TB
 
     P_Exc1 --> S_Exception
     P_Exc2 --> S_Exception
-    C_Exc --> S_Exception
+    C_Exc1 --> S_Exception
+    C_Exc2 --> S_Exception
+    C_Exc3 --> S_Exception
     Ph_Exc1 --> S_Exception
     Ph_Exc2 --> S_Exception
 
@@ -282,6 +291,15 @@ classDiagram
         +getMaxLength() int?
     }
 
+    class InvalidCategoryColorException {
+        +invalidFormat(string)$ self
+        +empty()$ self
+    }
+
+    class InvalidCategoryDisplayOrderException {
+        +negative(int)$ self
+    }
+
     class InvalidPhraseVariationsException {
         -int? actualCount
         -int? maxCount
@@ -303,6 +321,8 @@ classDiagram
     DomainException <|-- InvalidPictogramLabelException
     DomainException <|-- InvalidImagePathException
     DomainException <|-- InvalidCategoryNameException
+    DomainException <|-- InvalidCategoryColorException
+    DomainException <|-- InvalidCategoryDisplayOrderException
     DomainException <|-- InvalidPhraseVariationsException
     DomainException <|-- InvalidPictogramSequenceException
 ```
@@ -315,7 +335,7 @@ classDiagram
 |--------|---------|---------------|-------------|-------------|----------|
 | **Shared** | - | `Uuid` | `DomainException` | - | `UuidGeneratorInterface` |
 | **Pictogram** | `Pictogram` | `PictogramId`, `ArasaacId` | `InvalidPictogramLabelException`, `InvalidImagePathException` | `PictogramRepository` | `PictogramProviderInterface` |
-| **Category** | `Category` | `CategoryId` | `InvalidCategoryNameException` | `CategoryRepository` | - |
+| **Category** | `Category` | `CategoryId` | `InvalidCategoryNameException`, `InvalidCategoryColorException`, `InvalidCategoryDisplayOrderException` | `CategoryRepository` | - |
 | **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `InvalidPhraseVariationsException`, `InvalidPictogramSequenceException` | `PhraseRepository` | `PhraseGeneratorInterface` |
 
 > **Nota sobre Uuid:** `Uuid` solo valida formato UUID v4 (RFC 4122). La generación se delega a `UuidGeneratorInterface`, cuya implementación vive en Infrastructure (inyección de dependencias).

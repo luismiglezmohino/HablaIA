@@ -1,10 +1,10 @@
 # Quality (QA) - HablaIA
 
-> Resumen de postura de calidad. Informe detallado en [`docs/audits/phase1-qa-review.md`](audits/phase1-qa-review.md)
+> Resumen de postura de calidad. Informe detallado en [auditoría de calidad — Fase 1](../audits/phase1-qa-review.md)
 
-**Ultima revision:** 13 de febrero de 2026
+**Última revisión:** 13 de febrero de 2026
 **Scope:** Backend + Frontend + E2E
-**Fase:** Phase 1 MVP
+**Fase:** Fase 1 MVP
 
 ---
 
@@ -40,17 +40,17 @@
 | Infrastructure | 0% min | 100% | EXCEDE* |
 | Presentation | 80% | ~85% | PASS |
 
-*\*En un comunicador SAAC, un fallo en infraestructura (HTTP, TTS, API externa) deja al usuario sin capacidad de comunicarse. Por eso la cobertura excede deliberadamente el minimo del gate.*
+*\*En un comunicador SAAC, un fallo en infraestructura (HTTP, TTS, API externa) deja al usuario sin capacidad de comunicarse. Por eso la cobertura excede deliberadamente el mínimo del gate.*
 
 ---
 
-## Cobertura de flujos criticos
+## Cobertura de flujos críticos
 
 | Flujo | Unit | Functional | E2E |
 |-------|------|------------|-----|
 | Carga categorias | Stores + schemas | CategoryController (11) | app-load (3) |
 | Seleccion pictogramas + frase | Stores + components | PhraseController (15) | pictogram-flow (5) |
-| Busqueda ARASAAC | Stores + SearchBar | PictogramController (21) | search (3) |
+| Búsqueda ARASAAC | Stores + SearchBar | PictogramController (21) | search (3) |
 | Limite 10 pictogramas | PhraseBar + stores | PhraseController | phrase-limits (2) |
 | Error handling + retry | Stores + components | ApiExceptionSubscriber (3) | error-handling (2) |
 | Responsive 5 viewports | - | - | responsive (6) |
@@ -60,20 +60,20 @@
 
 ---
 
-## Analisis estatico
+## Análisis estático
 
 | Herramienta | Nivel | Integrado en CI |
 |-------------|-------|-----------------|
-| PHPStan | Level 8 | Si |
-| ESLint | Strict | Si |
-| vue-tsc | `--noEmit` | Si |
-| `composer audit` | 0 vulnerabilidades | Si |
-| `npm audit` | 0 vulnerabilidades | Si |
+| PHPStan | Level 8 | Sí |
+| ESLint | Strict | Sí |
+| vue-tsc | `--noEmit` | Sí |
+| `composer audit` | 0 vulnerabilidades | Sí |
+| `npm audit` | 0 vulnerabilidades | Sí |
 
 ---
 
 ## Pendiente para fases posteriores
 
-- **Coverage numerico** con Istanbul/c8 (actualmente cobertura verificada por capa)
+- **Coverage numérico** con Istanbul/c8 (actualmente cobertura verificada por capa)
 - **Mutation testing** con Stryker o Infection
 - **Tests de carga** con k6 (p95 API response time)

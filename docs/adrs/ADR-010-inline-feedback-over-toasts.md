@@ -61,5 +61,5 @@ Usar **feedback inline** y **feedback visual en botones** en lugar de toasts.
 3. **Zona de estado global fija:** Descartada por requerir que el usuario busque información lejos de la acción.
 
 ## Referencias
-- WCAG 2.1 SC 3.3.1: Error Identification
-- WCAG 2.1 SC 4.1.3: Status Messages
+- WCAG 2.2 SC 3.3.1: Error Identification
+- WCAG 2.2 SC 4.1.3: Status Messages

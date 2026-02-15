@@ -112,7 +112,7 @@ graph TB
     AAC -.-> PPI
     GPG -.-> PGI
     OAI -.-> PGI
-    FOAI -.-> PGI
+    FPG -.-> PGI
     UG -.-> UGI
 
     %% Persistence -> Database
@@ -166,6 +166,7 @@ classDiagram
         -GetPictogramsByCategory getPictogramsByCategory
         -PictogramRepository pictogramRepository
         -SearchPictogram searchPictogram
+        -RateLimiterFactory pictogramSearchLimiter
         +list(Request) JsonResponse
         +search(Request) JsonResponse
         +show(string id) JsonResponse
@@ -355,6 +356,8 @@ classDiagram
         +string id
         +string name
         +string? icon
+        +string colorHex
+        +int displayOrder
     }
 
     class PictogramEntity {

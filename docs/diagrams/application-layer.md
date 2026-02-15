@@ -93,6 +93,8 @@ classDiagram
         +string id
         +string name
         +string? icon
+        +string colorHex
+        +int displayOrder
         +fromEntity(Category)$ CategoryDTO
     }
 
