@@ -25,7 +25,7 @@ Automatizar la integración, el despliegue y la observabilidad del sistema para 
    - Health check responde correctamente.
 
 ## Restricciones Fatales
-- JAMAS realizar despliegues manuales en produccion.
+- JAMÁS realizar despliegues manuales en producción.
 
 ## Git Workflow (GitHub Flow)
 
@@ -53,110 +53,35 @@ Automatizar la integración, el despliegue y la observabilidad del sistema para 
 
 **Nota:** No hagas commit inmediatamente después de TDD. Puedes necesitar múltiples iteraciones de desarrollo y revisión antes de considerar listo el trabajo.
 
-### 🔒 Husky Pre-commit Hooks
+### Husky Pre-commit Hook
 
-El proyecto usa **Husky** para ejecutar checks automáticos ANTES de cada commit:
-
-**Checks que se ejecutan:**
-- ESLint / Prettier (código limpio)
-- TypeScript type checking
-- Tests unitarios (PestPHP / Vitest)
-- Security scan básico (detectar secrets)
-
-**Impacto en el flujo:**
-```bash
-# Intentas commit:
-git commit -m "feat: add login"
-
-# Husky BLOQUEA si hay errores:
-❌ ESLint errors in src/Auth/LoginController.php
-❌ 3 tests failing in tests/Auth/LoginTest.php
-❌ Type error: Property 'token' does not exist
-
-# Debes corregir ANTES de poder commit:
-npm run lint:fix
-./vendor/bin/pest
-
-# Ahora sí:
-git commit -m "feat: add login"
-✅ Husky passes - commit creado
-```
-
-**Ventaja:** Te obliga a mantener calidad desde el inicio. No puedes commitear código roto o sin tests.
-
-### 🚀 Husky Pre-push Hooks
-
-El proyecto usa **Husky** para ejecutar checks completos ANTES de cada push:
+Ejecuta checks automáticos ANTES de cada commit. Es **context-aware**: solo ejecuta checks del área modificada.
 
 **Checks que se ejecutan:**
-- Tests completos (PestPHP + Vitest con coverage)
-- Security scan (detectar vulnerabilidades en dependencias)
-- Build verification (verificar que compila)
+1. **Ficheros prohibidos:** Bloquea `.env`, `.pem`, `.key`, `credentials.json` en staging
+2. **Detección de secrets:** Busca API keys, passwords y tokens en el contenido staged
+3. **Frontend check** (solo si hay cambios en `frontend/`): `npm run check` (eslint + vue-tsc + vitest)
+4. **Backend check** (solo si hay cambios en `backend/`): `composer check` (phpstan + pest)
 
-**Impacto en el flujo:**
-```bash
-# Intentas push:
-git push origin feature/login
+**Ventaja:** Te obliga a mantener calidad desde el inicio. No puedes commitear código roto, sin tests, ni con secrets expuestos.
 
-# Husky BLOQUEA si hay errores:
-❌ Coverage below threshold: 75% (required: 80%)
-❌ Security vulnerability found in package X
-❌ Build failed: TypeScript errors
+### Husky Pre-push Hook
 
-# Debes corregir ANTES de poder push:
-npm run test:coverage
-npm audit fix
-npm run build
+Ejecuta checks completos ANTES de cada push. También es **context-aware**: detecta qué carpetas cambiaron y solo ejecuta los checks relevantes.
 
-# Ahora sí:
-git push origin feature/login
-✅ Husky passes - push completado
-```
-
-**Configuración Husky (.husky/pre-push):**
-```bash
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-echo "🔍 Running pre-push checks..."
-
-# Backend tests
-cd backend && ./vendor/bin/pest --coverage --min=80
-if [ $? -ne 0 ]; then
-  echo "❌ Backend tests failed"
-  exit 1
-fi
-
-# Frontend tests
-cd ../frontend && npm run test:coverage
-if [ $? -ne 0 ]; then
-  echo "❌ Frontend tests failed"
-  exit 1
-fi
-
-# Security scan
-npm audit --audit-level=high
-if [ $? -ne 0 ]; then
-  echo "❌ Security vulnerabilities found"
-  exit 1
-fi
-
-# Build verification
-npm run build
-if [ $? -ne 0 ]; then
-  echo "❌ Build failed"
-  exit 1
-fi
-
-echo "✅ All pre-push checks passed"
-```
+**Checks que se ejecutan:**
+1. **Validación de rama:** Verifica que el nombre siga el formato convencional (`feat/`, `fix/`, `docs/`, etc.)
+2. **Frontend tests** (solo si hay cambios en `frontend/`): Vitest + Playwright E2E (levanta Docker si es necesario)
+3. **Backend tests** (solo si hay cambios en `backend/`): PestPHP
+4. **Security audit** (context-aware): `npm audit` y/o `composer audit` según el área modificada
+5. **Solo docs/raíz:** Si no hay cambios en frontend ni backend, omite todos los tests
 
 **Diferencia pre-commit vs pre-push:**
 
-| Hook | Propósito | Tiempo | Frecuencia |
-|------|-----------|--------|------------|
-| pre-commit | Checks rápidos (lint, format) | ~5s | Cada commit |
-| pre-push | Checks completos (tests, build) | ~30s | Cada push |
+| Hook | Propósito | Context-aware | Frecuencia |
+|------|-----------|---------------|------------|
+| pre-commit | Lint, types, unit tests, secrets | Sí (frontend/backend) | Cada commit |
+| pre-push | Tests completos, E2E, security audit | Sí (frontend/backend/docs) | Cada push |
 
 ### Conventional Commits
 Formato: `<tipo>(<alcance>): <descripción>`
