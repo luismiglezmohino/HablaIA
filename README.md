@@ -79,7 +79,7 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 1. **Permite seleccionar pictogramas** de forma visual e intuitiva
 2. **Genera 3 variaciones de frase humanizada** usando IA
 3. **Sintetiza voz** con Web Speech API
-4. **Aprende y mejora** con el uso mediante caché inteligente
+4. **Cachea frases** para evitar llamadas redundantes al LLM
 
 ### Alcance del MVP
 
@@ -147,7 +147,8 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 
 - **Contenedores:** Docker y Docker Compose
 - **CI/CD:** GitHub Actions (3 workflows CI + 1 CD)
-- **Pre-commit Hooks:** Husky (eslint + vue-tsc + vitest + commitlint)
+- **Pre-commit Hooks:** Husky (detección de secrets, eslint + vue-tsc + vitest, phpstan + pest)
+- **Commit Convention:** Commitlint en CI (conventional commits)
 - **Linting:** ESLint (Frontend), PHPStan nivel 8 (Backend)
 - **Deploy:** SSH a Hetzner CX33 con Docker Compose producción
 
@@ -355,12 +356,21 @@ docker-compose build --no-cache
 
 ```
 hablaia/
+├── .github/          # CI/CD y plantillas
+│   └── workflows/    # 3 CI (backend, frontend, commitlint) + 1 CD
+├── .husky/           # Git hooks (pre-commit, pre-push)
+├── agents/           # Agentes IA para desarrollo
 ├── backend/          # API REST Symfony 7
-├── frontend/         # SPA Vue.js 3
 ├── docker/           # Configuración Docker
 ├── docs/             # Documentación
-│   └── adrs/         # Architecture Decision Records
-├── agents/           # Agentes IA (entregable TFM)
+│   ├── adrs/         # Architecture Decision Records (14)
+│   ├── api-tests/    # Pruebas de prompt LLM
+│   ├── audits/       # Auditorías (seguridad, rendimiento, accesibilidad, calidad)
+│   ├── diagrams/     # Diagramas de arquitectura
+│   ├── guides/       # Guías (troubleshooting, seguridad, rendimiento, accesibilidad)
+│   ├── screenshots/  # Capturas de pantalla
+│   └── testing/      # Documentación de testing
+├── frontend/         # SPA Vue.js 3
 └── skills/           # Skills para agentes IA
 ```
 

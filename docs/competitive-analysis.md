@@ -12,7 +12,7 @@ Todos los comunicadores SAAC existentes delegan la gramática al usuario o la re
 
 ## Cómo se Construyen Frases Hoy
 
-Dado el input `[yo] [querer] [comer]` un lunes a las 09:30:
+Dado el input `[yo] [querer] [comer]`:
 
 | Comunicador | Output | ¿Quién gestiona la gramática? |
 |-------------|--------|-------------------------------|
@@ -20,9 +20,9 @@ Dado el input `[yo] [querer] [comer]` un lunes a las 09:30:
 | **Proloquo2Go** (~250 EUR, iPad) | "Yo quiero comer" | El usuario elige "quiero" de un popup de conjugaciones |
 | **Grid 3** (~600 EUR + PC) | "Yo quiero comer" | Reglas automáticas conjugan el verbo, pero no añaden artículos ni preposiciones |
 | **TD Snap** (~15.000 EUR, prescripción médica) | "Yo quiero comer" | Navegación estructurada; la IA solo funciona en modo texto, no en pictogramas |
-| **HablaIA** (web, cualquier dispositivo) | 1. "Buenos días, tengo hambre" — 2. "Me apetece desayunar algo" — 3. "Necesito comer, ¿qué hay?" | **La IA — el usuario solo selecciona pictogramas** |
+| **HablaIA** (web, cualquier dispositivo) | 1. "Quiero comer algo" — 2. "Me apetece comer" — 3. "Necesito comer, ¿qué hay?" | **La IA — el usuario solo selecciona pictogramas** |
 
-La diferencia fundamental: en los 4 primeros, el resultado es siempre la misma frase literal. En HablaIA, el LLM genera **3 variaciones naturales adaptadas al contexto** (hora, día de la semana).
+La diferencia fundamental: en los 4 primeros, el resultado es siempre la misma frase literal. En HablaIA, el LLM genera **3 variaciones naturales** con gramática completa (artículos, preposiciones, conjugaciones). El contexto temporal (hora, día de la semana) está planificado para Fase 2.
 
 ---
 
@@ -33,7 +33,7 @@ La diferencia fundamental: en los 4 primeros, el resultado es siempre la misma f
 | Inserción automática de artículos/preposiciones | No | Manual | No | No | **Sí** |
 | Reestructuración de frase | No | No | No | No | **Sí** |
 | Variaciones naturales | No | No | No | No | **3 por petición** |
-| Adaptación al contexto temporal | No | No | No | No | **Sí** |
+| Adaptación al contexto temporal | No | No | No | No | **Planificado (Fase 2)** |
 | Multilingüe | Por etiquetas | 1 idioma/ingeniería | 1 idioma/ingeniería | Varios (texto) | Solo español (Fase 1). Arquitectura preparada, pero requiere traducir UI y validar pictogramas por país |
 | Carga gramatical para el usuario | Total | Alta | Media | Media | **Mínima** |
 
@@ -60,7 +60,7 @@ Las soluciones de gama alta (Tobii, Irisbond) requieren **prescripción médica*
 
 Transforma secuencias de pictogramas en frases naturales en español y catalán usando **reglas sintáctico-semánticas** (no IA). Resultados: 99.66% corrección gramatical, +41.59% tasa de comunicación, validado con 4 usuarios con parálisis cerebral en 40 sesiones.
 
-**Diferencia con HablaIA:** Compansion usa reglas rígidas por idioma (requiere ingeniería manual para cada lengua nueva). HablaIA usa un LLM que genera variaciones naturales y se adapta al contexto temporal.
+**Diferencia con HablaIA:** Compansion usa reglas rígidas por idioma (requiere ingeniería manual para cada lengua nueva). HablaIA usa un LLM que genera variaciones naturales sin ingeniería por idioma. El contexto temporal está planificado para Fase 2.
 
 ### IA aplicada a SAAC (pero no a pictogramas)
 
