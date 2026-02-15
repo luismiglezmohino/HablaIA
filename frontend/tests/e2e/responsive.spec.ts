@@ -13,8 +13,8 @@ test.describe('Responsive - Mobile Portrait (375x667)', () => {
     // Desktop search hidden
     await expect(page.locator('#search-pictograms')).not.toBeVisible()
 
-    // Title hidden on mobile
-    await expect(page.getByRole('heading', { level: 1 })).not.toBeVisible()
+    // Title hidden on mobile (sr-only: 1x1px clipped)
+    await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('width', '1px')
   })
 
   test('should complete full flow on mobile', async ({ page }) => {
