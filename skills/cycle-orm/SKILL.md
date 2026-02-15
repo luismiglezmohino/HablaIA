@@ -13,7 +13,7 @@ metadata:
 
 ## Tech Stack
 - **ORM:** Cycle ORM v2
-- **Framework:** Symfony 7 (sin bundle oficial, configuracion manual)
+- **Framework:** Symfony 7 (sin bundle oficial, configuración manual)
 - **Database:** PostgreSQL
 - **ADR:** Ver `docs/adrs/ADR-007-cycle-orm-over-doctrine.md`
 
@@ -142,7 +142,7 @@ final class CategoryMapper
 }
 ```
 
-## Configuracion DI (Symfony)
+## Configuración DI (Symfony)
 
 ### cycle.yaml - Registro manual de servicios
 ```yaml
@@ -189,22 +189,22 @@ services:
 
 ### 1. JSON column devuelve string en vez de array
 **Problema:** `#[Column(type: 'json')]` sin typecast devuelve string crudo.
-**Solucion:** Siempre añadir `typecast: 'json'`:
+**Solución:** Siempre añadir `typecast: 'json'`:
 ```php
 #[Column(type: 'json', typecast: 'json')]
 public array $data = [];
 ```
 
 ### 2. LOWER/UPPER no funciona en WHERE
-**Problema:** `->where('LOWER(label)', 'LIKE', $query)` genera SQL invalido.
-**Solucion:** Usar `Fragment`:
+**Problema:** `->where('LOWER(label)', 'LIKE', $query)` genera SQL inválido.
+**Solución:** Usar `Fragment`:
 ```php
 ->where(new Fragment('LOWER("label") LIKE ?', "%{$query}%"))
 ```
 
 ### 3. Default values desincronizados
 **Problema:** Default en PHP difiere del default en la BD.
-**Solucion:** Definir en AMBOS lugares:
+**Solución:** Definir en AMBOS lugares:
 ```php
 // En la entidad Cycle:
 #[Column(type: 'string(7)', default: '#6B7280')]
@@ -216,7 +216,7 @@ public string $colorHex = '#6B7280'; // AMBOS deben coincidir
 
 ### 4. Repository no se resuelve en DI
 **Problema:** Cycle repositories no son autowireables (Symfony no sabe crearlos).
-**Solucion:** Registrar como factory en `cycle.yaml`:
+**Solución:** Registrar como factory en `cycle.yaml`:
 ```yaml
 # 1. Crear el repo Cycle via factory del ORM
 cycle.repository.pictogram:
@@ -237,14 +237,14 @@ App\Domain\Pictogram\Repository\PictogramRepository:
 
 ### 5. Entidad no encontrada por el schema compiler
 **Problema:** Nueva entidad Cycle no es detectada por el ORM.
-**Solucion:** Verificar que:
+**Solución:** Verificar que:
 - El archivo esta en el directorio configurado en `OrmFactory` (`src/Infrastructure/Persistence/Cycle/Entity`)
 - Tiene el atributo `#[Entity(table: 'xxx')]`
 - Ejecutar `php bin/console cache:clear`
 
 ### 6. persist() no guarda cambios
 **Problema:** `$entityManager->persist($entity)` sin efecto.
-**Solucion:** Siempre llamar `run()` despues:
+**Solución:** Siempre llamar `run()` después:
 ```php
 $this->entityManager->persist($entity);
 $this->entityManager->run(); // NECESARIO: flush al DB

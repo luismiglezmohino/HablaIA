@@ -12,7 +12,7 @@ metadata:
 # SKILL: Symfony & Pest PHP
 
 ## 🛠 Tech Stack
-- **Framework:** Symfony 6/7
+- **Framework:** Symfony 7
 - **Testing:** Pest PHP
 
 ## ⚡ Arquitectura Clean
@@ -52,7 +52,7 @@ it('registers a new user successfully', function () {
 
 ### 1. NO usar `self::` fuera de closures
 **Problema:** `self::createClient()` en scope global falla porque Pest functions son standalone.
-**Solucion:** Siempre usar `static::` DENTRO del closure de `it()`:
+**Solución:** Siempre usar `static::` DENTRO del closure de `it()`:
 ```php
 // MAL - fuera del closure:
 $client = self::createClient();
@@ -66,7 +66,7 @@ it('test', function () {
 
 ### 2. Mock injection: SIEMPRE inline en el closure
 **Problema:** Mocks creados en `beforeEach()` no se inyectan correctamente en el container de Symfony.
-**Solucion:** Crear mocks inline dentro de cada `it()`:
+**Solución:** Crear mocks inline dentro de cada `it()`:
 ```php
 // MAL - en beforeEach:
 beforeEach(function () {
@@ -86,7 +86,7 @@ it('does something', function () {
 
 ### 3. `static::createClient()` solo dentro del closure
 **Problema:** Llamar `createClient()` fuera del `it()` falla con "kernel not booted".
-**Solucion:** Toda interaccion con Symfony kernel debe ser dentro del closure de `it()` o `test()`.
+**Solución:** Toda interacción con Symfony kernel debe ser dentro del closure de `it()` o `test()`.
 
 ### 4. Functional vs Unit: usa WebTestCase solo para funcionales
 ```php

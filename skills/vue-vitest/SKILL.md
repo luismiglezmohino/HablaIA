@@ -98,3 +98,35 @@ describe('User Store', () => {
   });
 });
 ```
+
+### D. Testing Accesibilidad
+```typescript
+// components/PictogramCard.spec.ts
+import { render, screen } from '@testing-library/vue'
+import userEvent from '@testing-library/user-event'
+import PictogramCard from './PictogramCard.vue'
+
+describe('PictogramCard - Accesibilidad', () => {
+  it('tiene aria-label descriptivo', () => {
+    render(PictogramCard, { props: { label: 'Comer', imageSrc: '/comer.png' } })
+    expect(screen.getByRole('button', { name: 'Comer' })).toBeDefined()
+  })
+
+  it('tiene tamaño mínimo de 44x44px para WCAG 2.2 AA', () => {
+    render(PictogramCard, { props: { label: 'Comer', imageSrc: '/comer.png' } })
+    const button = screen.getByRole('button')
+    expect(button.className).toContain('min-h-[44px]')
+    expect(button.className).toContain('min-w-[44px]')
+  })
+
+  it('es activable con teclado (Enter y Space)', async () => {
+    const { emitted } = render(PictogramCard, {
+      props: { label: 'Comer', imageSrc: '/comer.png' }
+    })
+    const button = screen.getByRole('button')
+    button.focus()
+    await userEvent.keyboard('{Enter}')
+    expect(emitted().select).toBeDefined()
+  })
+})
+```
