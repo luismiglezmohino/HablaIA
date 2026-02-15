@@ -85,14 +85,14 @@ public function __invoke(Request $request, ValidatorInterface $validator): Respo
 
 ### 1. DI Container no detecta cambios en services
 **Problema:** Se modifica `services.yaml` o `cycle.yaml` pero Symfony sigue con la config vieja.
-**Solucion:** Siempre limpiar cache despues de cambios en configuracion:
+**Solución:** Siempre limpiar cache después de cambios en configuración:
 ```bash
 php bin/console cache:clear
 ```
 
 ### 2. Servicio factory no se resuelve
 **Problema:** Un servicio creado via `factory:` no es autowireable.
-**Solucion:** Registrar el servicio explicitamente con argumentos nombrados:
+**Solución:** Registrar el servicio explícitamente con argumentos nombrados:
 ```yaml
 services:
     # Factory que crea el servicio
@@ -108,7 +108,7 @@ services:
 ```
 
 ### 3. Verificar que el container compila
-Despues de cualquier cambio en services o configuracion DI:
+Después de cualquier cambio en services o configuración DI:
 ```bash
 php bin/console cache:clear && php bin/console debug:container --tag=controller.service_arguments
 ```

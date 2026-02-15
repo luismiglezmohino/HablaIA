@@ -10,7 +10,7 @@ metadata:
 
 # SKILL: Accessibility (WCAG 2.2 AA)
 
-## 🎯 CRITICAL for PictoSpeak AI
+## CRITICAL for HablaIA
 Este proyecto es para usuarios con diversidad funcional. Accesibilidad NO es opcional.
 
 ## ✅ Checklist Obligatorio
