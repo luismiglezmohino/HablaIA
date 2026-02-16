@@ -12,7 +12,7 @@
 - **HTTP:** Fetch nativo - peticiones API sin dependencias extra
 - **Utilities:** @vueuse/core - composables reactivos (useSpeechSynthesis, useLocalStorage, useFocusTrap, useMediaQuery)
 - **Speech:** Web Speech API - sintesis de voz para lectura de frases generadas
-- **Build:** Vite - bundler rápido con HMR
+- **Build:** Vite - bundler rápido con Hot Reload
 - **Test Unit:** Vitest + Testing Library - tests de componentes y lógica
 - **Test E2E:** Playwright - tests de flujos críticos en navegador real
 

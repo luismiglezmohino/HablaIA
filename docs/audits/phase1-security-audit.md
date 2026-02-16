@@ -423,7 +423,7 @@ Security headers en `security-headers.conf`:
 
 **Problema original (11 feb):** `sourcemap: true` generaba sourcemaps referenciados desde los JS bundles, accesibles en DevTools del navegador.
 
-**Corrección aplicada:** Cambiado a `sourcemap: 'hidden'` (`vite.config.ts` línea 29). Los sourcemaps se generan (disponibles para Sentry upload) pero no se referencian desde los bundles, por lo que no son accesibles en el navegador.
+**Corrección aplicada:** Cambiado a `sourcemap: 'hidden'` (`vite.config.ts` línea 29). Los sourcemaps se generan pero no se referencian desde los bundles, por lo que no son accesibles en el navegador.
 
 **Estado: CORREGIDO.**
 

@@ -140,7 +140,7 @@ HomeView se carga como chunk separado (lazy). Sin embargo, al ser la única ruta
 
 **Problema original (11 feb):** `sourcemap: true` generaba sourcemaps accesibles en producción (~1.2 MB), exponiendo el código fuente.
 
-**Corrección aplicada:** `vite.config.ts` cambiado a `sourcemap: 'hidden'`. Los sourcemaps se generan (disponibles para Sentry upload) pero no se referencian desde los bundles JS, por lo que no son accesibles en el navegador.
+**Corrección aplicada:** `vite.config.ts` cambiado a `sourcemap: 'hidden'`. Los sourcemaps se generan pero no se referencian desde los bundles JS, por lo que no son accesibles en el navegador.
 
 #### Severidad: CORREGIDO
 
