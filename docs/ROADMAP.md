@@ -43,7 +43,7 @@
 - ✅ Pinia stores: useCategoryStore + usePictogramStore + usePhraseStore
 - ✅ CategoryBar con Fitzgerald Key borders, Lucide icons, keyboard nav
 - ✅ PictogramCard + PictogramGrid con Fitzgerald Key border-top, responsive grid
-- ✅ PhraseBar: selección pictogramas (max 10), generación frases via API, variaciones
+- ✅ PhraseBar: selección pictogramas (max 10), generación frases vía API, variaciones
 - ✅ App shell: header, skip link, aria-live region
 - ✅ Conexión API: fetchCategories + fetchByCategory + generatePhrase
 - ✅ WCAG 2.2 AA: 44x44px touch targets, focus rings, aria-labels, role="tablist"

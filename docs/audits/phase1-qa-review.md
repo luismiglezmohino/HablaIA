@@ -1,59 +1,59 @@
-# Revision de Calidad (QA) - FASE 1 (Completa)
+# Revisión de Calidad (QA) - FASE 1 (Completa)
 
-> Revision de calidad, cobertura de tests y verificacion de gates del proyecto HablaIA
+> Revisión de calidad, cobertura de tests y verificación de gates del proyecto HablaIA
 
-**Ultima revision:** 13 de febrero de 2026<br>
-**Revision anterior:** 11 de febrero de 2026<br>
+**Última revisión:** 13 de febrero de 2026<br>
+**Revisión anterior:** 11 de febrero de 2026<br>
 **Alcance:** Backend + Frontend + E2E - Proyecto completo Fase 1<br>
-**Fase:** Fase 1 MVP (comunicador publico, sin autenticacion)<br>
+**Fase:** Fase 1 MVP (comunicador público, sin autenticación)<br>
 **Evaluador:** @qa_engineer
 
 ---
 
 ## Contenido
 
-- [Metodologia](#metodologia)
+- [Metodología](#metodología)
 - [Resumen Ejecutivo](#resumen-ejecutivo)
 - [1. Backend Tests](#1-backend-tests)
 - [2. Frontend Tests](#2-frontend-tests)
 - [3. E2E Tests](#3-e2e-tests-playwright)
-- [4. Configuracion de Tests](#4-configuracion-de-tests)
+- [4. Configuración de Tests](#4-configuración-de-tests)
 - [5. Gates de Calidad](#5-gates-de-calidad)
 - [6. Calidad de Tests](#6-calidad-de-tests-muestra-representativa)
-- [7. Consistencia de Documentacion](#7-consistencia-de-documentacion)
+- [7. Consistencia de Documentación](#7-consistencia-de-documentación)
 - [8. Dependencias](#8-dependencias)
-- [9. Gaps No Criticos](#9-gaps-no-criticos)
-- [Conclusion](#conclusion)
+- [9. Gaps No Críticos](#9-gaps-no-críticos)
+- [Conclusión](#conclusión)
 
 ---
 
-## Metodologia
+## Metodología
 
 ### Proceso
 
-1. Revision asistida por IA (LLM como @qa_engineer) de la suite de tests del backend (399 tests)
-2. Revision de la suite de tests del frontend (256 unit + 21 E2E)
+1. Revisión asistida por IA (LLM como @qa_engineer) de la suite de tests del backend (399 tests)
+2. Revisión de la suite de tests del frontend (256 unit + 21 E2E)
 3. Conteo automatizado de `it()` y `test()` en todos los archivos de test
-4. Verificacion de gates de calidad 100/80/0 en ambos stacks
-5. Comprobacion de consistencia de documentacion
-6. Reevaluacion de hallazgos tras PRs #74-#76
+4. Verificación de gates de calidad 100/80/0 en ambos stacks
+5. Comprobación de consistencia de documentación
+6. Reevaluación de hallazgos tras PRs #74-#76
 
 ### Herramientas
 
 | Herramienta | Uso |
 |-------------|-----|
-| PestPHP | Suite backend (399 tests, conteo via grep en fuentes) |
-| Vitest | Suite frontend unit (256 tests, conteo via grep en fuentes) |
-| Playwright | Suite E2E (21 tests, conteo via grep en fuentes) |
-| PHPStan level 8 | Analisis estatico backend (integrado en CI) |
-| ESLint + vue-tsc | Analisis estatico frontend (integrado en CI) |
-| Revision asistida por IA | Analisis de cobertura por capa, calidad de assertions |
+| PestPHP | Suite backend (399 tests, conteo vía grep en fuentes) |
+| Vitest | Suite frontend unit (256 tests, conteo vía grep en fuentes) |
+| Playwright | Suite E2E (21 tests, conteo vía grep en fuentes) |
+| PHPStan level 8 | Análisis estático backend (integrado en CI) |
+| ESLint + vue-tsc | Análisis estático frontend (integrado en CI) |
+| Revisión asistida por IA | Análisis de cobertura por capa, calidad de assertions |
 
 ---
 
 ## Resumen Ejecutivo
 
-| Metrica | Valor |
+| Métrica | Valor |
 |---------|-------|
 | Tests backend | 399 (339 Unit + 58 Functional + 2 Shared helpers) |
 | Tests frontend unit | 256 (20 archivos) |
@@ -61,9 +61,9 @@
 | **Total proyecto** | **676** |
 | Gates | TODOS PASS |
 
-**Veredicto: PASS** - Gates de calidad cumplidos en ambos stacks. Conteos de tests actualizados en README y ROADMAP via PR #75.
+**Veredicto: PASS** - Gates de calidad cumplidos en ambos stacks. Conteos de tests actualizados en README y ROADMAP vía PR #75.
 
-### Cambios respecto a revision anterior (11 feb 2026)
+### Cambios respecto a revisión anterior (11 feb 2026)
 
 | Hallazgo | Severidad anterior | Estado actual | PR |
 |----------|-------------------|---------------|-----|
@@ -109,35 +109,35 @@
 
 #### Capa Domain (23 archivos fuente)
 
-| Categoria | Archivos | Cobertura |
+| Categoría | Archivos | Cobertura |
 |-----------|----------|-----------|
 | Entities (Category, Phrase, Pictogram) | 3 | 3 archivos de test dedicados |
-| Value Objects (Uuid, CategoryId, PhraseId, PictogramId, ArasaacId, PictogramSequence) | 6 | Uuid con test dedicado; resto ejercitado via tests de entities |
-| Exceptions (5 concretas + 1 abstracta base) | 6 | 4 con tests dedicados + 2 testeadas via CategoryTest |
-| Interfaces (3 repositories + 2 services) | 5 | No testeables (interfaces sin logica ejecutable) |
+| Value Objects (Uuid, CategoryId, PhraseId, PictogramId, ArasaacId, PictogramSequence) | 6 | Uuid con test dedicado; resto ejercitado vía tests de entities |
+| Exceptions (5 concretas + 1 abstracta base) | 6 | 4 con tests dedicados + 2 testeadas vía CategoryTest |
+| Interfaces (3 repositories + 2 services) | 5 | No testeables (interfaces sin lógica ejecutable) |
 
 **Cobertura Domain: ~100%** PASS
 
 #### Capa Application (11 archivos fuente)
 
-| Categoria | Archivos | Cobertura |
+| Categoría | Archivos | Cobertura |
 |-----------|----------|-----------|
 | Use Cases (5) | 5 | 5 archivos de test dedicados con 50 tests |
-| DTOs (3) | 3 | Ejercitados via tests de use cases |
-| Exceptions (3, 1 abstracta) | 3 | Concretas testeadas via use cases |
+| DTOs (3) | 3 | Ejercitados vía tests de use cases |
+| Exceptions (3, 1 abstracta) | 3 | Concretas testeadas vía use cases |
 
 **Cobertura Application: ~95%+** PASS
 
 #### Capa Infrastructure (42 archivos fuente)
 
-| Categoria | Archivos | Tests |
+| Categoría | Archivos | Tests |
 |-----------|----------|-------|
 | Controllers (4) | 4 | 4 archivos funcionales (57 tests) |
 | EventSubscribers (2) | 2 | 2 archivos (9 + 3 = 12 tests) |
 | Console Commands (2+1) | 3 | 2 archivos unitarios (33 tests) |
 | Persistence/Repositories (3) | 3 | 3 archivos unitarios (24 tests) |
 | Persistence/Mappers (3) | 3 | 3 archivos unitarios (15 tests) |
-| Persistence/Entities (3) | 3 | Ejercitados via mapper/repository |
+| Persistence/Entities (3) | 3 | Ejercitados vía mapper/repository |
 | API clients externos (4) | 4 | 4 archivos unitarios |
 | API factory (1) | 1 | 1 archivo unitario (6 tests) |
 | API exceptions (3) | 3 | 3 archivos unitarios |
@@ -150,13 +150,13 @@
 
 **No testeados directamente (aceptable):**
 
-| Archivo | Razon |
+| Archivo | Razón |
 |---------|-------|
-| CycleDatabaseHealthChecker | Requiere BD real; cubierto via mocks en tests funcionales |
+| CycleDatabaseHealthChecker | Requiere BD real; cubierto vía mocks en tests funcionales |
 | PhrasePrompt | Solo constantes string; testeado indirectamente |
 | RunMigrationsCommand | Wrapper de Doctrine; requiere BD real |
-| Interfaces (4) | Sin logica ejecutable |
-| Excepciones abstractas (2) | Sin metodos propios |
+| Interfaces (4) | Sin lógica ejecutable |
+| Excepciones abstractas (2) | Sin métodos propios |
 
 **Cobertura Infrastructure: ~87%** EXCEDE
 
@@ -199,15 +199,15 @@
 
 | Archivo | Tipo | Test dedicado |
 |---------|------|--------------|
-| entities/Category.ts | Interface TypeScript | Ejercitada via schemas + stores |
-| entities/Pictogram.ts | Interface TypeScript | Ejercitada via schemas + stores |
-| entities/PhraseResponse.ts | Interface TypeScript | Ejercitada via schemas + stores |
-| repositories/CategoryRepository.ts | Interface | Ejercitada via HttpCategoryRepository tests |
-| repositories/PictogramRepository.ts | Interface | Ejercitada via HttpPictogramRepository tests |
-| repositories/PhraseRepository.ts | Interface | Ejercitada via HttpPhraseRepository tests |
-| services/TTSProvider.ts | Interface | Ejercitada via useTTS tests |
+| entities/Category.ts | Interface TypeScript | Ejercitada vía schemas + stores |
+| entities/Pictogram.ts | Interface TypeScript | Ejercitada vía schemas + stores |
+| entities/PhraseResponse.ts | Interface TypeScript | Ejercitada vía schemas + stores |
+| repositories/CategoryRepository.ts | Interface | Ejercitada vía HttpCategoryRepository tests |
+| repositories/PictogramRepository.ts | Interface | Ejercitada vía HttpPictogramRepository tests |
+| repositories/PhraseRepository.ts | Interface | Ejercitada vía HttpPhraseRepository tests |
+| services/TTSProvider.ts | Interface | Ejercitada vía useTTS tests |
 
-**Cobertura Domain: 100%** - Todas las interfaces/entidades son TypeScript puro (types/interfaces), sin logica ejecutable. Todas ejercitadas exhaustivamente a traves de schemas Zod y stores.
+**Cobertura Domain: 100%** - Todas las interfaces/entidades son TypeScript puro (types/interfaces), sin lógica ejecutable. Todas ejercitadas exhaustivamente a través de schemas Zod y stores.
 
 **PASS**
 
@@ -244,7 +244,7 @@
 
 **PASS**
 
-#### Presentation (9 archivos fuente con logica)
+#### Presentation (9 archivos fuente con lógica)
 
 | Archivo | Tests dedicados | Cantidad |
 |---------|----------------|----------|
@@ -259,16 +259,16 @@
 
 **Archivos sin test dedicado (aceptable):**
 
-| Archivo | Razon |
+| Archivo | Razón |
 |---------|-------|
-| components/ui/badge/Badge.vue | Componente shadcn-vue generado (wrapper minimo, sin logica custom) |
-| components/ui/skeleton/Skeleton.vue | Componente shadcn-vue generado (wrapper minimo, sin logica custom) |
-| router/index.ts | Configuracion declarativa de rutas (sin logica testeable) |
+| components/ui/badge/Badge.vue | Componente shadcn-vue generado (wrapper mínimo, sin lógica custom) |
+| components/ui/skeleton/Skeleton.vue | Componente shadcn-vue generado (wrapper mínimo, sin lógica custom) |
+| router/index.ts | Configuración declarativa de rutas (sin lógica testeable) |
 | App.vue | Solo `<RouterView />` |
 | main.ts | Bootstrap de la app |
 | lib/utils.ts | Helper `cn()` de shadcn-vue (generado) |
 
-**Cobertura Presentation: ~85%** - Todos los componentes con logica custom testeados. Exclusiones son componentes generados por shadcn-vue sin logica.
+**Cobertura Presentation: ~85%** - Todos los componentes con lógica custom testeados. Exclusiones son componentes generados por shadcn-vue sin lógica.
 
 **PASS**
 
@@ -278,23 +278,23 @@
 
 | Aspecto | Evidencia |
 |---------|-----------|
-| **Assertions multiples y precisas** | Cada test verifica exactamente una cosa (SRP). Ej: `usePhraseStore` tiene 28 tests granulares |
+| **Assertions múltiples y precisas** | Cada test verifica exactamente una cosa (SRP). Ej: `usePhraseStore` tiene 28 tests granulares |
 | **Mocks bien estructurados** | `createMockRepository()` con overrides parciales, `vi.spyOn` para fetch/speechSynthesis |
 | **Edge cases cubiertos** | Empty arrays, max limits (10 pictograms), invalid UUIDs, non-Error exceptions, Zod validation failures |
 | **Accesibilidad testeada** | aria-labels, role="tab"/tablist/grid, min touch targets 44x44px, focus management, keyboard navigation |
 | **Error handling exhaustivo** | Network errors, 429 rate limit (per-minute + daily), 500 server errors, Zod validation, non-JSON responses |
 | **Boundary testing** | Max 10 pictograms, variation limits (1-3), sequenceHash length, label length 100, imagePath length 500 |
-| **Store testing patron** | Cada store: initial state, actions (happy + error), getters/computed, state transitions |
+| **Store testing patrón** | Cada store: initial state, actions (happy + error), getters/computed, state transitions |
 | **Component interaction** | Emits, click handlers, keyboard events (Arrow keys, Escape, /), focus management |
 | **TTS testing** | WebSpeechTTS mock completo, voice selection (navigator.language priority), rate=0.9 for SAAC |
 
-#### Aspectos mejorables (no criticos)
+#### Aspectos mejorables (no críticos)
 
 | Aspecto | Detalle | Riesgo |
 |---------|---------|--------|
 | HttpCategoryRepository solo 2 tests | Happy path + error propagation. Suficiente dado que ApiClient tiene 11 tests. | Bajo |
-| HttpPhraseRepository solo 2 tests | Idem. El contrato es simple (1 metodo). | Bajo |
-| Sin tests de router | Router es declarativo, sin logica testeable. | Ninguno |
+| HttpPhraseRepository solo 2 tests | Idem. El contrato es simple (1 método). | Bajo |
+| Sin tests de router | Router es declarativo, sin lógica testeable. | Ninguno |
 
 ---
 
@@ -304,40 +304,40 @@
 
 | Archivo | Tests | Flujo cubierto |
 |---------|-------|----------------|
-| app-load.spec.ts | 3 | Carga inicial, categorias visibles, skip link accesible |
-| pictogram-flow.spec.ts | 5 | Seleccionar categoria, agregar pictograma, generar frase, eliminar chip, limpiar todo |
-| search.spec.ts | 3 | Busqueda por query, seleccion + generacion desde busqueda, navegacion con arrow keys |
-| phrase-limits.spec.ts | 2 | Limite 10 pictogramas, re-habilitacion tras eliminar |
-| error-handling.spec.ts | 2 | Error 500 con mensaje, boton reintentar con recuperacion |
+| app-load.spec.ts | 3 | Carga inicial, categorías visibles, skip link accesible |
+| pictogram-flow.spec.ts | 5 | Seleccionar categoría, agregar pictograma, generar frase, eliminar chip, limpiar todo |
+| search.spec.ts | 3 | Búsqueda por query, selección + generación desde búsqueda, navegación con arrow keys |
+| phrase-limits.spec.ts | 2 | Límite 10 pictogramas, re-habilitación tras eliminar |
+| error-handling.spec.ts | 2 | Error 500 con mensaje, botón reintentar con recuperación |
 | responsive.spec.ts | 6 | Mobile portrait, mobile landscape (blocker), tablet portrait, tablet landscape, desktop, flujo completo mobile |
 | **Total** | **21** | |
 
-### 3.2 Flujos criticos cubiertos
+### 3.2 Flujos críticos cubiertos
 
-| Flujo critico | Estado | Tests |
+| Flujo crítico | Estado | Tests |
 |---------------|--------|-------|
-| Carga inicial + categorias | CUBIERTO | app-load (3) |
-| Seleccion pictograma + frase | CUBIERTO | pictogram-flow (5) |
-| Busqueda ARASAAC | CUBIERTO | search (3) |
-| Limite 10 pictogramas | CUBIERTO | phrase-limits (2) |
+| Carga inicial + categorías | CUBIERTO | app-load (3) |
+| Selección pictograma + frase | CUBIERTO | pictogram-flow (5) |
+| Búsqueda ARASAAC | CUBIERTO | search (3) |
+| Límite 10 pictogramas | CUBIERTO | phrase-limits (2) |
 | Error handling + retry | CUBIERTO | error-handling (2) |
 | Responsive 5 viewports | CUBIERTO | responsive (6) |
 | Keyboard navigation | CUBIERTO | search (1 test arrow keys) |
 
-### 3.3 Flujos sin cobertura E2E (no criticos)
+### 3.3 Flujos sin cobertura E2E (no críticos)
 
-| Flujo | Razon de exclusion | Mitigacion |
+| Flujo | Razón de exclusión | Mitigación |
 |-------|-------------------|------------|
 | TTS (Text-to-Speech) | Web Speech API no disponible en Playwright headless (Chromium) | Cubierto por 18 unit tests (useTTS + WebSpeechTTS + SpeakButton) |
-| Rate limiting (429) | Requiere configuracion especial del server en E2E | Cubierto por tests funcionales backend (PhraseControllerTest) + unit frontend (usePhraseStore) |
-| Cache hit (source: "cache") | Requiere dos llamadas identicas al backend real | Cubierto por tests backend (CyclePhraseRepository) + schema (PhraseResponseSchema accepts "cache") |
+| Rate limiting (429) | Requiere configuración especial del server en E2E | Cubierto por tests funcionales backend (PhraseControllerTest) + unit frontend (usePhraseStore) |
+| Cache hit (source: "cache") | Requiere dos llamadas idénticas al backend real | Cubierto por tests backend (CyclePhraseRepository) + schema (PhraseResponseSchema accepts "cache") |
 
 ### 3.4 Calidad E2E
 
 | Aspecto | Estado |
 |---------|--------|
-| Uso de roles semanticos (getByRole, getByTestId) | Correcto |
-| Timeouts explicitos en waits (5s-10s) | Correcto |
+| Uso de roles semánticos (getByRole, getByTestId) | Correcto |
+| Timeouts explícitos en waits (5s-10s) | Correcto |
 | Video on failure configurado | Correcto |
 | Viewports reales (375x667, 768x1024, 1024x768, 1280x720) | Correcto |
 | API route interception para errores | Correcto |
@@ -345,7 +345,7 @@
 
 ---
 
-## 4. Configuracion de Tests
+## 4. Configuración de Tests
 
 ### Backend
 
@@ -378,20 +378,20 @@
 |------|----------|------|--------|
 | Domain (Core) | 100% | ~100% | **PASS** |
 | Application (Features) | 80% | ~95%+ | **PASS** |
-| Infrastructure | 0% (minimo) | ~87% | **EXCEDE** |
+| Infrastructure | 0% (mínimo) | ~87% | **EXCEDE** |
 
 #### Frontend
 
 | Capa | Objetivo | Real | Estado |
 |------|----------|------|--------|
-| Domain (Core) | 100% | 100% (interfaces TypeScript, ejercitadas via schemas+stores) | **PASS** |
+| Domain (Core) | 100% | 100% (interfaces TypeScript, ejercitadas vía schemas+stores) | **PASS** |
 | Application (Features) | 80% | 100% (113 tests, 8/9 archivos) | **PASS** |
-| Infrastructure | 0% (minimo) | 100% (32 tests, 5/5 archivos) | **EXCEDE** |
-| Presentation | 80% | ~85% (111 tests, 7/9 archivos con logica) | **PASS** |
+| Infrastructure | 0% (mínimo) | 100% (32 tests, 5/5 archivos) | **EXCEDE** |
+| Presentation | 80% | ~85% (111 tests, 7/9 archivos con lógica) | **PASS** |
 
 **Gate 1: PASS** (ambos stacks)
 
-### Gate 2: Tests de Integracion en Puntos Criticos (API, BD)
+### Gate 2: Tests de Integración en Puntos Críticos (API, BD)
 
 | Criterio | Estado | Evidencia |
 |----------|--------|-----------|
@@ -399,13 +399,13 @@
 | Repositorios BD con tests unitarios | PASS | 3/3 repositories backend (24 tests) |
 | APIs externas con tests unitarios | PASS | ARASAAC (17 tests) + Gemini (16) + OpenAI (13) + Fake (8) |
 | Headers de seguridad verificados | PASS | 9 tests (6 headers OWASP) |
-| Validacion de input cubierta | PASS | UUID, bounds, JSON, query params, accents |
+| Validación de input cubierta | PASS | UUID, bounds, JSON, query params, accents |
 | Rate limiting verificado | PASS | Per-minute + daily rate limit (PhraseControllerTest) |
 | Error handling API (404, 405) | PASS | ApiExceptionSubscriber (3 tests) |
 | Frontend schemas (Zero Trust) | PASS | 42 tests Zod validando API responses |
 | Frontend stores (estado) | PASS | 59 tests cubriendo 3 stores |
 | Frontend HTTP layer | PASS | 20 tests (ApiClient + 3 repositories) |
-| E2E flujos criticos | PASS | 21 tests (6 archivos, 5 viewports) |
+| E2E flujos críticos | PASS | 21 tests (6 archivos, 5 viewports) |
 
 **Gate 2: PASS**
 
@@ -418,7 +418,7 @@
 | Area | Archivo | Calidad | Observaciones |
 |------|---------|---------|---------------|
 | API errors | ApiExceptionSubscriberTest | BUENA | 404, 405, rutas no-API |
-| Busqueda | PictogramControllerTest | BUENA | Busqueda con/sin acentos, boundaries |
+| Búsqueda | PictogramControllerTest | BUENA | Búsqueda con/sin acentos, boundaries |
 | Rate limiting | PhraseControllerTest | BUENA | Per-minute + daily, respuesta 429 |
 | Generadores | FakePhraseGeneratorTest | BUENA | Interface, variaciones, fallback |
 | Seguridad | SecurityHeadersSubscriberTest | BUENA | 6 headers OWASP + CSP |
@@ -428,14 +428,14 @@
 | Area | Archivo | Calidad | Observaciones |
 |------|---------|---------|---------------|
 | Stores | usePhraseStore.test | BUENA | 28 tests, rate limit, errores, edge cases |
-| Schemas | PhraseResponseSchema.test | BUENA | Validacion Zod, boundaries, tipos invalidos |
+| Schemas | PhraseResponseSchema.test | BUENA | Validación Zod, boundaries, tipos invalidos |
 | Accesibilidad | HomeView.test | BUENA | Keyboard nav, focus, aria-live, skip link |
-| Componentes | PhraseBar.test | BUENA | 30 tests, chips, generacion, TTS, disabled |
+| Componentes | PhraseBar.test | BUENA | 30 tests, chips, generación, TTS, disabled |
 | E2E | responsive.spec | BUENA | 5 viewports, flujo completo mobile |
 
 ---
 
-## 7. Consistencia de Documentacion
+## 7. Consistencia de Documentación
 
 ### Inconsistencias corregidas (PR #75)
 
@@ -447,16 +447,16 @@
 | ROADMAP.md | "394 unitarios (PestPHP)" | "400 unitarios (PestPHP)" | **CORREGIDO** |
 | ROADMAP.md | "230 unitarios (Vitest)" | "263 unitarios (Vitest)" | **CORREGIDO** |
 
-### Valores en documentacion
+### Valores en documentación
 
-| Metrica | Valor en README/ROADMAP | Conteo en fuentes |
+| Métrica | Valor en README/ROADMAP | Conteo en fuentes |
 |---------|------------------------|-------------------|
 | Backend tests | 400 | 399 (`it()` + `test()`) |
 | Frontend unit tests | 263 | 256 (`it()` + `test()`) |
 | Frontend E2E tests | 21 | 21 |
 | Total proyecto | 684 | 676 |
 
-**Nota:** La diferencia entre los valores documentados (684) y el conteo automatizado en fuentes (676) se debe a que el conteo de `it()` y `test()` no captura tests parametrizados (`it.each`) ni datasets de PestPHP que generan multiples test cases desde una sola llamada. El valor documentado (684) corresponde al output de los test runners (`pest --coverage` y `vitest run`), que es la referencia correcta.
+**Nota:** La diferencia entre los valores documentados (684) y el conteo automatizado en fuentes (676) se debe a que el conteo de `it()` y `test()` no captura tests parametrizados (`it.each`) ni datasets de PestPHP que generan múltiples test cases desde una sola llamada. El valor documentado (684) corresponde al output de los test runners (`pest --coverage` y `vitest run`), que es la referencia correcta.
 
 ### Consistencias verificadas
 
@@ -474,7 +474,7 @@
 
 ## 8. Dependencias
 
-`composer audit` y `npm audit --omit=dev`: **0 vulnerabilidades conocidas** (verificado via CI en cada PR).
+`composer audit` y `npm audit --omit=dev`: **0 vulnerabilidades conocidas** (verificado vía CI en cada PR).
 
 Stack actual:
 - Backend: PHP 8.4, Symfony 7.4, Cycle ORM, PostgreSQL 16
@@ -483,30 +483,30 @@ Stack actual:
 
 ---
 
-## 9. Gaps No Criticos
+## 9. Gaps No Críticos
 
 ### Backend
 
-| Item | Razon de exclusion | Riesgo |
+| Item | Razón de exclusión | Riesgo |
 |------|-------------------|--------|
-| `CycleDatabaseHealthChecker` | Requiere BD real; cubierto via mocks en tests funcionales | Bajo |
-| `PhrasePrompt` | Solo constantes string; testeado indirectamente via generators | Ninguno |
+| `CycleDatabaseHealthChecker` | Requiere BD real; cubierto vía mocks en tests funcionales | Bajo |
+| `PhrasePrompt` | Solo constantes string; testeado indirectamente vía generators | Ninguno |
 | `RunMigrationsCommand` | Wrapper de Doctrine; requiere BD real | Bajo |
-| `ApplicationException` (abstracta) | Sin metodos propios | Ninguno |
-| Interfaces de dominio (5) | Sin logica ejecutable | Ninguno |
-| Excepciones abstractas (2) | Sin metodos propios | Ninguno |
+| `ApplicationException` (abstracta) | Sin métodos propios | Ninguno |
+| Interfaces de dominio (5) | Sin lógica ejecutable | Ninguno |
+| Excepciones abstractas (2) | Sin métodos propios | Ninguno |
 
 ### Frontend
 
-| Item | Razon de exclusion | Riesgo |
+| Item | Razón de exclusión | Riesgo |
 |------|-------------------|--------|
-| Badge.vue / Skeleton.vue | Componentes shadcn-vue generados sin logica custom | Ninguno |
-| router/index.ts | Configuracion declarativa de rutas | Ninguno |
-| App.vue / main.ts | Bootstrap sin logica testeable | Ninguno |
+| Badge.vue / Skeleton.vue | Componentes shadcn-vue generados sin lógica custom | Ninguno |
+| router/index.ts | Configuración declarativa de rutas | Ninguno |
+| App.vue / main.ts | Bootstrap sin lógica testeable | Ninguno |
 | lib/utils.ts | Helper `cn()` generado por shadcn-vue | Ninguno |
 | TTS en E2E | Web Speech API no disponible en Playwright headless | Bajo (cubierto por 18 unit tests) |
 
-### Documentacion
+### Documentación
 
 | Item | Estado | PR |
 |------|--------|-----|
@@ -515,15 +515,15 @@ Stack actual:
 
 ---
 
-## Conclusion
+## Conclusión
 
-El proyecto HablaIA esta en una postura de calidad solida en ambos stacks:
+El proyecto HablaIA está en una postura de calidad sólida en ambos stacks:
 
 **Backend (400 tests):**
 - Cobertura Domain 100%, Application 95%+, Infrastructure 87%
 - Tests funcionales cubren 5 controllers con 58 tests
 - Rate limiting (per-minute + daily) verificado
-- Busqueda insensible a acentos (unaccent) verificada
+- Búsqueda insensible a acentos (unaccent) verificada
 - FakePhraseGenerator con 8 tests dedicados
 - ApiExceptionSubscriber con 3 tests funcionales
 - JSON error responses verificadas
@@ -533,9 +533,9 @@ El proyecto HablaIA esta en una postura de calidad solida en ambos stacks:
 - Application layer con 113 tests (schemas + stores + composables)
 - Presentation layer con 111 tests (7 componentes + 1 view)
 - Infrastructure layer con 32 tests (ApiClient + repositories + TTS)
-- 21 E2E tests cubriendo 6 flujos criticos en 5 viewports
+- 21 E2E tests cubriendo 6 flujos críticos en 5 viewports
 - Accesibilidad testeada exhaustivamente (keyboard nav, focus, aria-live, touch targets)
 
 **Total proyecto: 684 tests (400 backend + 263 frontend unit + 21 E2E)**
 
-**Todos los gates de calidad se cumplen. Conteos actualizados en README y ROADMAP via PR #75. 0 hallazgos pendientes.**
+**Todos los gates de calidad se cumplen. Conteos actualizados en README y ROADMAP vía PR #75. 0 hallazgos pendientes.**

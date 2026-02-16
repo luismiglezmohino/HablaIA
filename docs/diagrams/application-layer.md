@@ -290,7 +290,7 @@ flowchart TB
         A1 --> A2
     end
 
-    A2 -->|No| ReturnEmpty[Retornar array vacio]
+    A2 -->|No| ReturnEmpty[Retornar array vacío]
     A2 -->|Si| ProcessResults
 
     subgraph ProcessResults["4. Procesar Resultados max 10"]

@@ -48,10 +48,10 @@
 
 | Flujo | Unit | Functional | E2E |
 |-------|------|------------|-----|
-| Carga categorias | Stores + schemas | CategoryController (11) | app-load (3) |
-| Seleccion pictogramas + frase | Stores + components | PhraseController (15) | pictogram-flow (5) |
+| Carga categorías | Stores + schemas | CategoryController (11) | app-load (3) |
+| Selección pictogramas + frase | Stores + components | PhraseController (15) | pictogram-flow (5) |
 | Búsqueda ARASAAC | Stores + SearchBar | PictogramController (21) | search (3) |
-| Limite 10 pictogramas | PhraseBar + stores | PhraseController | phrase-limits (2) |
+| Límite 10 pictogramas | PhraseBar + stores | PhraseController | phrase-limits (2) |
 | Error handling + retry | Stores + components | ApiExceptionSubscriber (3) | error-handling (2) |
 | Responsive 5 viewports | - | - | responsive (6) |
 | TTS | useTTS + WebSpeechTTS (18) | - | No disponible en headless |

@@ -26,9 +26,9 @@ Domain/          -> Entidades puras, Repository interfaces
 Infrastructure/
   Persistence/
     Cycle/
-      Entity/      -> Entidades Cycle (anemicas, propiedades publicas)
+      Entity/      -> Entidades Cycle (anémicas, propiedades públicas)
       Repository/  -> Implementaciones de repos del Domain
-      Mapper/      -> Conversion Domain <-> Cycle Entity
+      Mapper/      -> Conversión Domain <-> Cycle Entity
       OrmFactory.php
       DatabaseFactory.php
 ```
@@ -170,7 +170,7 @@ services:
         factory: ['@Cycle\ORM\ORM', 'getRepository']
         arguments: [App\Infrastructure\Persistence\Cycle\Entity\CategoryEntity]
 
-    # 5. Wrapper repository con inyeccion nombrada
+    # 5. Wrapper repository con inyección nombrada
     App\Infrastructure\Persistence\Cycle\Repository\CycleCategoryRepository:
         arguments:
             $repository: '@cycle.repository.category'
@@ -210,7 +210,7 @@ public array $data = [];
 #[Column(type: 'string(7)', default: '#6B7280')]
 public string $colorHex = '#6B7280'; // AMBOS deben coincidir
 
-// En la migracion SQL:
+// En la migración SQL:
 // ALTER TABLE ... ADD COLUMN color_hex VARCHAR(7) DEFAULT '#6B7280'
 ```
 
@@ -218,7 +218,7 @@ public string $colorHex = '#6B7280'; // AMBOS deben coincidir
 **Problema:** Cycle repositories no son autowireables (Symfony no sabe crearlos).
 **Solución:** Registrar como factory en `cycle.yaml`:
 ```yaml
-# 1. Crear el repo Cycle via factory del ORM
+# 1. Crear el repo Cycle vía factory del ORM
 cycle.repository.pictogram:
     class: Cycle\ORM\Select\Repository
     factory: ['@Cycle\ORM\ORM', 'getRepository']
@@ -238,7 +238,7 @@ App\Domain\Pictogram\Repository\PictogramRepository:
 ### 5. Entidad no encontrada por el schema compiler
 **Problema:** Nueva entidad Cycle no es detectada por el ORM.
 **Solución:** Verificar que:
-- El archivo esta en el directorio configurado en `OrmFactory` (`src/Infrastructure/Persistence/Cycle/Entity`)
+- El archivo está en el directorio configurado en `OrmFactory` (`src/Infrastructure/Persistence/Cycle/Entity`)
 - Tiene el atributo `#[Entity(table: 'xxx')]`
 - Ejecutar `php bin/console cache:clear`
 
@@ -255,7 +255,7 @@ $this->entityManager->run(); // NECESARIO: flush al DB
 - [ ] Crear entidad Cycle en `Infrastructure/Persistence/Cycle/Entity/`
 - [ ] Crear mapper en `Infrastructure/Persistence/Cycle/Mapper/`
 - [ ] Crear interface en `Domain/.../Repository/`
-- [ ] Crear implementacion en `Infrastructure/Persistence/Cycle/Repository/`
+- [ ] Crear implementación en `Infrastructure/Persistence/Cycle/Repository/`
 - [ ] Registrar factory en `config/packages/cycle.yaml`
 - [ ] Crear alias en `config/packages/repositories.yaml`
 - [ ] Ejecutar `cache:clear`

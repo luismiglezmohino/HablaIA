@@ -44,16 +44,16 @@ graph TB
 
     Symfony -->|"PHRASE_PROVIDER=gemini"| Gemini
     Symfony -->|"PHRASE_PROVIDER=openai"| OpenAI
-    Symfony -->|"Busqueda pictogramas"| ARASAAC
+    Symfony -->|"Búsqueda pictogramas"| ARASAAC
 
     style Internet fill:#e3f2fd
     style DockerNetwork fill:#f3e5f5
     style ExternalAPIs fill:#fff3e0
 ```
 
-## Arquitectura con Nginx Reverse Proxy (Produccion)
+## Arquitectura con Nginx Reverse Proxy (Producción)
 
-En produccion, Nginx actua como punto de entrada unico y distribuye las peticiones
+En producción, Nginx actúa como punto de entrada único y distribuye las peticiones
 entre backend y frontend. Esto es donde `trusted_proxies` cobra importancia.
 
 ```mermaid
@@ -83,7 +83,7 @@ graph TB
     Client -->|"Puerto 80"| Nginx
 
     Nginx -->|"/api/*<br/>X-Forwarded-For: 88.12.34.56<br/>X-Forwarded-Proto: https"| Symfony
-    Nginx -->|"/*<br/>(todo lo demas)"| Vite
+    Nginx -->|"/*<br/>(todo lo demás)"| Vite
 
     Symfony -->|"SQL"| PG
 
@@ -92,7 +92,7 @@ graph TB
     style NginxContainer fill:#fff9c4
 ```
 
-## Flujo de IP: Por que se necesita `trusted_proxies`
+## Flujo de IP: Por qué se necesita `trusted_proxies`
 
 Sin `trusted_proxies`, Symfony ve la IP del contenedor Nginx, no la del cliente real.
 Esto afecta directamente al **rate limiter** del endpoint `/api/phrases/generate`.
@@ -124,7 +124,7 @@ sequenceDiagram
     Note over Symfony: PROBLEMA: Ambos clientes<br/>comparten el mismo bucket.<br/>30 peticiones entre TODOS.
 ```
 
-### Con trusted_proxies (solucion)
+### Con trusted_proxies (solución)
 
 ```mermaid
 sequenceDiagram
@@ -150,7 +150,7 @@ sequenceDiagram
     Note over Symfony: CORRECTO: Cada cliente tiene<br/>su propio bucket de 30 req/min.
 ```
 
-## Configuracion Nginx (docker/nginx/default.conf)
+## Configuración Nginx (docker/nginx/default.conf)
 
 ```mermaid
 flowchart LR
@@ -177,7 +177,7 @@ flowchart LR
 | `X-Real-IP` | IP real del cliente | Referencia |
 | `X-Forwarded-For` | IP del cliente + cadena de proxies | `$request->getClientIp()` (con trusted_proxies) |
 | `X-Forwarded-Proto` | `http` o `https` | `$request->isSecure()` |
-| `Host` | Hostname original | Generacion de URLs |
+| `Host` | Hostname original | Generación de URLs |
 
 ## Puertos Expuestos (Desarrollo)
 
@@ -220,5 +220,5 @@ flowchart LR
     style Contenedores fill:#c8e6c9
 ```
 
-> **Seguridad:** El `.env` de la raiz esta en `.gitignore`. Solo `.env.example` con valores
+> **Seguridad:** El `.env` de la raiz está en `.gitignore`. Solo `.env.example` con valores
 > placeholder se commitea al repositorio. Las claves API reales solo existen localmente.

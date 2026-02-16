@@ -75,7 +75,7 @@ real (no mocks). Las respuestas se registran tal cual las devuelve la API.
 | 6 | mama, yo, querer, comer, agua | 5 | Mama, quiero **beber** agua | Mama, tengo sed, quiero agua | Mama, me das agua, por favor? |
 | 7 | mama, yo, querer, comer, galleta | 5 | Mama, quiero una galleta | Mama, puedo comer una galleta? | Mama, me apetece una galleta |
 | 8 | papa, yo, querer, ir, tienda | 5 | Papa, quiero ir a la tienda | Papa, vamos a la tienda! | Papa, podemos ir a la tienda? |
-| 9 | yo, querer, jugar, pelota, parque, despues, amigo | 7 | Quiero jugar a la pelota en el parque despues con mi amigo | Que ganas de jugar a la pelota con mi amigo en el parque luego! | Podemos ir a jugar a la pelota con mi amigo al parque mas tarde? |
+| 9 | yo, querer, jugar, pelota, parque, después, amigo | 7 | Quiero jugar a la pelota en el parque después con mi amigo | Que ganas de jugar a la pelota con mi amigo en el parque luego! | Podemos ir a jugar a la pelota con mi amigo al parque mas tarde? |
 | 10 | papa, yo, querer, ir, playa, manana, coche | 7 | Papa, quiero ir a la playa en coche manana | Papa, que ilusion ir manana a la playa en coche! | Papa, podemos ir manana a la playa en coche? |
 | 11 | mama, hoy, yo, estar, contento, ir, playa, coche | 8 | Mama, hoy estoy contento porque vamos a la playa en coche | Mama, que alegria! Hoy nos vamos a la playa en coche | Mama, me hace mucha ilusion ir hoy a la playa en coche |
 | 12 | yo, estar, cansado, querer, dormir, casa, hoy, mama | 8 | Mama, estoy cansado y quiero dormir en casa hoy | Que cansado estoy, mama! Hoy quiero descansar en casa | Mama, me siento muy cansado. Podemos ir a casa a dormir hoy? |

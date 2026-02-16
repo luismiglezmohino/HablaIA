@@ -338,7 +338,7 @@ classDiagram
 | **Category** | `Category` | `CategoryId` | `InvalidCategoryNameException`, `InvalidCategoryColorException`, `InvalidCategoryDisplayOrderException` | `CategoryRepository` | - |
 | **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `InvalidPhraseVariationsException`, `InvalidPictogramSequenceException` | `PhraseRepository` | `PhraseGeneratorInterface` |
 
-> **Nota sobre Uuid:** `Uuid` solo valida formato UUID v4 (RFC 4122). La generación se delega a `UuidGeneratorInterface`, cuya implementación vive en Infrastructure (inyección de dependencias).
+> **Nota sobre Uuid:** `Uuid` solo válida formato UUID v4 (RFC 4122). La generación se delega a `UuidGeneratorInterface`, cuya implementación vive en Infrastructure (inyección de dependencias).
 
 ## Validaciones de Seguridad
 

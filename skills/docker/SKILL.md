@@ -42,7 +42,7 @@ WORKDIR /app
 ```
 ### B. Docker Compose para el Stack
 ```yaml
-version: '3.8'
+versión: '3.8'
 
 services:
   php:

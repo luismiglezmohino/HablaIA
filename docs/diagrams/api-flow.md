@@ -2,7 +2,7 @@
 
 > Diagramas de flujo de las APIs principales de HablaIA
 
-## Flujo de Generacion de Frase (POST /api/phrases/generate)
+## Flujo de Generación de Frase (POST /api/phrases/generate)
 
 Este es el **Core MVP feature** de HablaIA.
 
@@ -179,20 +179,20 @@ flowchart TB
 
 ### Posibles Respuestas
 
-| Codigo | Escenario | Ejemplo Response |
+| Código | Escenario | Ejemplo Response |
 |--------|-----------|------------------|
 | **200** | Exito (cache/generated/fallback) | `{"variations": [...], "source": "generated", ...}` |
-| **400** | JSON invalido | `{"error": "Invalid JSON body"}` |
+| **400** | JSON inválido | `{"error": "Invalid JSON body"}` |
 | **400** | Campo faltante | `{"error": "Missing required field: pictogramIds"}` |
-| **400** | UUID invalido | `{"error": "Invalid UUID format"}` |
-| **400** | Secuencia invalida | `{"error": "Pictogram sequence cannot be empty"}` |
+| **400** | UUID inválido | `{"error": "Invalid UUID format"}` |
+| **400** | Secuencia inválida | `{"error": "Pictogram sequence cannot be empty"}` |
 | **404** | Pictograma no existe | `{"error": "Pictograms not found: uuid"}` |
 | **429** | Rate limit por minuto | `{"error": "Too many requests", "retryAfter": 1234567890}` |
 | **429** | Rate limit diario | `{"error": "Daily request limit exceeded", "retryAfter": 1234567890}` |
 
 ---
 
-## Flujo de Busqueda de Pictograma (GET /api/pictograms/search?q=)
+## Flujo de Búsqueda de Pictograma (GET /api/pictograms/search?q=)
 
 ### Diagrama de Secuencia Completo
 
@@ -338,7 +338,7 @@ flowchart TB
 
 ### Posibles Respuestas
 
-| Codigo | Escenario | Ejemplo Response |
+| Código | Escenario | Ejemplo Response |
 |--------|-----------|------------------|
 | **200** | Resultados encontrados (local o ARASAAC) | `[{"id": "...", "label": "comer", ...}]` |
 | **200** | Sin resultados | `[]` |
@@ -439,18 +439,18 @@ startupProbe:
 
 ## Resumen de APIs
 
-| Endpoint | Metodo | Proposito | Latencia Esperada |
+| Endpoint | Método | Propósito | Latencia Esperada |
 |----------|--------|-----------|-------------------|
 | `/api/health` | GET | Monitoring general | <10ms |
 | `/api/health/live` | GET | Kubernetes liveness | <1ms |
 | `/api/health/ready` | GET | Kubernetes readiness | <10ms |
-| `/api/categories` | GET | Listar categorias | <50ms |
-| `/api/categories/{id}` | GET | Detalle categoria | <20ms |
+| `/api/categories` | GET | Listar categorías | <50ms |
+| `/api/categories/{id}` | GET | Detalle categoría | <20ms |
 | `/api/pictograms` | GET | Listar pictogramas | <100ms |
 | `/api/pictograms/search` | GET | Buscar pictogramas | <2s (con ARASAAC) |
 | `/api/pictograms/{id}` | GET | Detalle pictograma | <20ms |
 | `/api/phrases/generate` | POST | Generar frase | <200ms (cache) / <3s (LLM) |
 
-> **Nota Performance:** El objetivo es <200ms en p95 para operaciones criticas de UX.
-> La generacion de frases con LLM puede tomar hasta 3s la primera vez, pero respuestas
+> **Nota Performance:** El objetivo es <200ms en p95 para operaciones críticas de UX.
+> La generación de frases con LLM puede tomar hasta 3s la primera vez, pero respuestas
 > cacheadas se sirven en <50ms.

@@ -30,7 +30,7 @@
 | Pasa | 1 |
 | Aceptado con justificación | 1 |
 | No aplica | 2 |
-| Documentado (excepcion) | 1 |
+| Documentado (excepción) | 1 |
 | Informativo | 2 |
 
 ---
@@ -66,7 +66,7 @@
 |----------------|----------------|
 | Fitzgerald Key | Colores por categoría + iconos + texto (nunca solo color) |
 | Pictogramas | Fondo blanco, 64x64px, contraste alto |
-| Touch targets | Mínimo 44x44px global (incluido tablet landscape via pseudo-elemento) |
+| Touch targets | Mínimo 44x44px global (incluido tablet landscape vía pseudo-elemento) |
 | TTS | Web Speech API, `rate=0.9` optimizado para SAAC |
 | Reducción fatiga visual | Paleta neutra stone, bordes suaves, animaciones con `motion-safe:` |
 | Screen reader | Dual aria-live, chips sin redundancia, landmarks completos |

@@ -80,7 +80,7 @@ PhraseGeneratorFactory (Infrastructure)
 | **Application** | 0 | 0 |
 | **Infrastructure** | Factory renombrada, config | GeminiPhraseGenerator, GeminiException, PhrasePrompt, tests |
 
-Esto valida empíricamente la premisa de ADR-001: **el dominio permanece puro ante cambios de infraestructura.**
+Esto válida empíricamente la premisa de ADR-001: **el dominio permanece puro ante cambios de infraestructura.**
 
 ## Consecuencias
 

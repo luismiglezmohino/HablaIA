@@ -59,7 +59,7 @@ Ver diagramas completos en [docs/diagrams/domain-layer.md](../docs/diagrams/doma
 >
 > **Excepciones de Dominio:** Todas las excepciones extienden `DomainException` para captura semántica en capas superiores.
 >
-> **UUID Puro:** `Uuid` solo valida formatos. La generación se delega a `UuidGeneratorInterface` (implementación en Infrastructure).
+> **UUID Puro:** `Uuid` solo válida formatos. La generación se delega a `UuidGeneratorInterface` (implementación en Infrastructure).
 
 ## Application Layer
 
@@ -96,7 +96,7 @@ $response = $generateHumanizedPhrase(['id-comer', 'id-pan']);
 
 Caso de uso para búsqueda de pictogramas con fallback a ARASAAC API:
 
-1. **Busca localmente** en base de datos (insensible a acentos via `unaccent`)
+1. **Busca localmente** en base de datos (insensible a acentos vía `unaccent`)
 2. **Si hay resultados locales**, los retorna
 3. **Si NO hay resultados**, busca en ARASAAC API
 4. **Descarga imágenes** y guarda pictogramas encontrados
@@ -212,8 +212,8 @@ Ver especificación completa en [docs/openapi.yaml](../docs/openapi.yaml)
 ### Rate Limiting
 
 El endpoint `/api/phrases/generate` tiene doble rate limiting por IP para proteger costes de LLM API:
-- **Per-minute:** 30 req/min (sliding window) via `PHRASE_RATE_LIMIT` / `PHRASE_RATE_INTERVAL`
-- **Daily:** 500 req/día (fixed window) via `PHRASE_DAILY_LIMIT`
+- **Per-minute:** 30 req/min (sliding window) vía `PHRASE_RATE_LIMIT` / `PHRASE_RATE_INTERVAL`
+- **Daily:** 500 req/día (fixed window) vía `PHRASE_DAILY_LIMIT`
 - **Respuesta:** HTTP 429 con header `Retry-After` cuando se excede
 
 ## Testing

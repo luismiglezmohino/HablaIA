@@ -104,7 +104,7 @@ En los comunicadores SAAC profesionales (Proloquo2Go, Grid, TD Snap) y en las l�
 
 ### Validación en la capa de dominio
 
-El color se valida en la entidad `Category` con regex `^#[0-9A-Fa-f]{6}$`:
+El color se válida en la entidad `Category` con regex `^#[0-9A-Fa-f]{6}$`:
 
 ```php
 // backend/src/Domain/Category/Entity/Category.php
@@ -120,7 +120,7 @@ private function validateColorHex(string $colorHex): void
 }
 ```
 
-El `displayOrder` (1-7) se valida como entero no negativo y determina el orden de presentación en el grid:
+El `displayOrder` (1-7) se válida como entero no negativo y determina el orden de presentación en el grid:
 
 ```php
 // backend/src/Domain/Category/Entity/Category.php

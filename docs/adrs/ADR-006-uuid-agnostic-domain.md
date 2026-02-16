@@ -25,7 +25,7 @@ Esto viola la regla de dependencias de Clean Architecture: **Domain NO puede dep
 
 Hacemos el Dominio **agnóstico** respecto a la generación de UUIDs:
 
-1. **Dominio SOLO valida** formato UUID v4 (RFC 4122)
+1. **Dominio SOLO válida** formato UUID v4 (RFC 4122)
 2. **Dominio define contrato** para generación (`UuidGeneratorInterface`)
 3. **Infrastructure implementa** la generación (fuera del alcance actual)
 4. **Tests usan** `FakeUuidGenerator` que implementa el contrato
