@@ -12,6 +12,8 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript)](https://typescriptlang.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql)](https://postgresql.org)
 
+**Demo:** [http://46.225.96.206](http://46.225.96.206) · **Slides:** [http://46.225.96.206/slides/](http://46.225.96.206/slides/)
+
 ---
 
 ## 1. Idea General del Proyecto
@@ -28,7 +30,10 @@ Proporcionar una herramienta de comunicación que **devuelva la voz** a personas
 - **Personas con afasia post-ictus:** Adultos que han perdido la capacidad del habla
 - **Personas con parálisis cerebral:** Que mantienen capacidad cognitiva pero no pueden hablar
 - **Personas con ELA (Esclerosis Lateral Amiotrófica):** En fases avanzadas de la enfermedad
-- **Terapeutas y logopedas:** Como herramienta de intervención terapéutica
+- **Personas mayores con deterioro cognitivo:** Que necesitan apoyo para expresar necesidades básicas
+- **Personas con retraso del lenguaje o síndrome de Down:** Niños y adultos en proceso de adquisición del habla
+- **Personas en recuperación post-quirúrgica:** Temporalmente sin capacidad de habla (intubación, cirugía maxilofacial)
+- **Terapeutas y logopedas:** Como herramienta de apoyo en sesiones de comunicación
 - **Familias y cuidadores:** Para facilitar la comunicación diaria
 
 ### Valor Diferencial
