@@ -2,7 +2,8 @@
 # HablaIA Nginx - Production Dockerfile
 # =============================================================================
 # Stage 1: Build Vue.js frontend con Vite
-# Stage 2: Nginx con frontend dist + pictogramas + config produccion
+# Stage 2: Build Slidev slides
+# Stage 3: Nginx con frontend dist + slides + pictogramas + config produccion
 
 # --- Stage 1: Build frontend ---
 FROM node:20-alpine AS frontend-build
@@ -18,7 +19,18 @@ RUN npm ci --ignore-scripts
 COPY frontend/ .
 RUN npm run build
 
-# --- Stage 2: Production nginx ---
+# --- Stage 2: Build slides ---
+FROM node:20-alpine AS slides-build
+
+WORKDIR /app
+
+COPY slides/package.json slides/package-lock.json ./
+RUN npm ci --ignore-scripts
+
+COPY slides/ .
+RUN npx slidev build --base /slides/
+
+# --- Stage 3: Production nginx ---
 FROM nginx:1.27-alpine
 
 LABEL maintainer="HablaIA"
@@ -32,6 +44,9 @@ COPY docker/production/security-headers.conf /etc/nginx/security-headers.conf
 
 # Frontend built assets (SPA)
 COPY --from=frontend-build /app/dist /usr/share/nginx/html
+
+# Slides built assets (Slidev SPA)
+COPY --from=slides-build /app/dist /usr/share/nginx/slides
 
 # Directorio para pictogramas (servidos via volumen compartido con backend)
 RUN mkdir -p /var/www/public/pictograms
