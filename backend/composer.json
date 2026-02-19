@@ -81,7 +81,7 @@
         ],
         "test": "pest",
         "test:coverage": "pest --coverage",
-        "analyse": "phpstan analyse src --level=8",
+        "analyse": "phpstan analyse src --level=8 --memory-limit=512M",
         "check": ["@analyse", "@test"]
     },
     "conflict": {
