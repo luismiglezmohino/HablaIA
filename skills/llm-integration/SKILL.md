@@ -1,6 +1,6 @@
 ---
 name: llm-integration
-description: Multi-provider LLM integration for phrase generation (OpenAI, Gemini, extensible)
+description: Multi-provider LLM integration for phrase generation (Groq, OpenAI, Gemini, extensible)
 license: MIT
 compatibility: opencode
 metadata:
@@ -23,10 +23,10 @@ Infrastructure/
     PhraseGeneratorFactory.php                   # Factory (selecciona provider por env)
     Shared/PhrasePrompt.php                      # Prompt compartido entre providers
     OpenAI/
-      RealOpenAIPhraseGenerator.php              # Provider OpenAI (GPT-4o-mini)
+      RealOpenAIPhraseGenerator.php              # Provider OpenAI-compatible (Groq, OpenAI)
       Exception/OpenAIException.php
     Gemini/
-      GeminiPhraseGenerator.php                  # Provider Gemini (Flash + fallback Flash Lite)
+      GeminiPhraseGenerator.php                  # Provider Gemini (REST API propia)
       Exception/GeminiException.php
   Phrase/
     FakePhraseGenerator.php                      # Fake (templates sin API, dev/test)
@@ -34,11 +34,15 @@ Infrastructure/
 
 ## Providers Disponibles
 
-| Provider | Env `PHRASE_PROVIDER` | Modelo default | Uso |
-|----------|-------------------|----------------|-----|
-| OpenAI   | `openai`          | gpt-4o-mini    | Producción |
-| Gemini   | `gemini`          | gemini-2.5-flash (fallback: flash-lite) | Producción (alternativa) |
-| Fake     | `fake`            | ninguno        | Desarrollo/Testing (default) |
+| Provider | Env `PHRASE_PROVIDER` | Modelo default |
+|----------|-------------------|----------------|
+| Groq GPT-OSS 120B | `openai` (API compatible) | openai/gpt-oss-120b |
+| Groq Llama 3.3 70B | `openai` (API compatible) | meta-llama/llama-3.3-70b-versatile |
+| OpenAI   | `openai`          | gpt-4o-mini |
+| Gemini   | `gemini`          | gemini-2.5-flash |
+| Fake     | `fake`            | ninguno (templates locales) |
+
+> **Nota:** Groq usa API compatible OpenAI. Cambiar de OpenAI a Groq (o viceversa) es solo cambiar `OPENAI_BASE_URL` y `OPENAI_MODEL` en `.env`. No requiere cambios de código. Cualquier provider puede usarse en cualquier entorno.
 
 ## Contrato Domain (Agnóstico)
 
@@ -140,10 +144,15 @@ final class NuevoProvider implements PhraseGeneratorInterface
 # Provider selection
 PHRASE_PROVIDER=fake              # fake | openai | gemini
 
-# OpenAI
-OPENAI_API_URL=https://api.openai.com/v1
-OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4o-mini
+# OpenAI-compatible (Groq, OpenAI)
+OPENAI_API_URL=https://api.groq.com/openai/v1/chat/completions
+OPENAI_API_KEY=gsk_...
+OPENAI_MODEL=openai/gpt-oss-120b
+
+# Para usar OpenAI directo en vez de Groq:
+# OPENAI_API_URL=https://api.openai.com/v1/chat/completions
+# OPENAI_API_KEY=sk-...
+# OPENAI_MODEL=gpt-4o-mini
 
 # Gemini
 GEMINI_API_URL=https://generativelanguage.googleapis.com/v1beta/models
@@ -163,8 +172,8 @@ PHRASE_TIMEOUT=10
 **Solución:** El factory hace fallback a `fake`. En producción, asegurar que está definido explícitamente.
 
 ### 2. Timeout en LLM
-**Problema:** Request tarda más de 5s, crítico para UX (latencia < 200ms objetivo).
-**Solución:** Configurar timeout agresivo + cache de frases generadas para sequences repetidas.
+**Problema:** Request tarda más del timeout configurado.
+**Solución:** Configurar timeout adecuado al provider + cache de frases generadas para sequences repetidas.
 
 ### 3. Prompt injection vía labels
 **Problema:** Labels maliciosos pueden inyectar instrucciones al LLM.
