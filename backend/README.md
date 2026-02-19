@@ -54,7 +54,7 @@ Ver diagramas completos en [docs/diagrams/domain-layer.md](../docs/diagrams/doma
 | **Phrase** | `Phrase` | `PhraseId`, `PictogramSequence` | `InvalidPhraseVariationsException`, `InvalidPictogramSequenceException` | `PhraseRepository` | `PhraseGeneratorInterface` |
 
 > **Nota:** Las interfaces de servicio permiten cambiar proveedores sin modificar el dominio:
-> - `PhraseGeneratorInterface` -> OpenAI, Claude, Gemini, etc.
+> - `PhraseGeneratorInterface` -> Groq, Gemini, OpenAI, etc.
 > - `PictogramProviderInterface` -> ARASAAC, Mulberry Symbols, etc.
 >
 > **Excepciones de Dominio:** Todas las excepciones extienden `DomainException` para captura semántica en capas superiores.
@@ -105,7 +105,7 @@ Caso de uso para búsqueda de pictogramas con fallback a ARASAAC API:
 > **Principios SOLID aplicados:**
 > - **S:** Cada Use Case hace una sola cosa
 > - **O:** Nuevos generadores sin modificar código existente
-> - **L:** FakePhraseGenerator intercambiable con proveedor LLM (OpenAI/Gemini)
+> - **L:** FakePhraseGenerator intercambiable con proveedor LLM (Groq/Gemini/OpenAI)
 > - **I:** Interfaces pequeñas y específicas
 > - **D:** Use Cases dependen de interfaces, no implementaciones
 
@@ -118,8 +118,8 @@ Ver diagramas completos en [docs/diagrams/infrastructure-layer.md](../docs/diagr
 | Cliente | Interfaz | Descripción |
 |---------|----------|-------------|
 | `ArasaacApiClient` | `PictogramProviderInterface` | Cliente para ARASAAC API (búsqueda y descarga de pictogramas) |
-| `GeminiPhraseGenerator` | `PhraseGeneratorInterface` | Generador de frases con Gemini 2.5 Flash (default, free tier) |
-| `OpenAIPhraseGenerator` | `PhraseGeneratorInterface` | Generador de frases con OpenAI GPT-4o-mini |
+| `RealOpenAIPhraseGenerator` | `PhraseGeneratorInterface` | Generador de frases con API compatible OpenAI (Groq en producción, ver ADR-015) |
+| `GeminiPhraseGenerator` | `PhraseGeneratorInterface` | Generador de frases con Gemini (alternativa) |
 | `PhraseGeneratorFactory` | - | Factory que crea el generador según `PHRASE_PROVIDER` env var |
 
 ### Phrase
@@ -268,21 +268,21 @@ PHRASE_RATE_LIMIT="30"
 PHRASE_RATE_INTERVAL="60"
 PHRASE_DAILY_LIMIT="500"
 
-# LLM Phrase Generator (gemini | openai | fake)
-PHRASE_PROVIDER="gemini"
+# LLM Phrase Generator (openai | gemini | fake)
+PHRASE_PROVIDER="openai"
 PHRASE_TEMPERATURE="0.7"
 PHRASE_MAX_TOKENS="256"
 PHRASE_TIMEOUT="10"
 
-# Gemini (default - free tier)
-GEMINI_API_URL="https://generativelanguage.googleapis.com/v1beta/models"
-GEMINI_API_KEY="..."
-GEMINI_MODEL="gemini-2.5-flash-lite"
+# OpenAI-compatible (default - Groq en producción, ver ADR-015)
+OPENAI_API_URL="https://api.groq.com/openai/v1/chat/completions"
+OPENAI_API_KEY=""
+OPENAI_MODEL="openai/gpt-oss-120b"
 
-# OpenAI (alternative)
-OPENAI_API_URL="https://api.openai.com/v1/chat/completions"
-OPENAI_API_KEY="sk-..."
-OPENAI_MODEL="gpt-4o-mini"
+# Gemini (alternativa)
+GEMINI_API_URL="https://generativelanguage.googleapis.com/v1beta/models"
+GEMINI_API_KEY=""
+GEMINI_MODEL="gemini-2.5-flash"
 
 # Directorio de pictogramas
 PICTOGRAMS_DIRECTORY="%kernel.project_dir%/public/pictograms"
@@ -295,3 +295,4 @@ PICTOGRAMS_DIRECTORY="%kernel.project_dir%/public/pictograms"
 - [ADR-007: Cycle ORM over Doctrine](../docs/adrs/ADR-007-cycle-orm-over-doctrine.md)
 - [ADR-008: Modified Fitzgerald Key Color Coding](../docs/adrs/ADR-008-fitzgerald-key-color-coding.md)
 - [ADR-009: Multi-provider LLM (OpenAI + Gemini)](../docs/adrs/ADR-009-multi-provider-llm.md)
+- [ADR-015: Groq Primary LLM Provider](../docs/adrs/ADR-015-groq-primary-llm-provider.md)

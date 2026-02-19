@@ -79,7 +79,7 @@ Los comunicadores SAAC tradicionales (Tobii Dynavox, Proloquo2Go) ofrecen pictog
 
 ### Solución: HablaIA
 
-HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia Artificial contextual** (multi-proveedor configurable vía `PHRASE_PROVIDER`: Gemini, OpenAI, Fake) y **síntesis de voz** para crear un comunicador que:
+HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia Artificial contextual** (multi-proveedor configurable vía `PHRASE_PROVIDER`: openai, gemini, fake) y **síntesis de voz** para crear un comunicador que:
 
 1. **Permite seleccionar pictogramas** de forma visual e intuitiva
 2. **Genera 3 variaciones de frase humanizada** usando IA
@@ -136,8 +136,8 @@ HablaIA combina **pictogramas ARASAAC** (estándar en España), **Inteligencia A
 ### Inteligencia Artificial y APIs Externas
 
 - **LLM para generación de frases:** Multi-proveedor configurable vía `PHRASE_PROVIDER`:
-  - `gemini` - Gemini 2.5 Flash Lite (free tier)
-  - `openai` - OpenAI GPT-4o-mini
+  - `openai` - Cualquier API compatible OpenAI (en producción: Groq GPT-OSS 120B)
+  - `gemini` - Gemini 2.5 Flash
   - `fake` - Respuestas simuladas (sin API key)
   - Valor inválido → fallback a `fake`
 - **ARASAAC API:** Repositorio de pictogramas (30,000+ símbolos en español)
@@ -197,21 +197,21 @@ DATABASE_URL="postgresql://hablaia_user:hablaia_pass@postgres:5432/hablaia?serve
 APP_ENV=dev
 APP_SECRET=genera-un-secreto-aleatorio-aqui
 
-# LLM Phrase Generator (gemini | openai | fake)
-PHRASE_PROVIDER="gemini"
-PHRASE_TEMPERATURE="0.7"
+# LLM Phrase Generator (openai | gemini | fake)
+PHRASE_PROVIDER="openai"
+PHRASE_TEMPERATURE="0.5"
 PHRASE_MAX_TOKENS="256"
 PHRASE_TIMEOUT="10"
 
-# Gemini (default - free tier)
+# OpenAI-compatible (default - Groq GPT-OSS 120B)
+OPENAI_API_URL="https://api.groq.com/openai/v1/chat/completions"
+OPENAI_API_KEY=""
+OPENAI_MODEL="openai/gpt-oss-120b"
+
+# Gemini (alternativa)
 GEMINI_API_URL="https://generativelanguage.googleapis.com/v1beta/models"
 GEMINI_API_KEY="tu-clave-gemini"
-GEMINI_MODEL="gemini-2.5-flash-lite"
-
-# OpenAI (alternativa)
-OPENAI_API_URL="https://api.openai.com/v1/chat/completions"
-OPENAI_API_KEY="sk-tu-clave-aqui"
-OPENAI_MODEL="gpt-4o-mini"
+GEMINI_MODEL="gemini-2.5-flash"
 
 # Rate Limiting (POST /api/phrases/generate)
 PHRASE_RATE_LIMIT="30"
@@ -368,7 +368,7 @@ hablaia/
 ├── backend/          # API REST Symfony 7
 ├── docker/           # Configuración Docker
 ├── docs/             # Documentación
-│   ├── adrs/         # Architecture Decision Records (14)
+│   ├── adrs/         # Architecture Decision Records (15)
 │   ├── api-tests/    # Pruebas de prompt LLM
 │   ├── audits/       # Auditorías (seguridad, rendimiento, accesibilidad, calidad)
 │   ├── diagrams/     # Diagramas de arquitectura
@@ -472,7 +472,8 @@ docs/adrs/
 ├── ADR-011-visual-design-system.md
 ├── ADR-012-cd-pipeline.md
 ├── ADR-013-keyboard-screenreader-accessibility.md
-└── ADR-014-monorepo-structure.md
+├── ADR-014-monorepo-structure.md
+└── ADR-015-groq-primary-llm-provider.md
 ```
 
 ---
@@ -525,7 +526,7 @@ docs/adrs/
 
 - **[Índice de Documentación](docs/INDEX.md):** Guía de navegación completa
 - **[OpenAPI Specification](docs/openapi.yaml):** Especificación completa de la API REST
-- **[Architecture Decision Records](docs/adrs/):** 14 decisiones de arquitectura documentadas
+- **[Architecture Decision Records](docs/adrs/):** 15 decisiones de arquitectura documentadas
 - **[Diagramas de Arquitectura](docs/diagrams/):** Domain, Application, Infrastructure, API Flow, Docker
 - **[Roadmap](docs/ROADMAP.md):** Plan de desarrollo en 7 fases
 - **[Troubleshooting](docs/guides/TROUBLESHOOTING.md):** Solución de problemas comunes

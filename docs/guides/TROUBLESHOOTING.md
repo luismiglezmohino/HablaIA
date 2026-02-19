@@ -15,6 +15,7 @@ PostgreSQL ya está corriendo en tu máquina local. Opciones:
 **Opción 1 (desarrollo sin API keys):** Usa `PHRASE_PROVIDER=fake` en `backend/.env` - funciona sin claves externas.
 
 **Opción 2 (con LLM real):** Configura las variables según el proveedor:
+- Groq (recomendado): `OPENAI_API_KEY` + `OPENAI_BASE_URL` (obtén en https://console.groq.com)
 - Gemini: `GEMINI_API_KEY` (obtén en https://aistudio.google.com)
 - OpenAI: `OPENAI_API_KEY` (obtén en https://platform.openai.com)
 

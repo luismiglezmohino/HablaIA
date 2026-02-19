@@ -200,7 +200,7 @@ align: l
 
 **3 variaciones** por petición — el usuario elige la que mejor expresa lo que quiere decir
 
-<video src="/videos/compressed/gemini.mp4" controls class="w-full rounded-lg mt-2" style="max-height: 260px" />
+<video src="/videos/compressed/llm.mp4" controls class="w-full rounded-lg mt-2" style="max-height: 260px" />
 
 ---
 layout: side-title
@@ -256,11 +256,11 @@ color: sky-light
     <div class="text-sm mt-1">tests</div>
   </div>
   <div class="bg-sky-400 text-white rounded-lg p-4 text-center">
-    <div class="text-4xl font-bold">14</div>
+    <div class="text-4xl font-bold">15</div>
     <div class="text-sm mt-1">ADRs</div>
   </div>
   <div class="bg-emerald-400 text-white rounded-lg p-4 text-center">
-    <div class="text-4xl font-bold">83+</div>
+    <div class="text-4xl font-bold">87+</div>
     <div class="text-sm mt-1">Pull Requests</div>
   </div>
   <div class="bg-rose-400 text-white rounded-lg p-4 text-center">
@@ -300,8 +300,8 @@ color: teal-light
   </div>
   <div class="bg-amber-400 text-white rounded-lg p-4">
     <div class="text-lg font-bold">IA</div>
-    <div class="text-sm mt-1"><b>Gemini</b> 2.5 Flash (dev, free tier)</div>
-    <div class="text-sm"><b>OpenAI</b> gpt-4o-mini (prod)</div>
+    <div class="text-sm mt-1"><b>Groq</b> GPT-OSS 120B (prod)</div>
+    <div class="text-sm"><b>Groq</b> Llama 3.3 70B (alternativa)</div>
     <div class="text-sm">Cache <b>SHA256</b> en PostgreSQL</div>
   </div>
   <div class="bg-rose-400 text-white rounded-lg p-4">
@@ -356,7 +356,7 @@ Infrastructure/
 
 <Admonition title="Evidencia" color="emerald-light" icon="mdi-check-circle">
 
-- 14 ADRs documentando cada decisión
+- 15 ADRs documentando cada decisión
 - Separación mantenida por convención y estructura de carpetas
 
 </Admonition>
@@ -378,8 +378,8 @@ align: l-lt-lt
 
 ```
 PhraseGeneratorInterface
+  ├── RealOpenAIPhraseGenerator  (Groq)
   ├── GeminiPhraseGenerator
-  ├── OpenAIPhraseGenerator
   └── FakePhraseGenerator
 ```
 
@@ -430,7 +430,7 @@ La latencia es crítica para un usuario SAAC. Cada segundo de espera genera ansi
 
 | Escenario | Latencia |
 |---|---|
-| LLM sin cache | 0.7 - 2s |
+| LLM sin cache | ~1s (máx. 2.6s) |
 | **Cache hit (SHA256)** | **~86ms** |
 
 <br>
@@ -451,7 +451,7 @@ La latencia es crítica para un usuario SAAC. Cada segundo de espera genera ansi
 
 <Admonition title="Multi-provider" color="sky-light" icon="mdi-swap-horizontal">
 
-Gemini (dev, free tier) u OpenAI (prod). Cambiar = 1 variable de entorno.
+Groq GPT-OSS 120B (prod) o Llama 70B (alternativa). Cambiar = 1 variable de entorno.
 
 </Admonition>
 
@@ -568,7 +568,7 @@ align: l-lt-lt
 |---|---|---|
 | **Backend** | PestPHP + PHPStan level 8 | 400 |
 | **Frontend** | Vitest + Testing Library | 263 |
-| **E2E** | Playwright — 6 specs × 5 tamaños de pantalla | 21 |
+| **E2E** | Playwright — 6 suites de test, 5 tamaños de pantalla | 21 |
 | **Análisis estático** | PHPStan level 8 (máximo) + ESLint + vue-tsc strict | — |
 
 <br>

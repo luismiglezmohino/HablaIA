@@ -573,8 +573,8 @@ sequenceDiagram
 | **Console** | `LoadFixturesCommand` | Carga de categorías SAAC |
 | **Console** | `SyncArasaacCommand` | Sincronización con ARASAAC |
 | **ExternalApi** | `ArasaacApiClient` | Cliente ARASAAC API |
-| **ExternalApi** | `GeminiPhraseGenerator` | Generador con Gemini (default) |
-| **ExternalApi** | `OpenAIPhraseGenerator` | Generador con OpenAI |
+| **ExternalApi** | `RealOpenAIPhraseGenerator` | Generador con API compatible OpenAI (Groq en producción) |
+| **ExternalApi** | `GeminiPhraseGenerator` | Generador con Gemini |
 | **Phrase** | `FakePhraseGenerator` | Fake para desarrollo (templates sin API) |
 | **ExternalApi** | `PhraseGeneratorFactory` | Factory multi-proveedor |
 | **ExternalApi** | `PhrasePrompt` | Constantes de prompt compartidas |
@@ -593,5 +593,5 @@ sequenceDiagram
 | **Dependency Inversion** | Controllers dependen de Use Cases, no de Repositories |
 | **Interface Segregation** | Interfaces específicas: `ImageDownloaderInterface`, `VocabularyLoaderInterface` |
 | **Single Responsibility** | Cada servicio tiene una única responsabilidad |
-| **Open/Closed** | Gemini añadido sin modificar Domain/Application (validado) |
-| **Liskov Substitution** | `FakePhraseGenerator` intercambiable con proveedor LLM (OpenAI/Gemini) |
+| **Open/Closed** | Gemini y Groq añadidos sin modificar Domain/Application (validado) |
+| **Liskov Substitution** | `FakePhraseGenerator` intercambiable con proveedor LLM (Groq/Gemini/OpenAI) |

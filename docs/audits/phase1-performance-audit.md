@@ -481,13 +481,13 @@ Tailwind `h-16 w-16` (64x64px) fija las dimensiones vía CSS. El navegador reser
 | `/api/pictograms?categoryId=UUID` | PHP-FPM -> Cycle ORM -> PostgreSQL | 20-50ms | 230ms |
 | `/api/pictograms/search?q=agua` | PHP-FPM -> Cycle ORM -> PostgreSQL | 30-100ms | 377ms |
 | `/api/phrases/generate` (cache hit) | PHP-FPM -> Cycle ORM -> PostgreSQL | 20-50ms | 317ms |
-| `/api/phrases/generate` (cache miss) | PHP-FPM -> LLM API (Gemini/OpenAI) | 1000-3000ms | Pendiente (thinking mode desactivado) |
+| `/api/phrases/generate` (cache miss) | PHP-FPM -> LLM API (Groq/Gemini/OpenAI) | 500-2600ms | ~982ms (Groq GPT-OSS 120B) |
 
 **Nota sobre TTFB real:** Los valores incluyen ~100ms de latencia de red (cliente en Espana → Hetzner Alemania). El tiempo de servidor real es TTFB menos latencia de red. Todos los endpoints dentro del target < 600ms.
 
 **TTFB para el initial page load** (index.html): Excelente, servido por Nginx como archivo estático (~10ms servidor).
 
-**TTFB para API calls:** Dentro de targets para queries de datos. La generación de frases con LLM tiene thinking mode activado por defecto en Gemini 2.5 Flash, lo que causa 5-7s. Con thinking mode desactivado (`thinkingBudget: 0`) se espera 0.6-0.8s.
+**TTFB para API calls:** Dentro de targets para queries de datos. La generación de frases con Groq GPT-OSS 120B tiene una latencia media de ~982ms (ver ADR-015).
 
 #### Severidad: Informativo - CONFIRMADO (medido en producción, todos < 600ms excepto LLM cache miss pendiente de optimizar)
 

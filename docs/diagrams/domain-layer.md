@@ -162,7 +162,7 @@ classDiagram
 ```
 
 > **Nota:** Las interfaces de servicio permiten cambiar proveedores sin modificar el dominio:
-> - `PhraseGeneratorInterface` → OpenAI, Claude, Gemini, etc.
+> - `PhraseGeneratorInterface` → Groq, Gemini, OpenAI, etc.
 > - `PictogramProviderInterface` → ARASAAC, Mulberry Symbols, etc.
 
 ## Diagrama de Módulos
@@ -254,7 +254,7 @@ sequenceDiagram
     end
 ```
 
-> **Nota:** LLM Provider implementa `PhraseGeneratorInterface`. Inicialmente OpenAI GPT-4o-mini.
+> **Nota:** LLM Provider implementa `PhraseGeneratorInterface`. Groq GPT-OSS 120B en producción (ver ADR-015).
 
 ## Diagrama de Excepciones
 
