@@ -449,8 +449,8 @@ startupProbe:
 | `/api/pictograms` | GET | Listar pictogramas | <100ms |
 | `/api/pictograms/search` | GET | Buscar pictogramas | <2s (con ARASAAC) |
 | `/api/pictograms/{id}` | GET | Detalle pictograma | <20ms |
-| `/api/phrases/generate` | POST | Generar frase | <200ms (cache) / <3s (LLM) |
+| `/api/phrases/generate` | POST | Generar frase | <200ms (cache) / ~1s (LLM) |
 
 > **Nota Performance:** El objetivo es <200ms en p95 para operaciones críticas de UX.
-> La generación de frases con LLM puede tomar hasta 3s la primera vez, pero respuestas
-> cacheadas se sirven en <50ms.
+> La generación de frases con LLM tiene una latencia media de ~1s (máx. 2.6s con Groq GPT-OSS 120B),
+> pero respuestas cacheadas se sirven en <100ms.

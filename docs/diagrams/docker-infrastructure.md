@@ -196,7 +196,7 @@ flowchart LR
         PG_PASS["POSTGRES_PASSWORD"]
         APP_SEC["APP_SECRET"]
         PROVIDER["PHRASE_PROVIDER"]
-        GEMINI_KEY["GEMINI_API_KEY"]
+        OPENAI_KEY["OPENAI_API_KEY"]
     end
 
     subgraph DockerCompose["docker-compose.yml"]
@@ -204,14 +204,14 @@ flowchart LR
         PG_PASS -->|"${POSTGRES_PASSWORD}"| PGEnv["POSTGRES_PASSWORD"]
         APP_SEC -->|"${APP_SECRET}"| AppEnv["APP_SECRET"]
         PROVIDER -->|"${PHRASE_PROVIDER:-fake}"| ProvEnv["PHRASE_PROVIDER"]
-        GEMINI_KEY -->|"${GEMINI_API_KEY:-}"| GemEnv["GEMINI_API_KEY"]
+        OPENAI_KEY -->|"${OPENAI_API_KEY:-}"| OAIEnv["OPENAI_API_KEY"]
     end
 
     subgraph Contenedores
         BackendEnv --> Backend["backend"]
         AppEnv --> Backend
         ProvEnv --> Backend
-        GemEnv --> Backend
+        OAIEnv --> Backend
         PGEnv --> Postgres["postgres"]
     end
 

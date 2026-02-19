@@ -254,7 +254,7 @@ sequenceDiagram
     end
 ```
 
-> **Nota:** LLM Provider implementa `PhraseGeneratorInterface`. Inicialmente OpenAI GPT-4o-mini.
+> **Nota:** LLM Provider implementa `PhraseGeneratorInterface`. Groq GPT-OSS 120B en producción (ver ADR-015).
 
 ## Diagrama de Excepciones
 
