@@ -61,7 +61,7 @@ Interceptor Symfony (`kernel.response`) que añade a todas las respuestas:
 
 ### Rate limiting
 
-- `POST /api/phrases/generate`: doble protección por IP para evitar abuso de costes LLM (Gemini/OpenAI). Protege también peticiones cacheadas como efecto colateral
+- `POST /api/phrases/generate`: doble protección por IP para evitar abuso de costes LLM (Groq/Gemini/OpenAI). Protege también peticiones cacheadas como efecto colateral
   - **Per-minute:** 30 req/60s (sliding window) vía `PHRASE_RATE_LIMIT` / `PHRASE_RATE_INTERVAL`
   - **Daily:** 500 req/día (fixed window) vía `PHRASE_DAILY_LIMIT`
 - `GET /api/pictograms/search`: protección por IP para evitar abuso de peticiones a ARASAAC y escritura en disco

@@ -24,9 +24,9 @@
 ### Backend (✅ Completado)
 - ✅ API REST con Symfony 7 + Cycle ORM + PostgreSQL
 - ✅ Grid de pictogramas por categorías (11 categorías SAAC, colores Fitzgerald Key)
-- ✅ Integración LLM multi-proveedor (`PHRASE_PROVIDER`: gemini, openai, fake)
+- ✅ Integración LLM multi-proveedor (`PHRASE_PROVIDER`: openai, gemini, fake)
 - ✅ Prompt tuning: 20 ejemplos few-shot, reglas semánticas, auto-validación logopeda
-- ✅ Fallback automático entre modelos Gemini (Flash → Flash Lite = 40 RPD/día)
+- ✅ Validación con 126 pruebas y 3 modelos (Gemini, Llama 70B, GPT-OSS 120B) → Groq GPT-OSS 120B como principal (ADR-015)
 - ✅ Caché de frases en PostgreSQL (SHA256 hash, solo frases generadas por IA)
 - ✅ Sincronización automática con ARASAAC API (194 pictogramas core vocabulary)
 - ✅ Health checks (`/api/health`)
@@ -216,7 +216,7 @@ Ideas y funcionalidades que podrían explorarse a largo plazo, sin fase asignada
 - **Analytics avanzado (PostHog):** Event tracking, heatmaps y session recordings para optimizar UX a escala. Requiere infraestructura adicional (self-hosted) o coste (cloud). Los datos básicos de uso ya se recogen en la base de datos.
 - **Métodos de entrada alternativos:** Eye tracking, switch scanning y otros dispositivos de acceso para usuarios con movilidad muy reducida.
 - **LLM en navegador:** Modelos ligeros ejecutados localmente (WebGPU/WebAssembly) para humanización offline. Actualmente la calidad en español de los modelos pequeños es insuficiente para SAAC, pero la tecnología evoluciona rápidamente.
-- **LLM self-hosted:** Modelos de lenguaje ejecutados en servidor propio (Ollama, vLLM) para eliminar dependencia de APIs externas (Gemini, OpenAI). Reduciría costes recurrentes y latencia, pero requiere infraestructura con GPU y mantenimiento del modelo. Investigar viabilidad según volumen de uso y coste de GPU vs coste de API.
+- **LLM self-hosted:** Modelos de lenguaje ejecutados en servidor propio (Ollama, vLLM) para eliminar dependencia de APIs externas (Groq, Gemini, OpenAI). Reduciría costes recurrentes y latencia, pero requiere infraestructura con GPU y mantenimiento del modelo. Investigar viabilidad según volumen de uso y coste de GPU vs coste de API.
 
 ---
 

@@ -162,7 +162,7 @@ classDiagram
 ```
 
 > **Nota:** Las interfaces de servicio permiten cambiar proveedores sin modificar el dominio:
-> - `PhraseGeneratorInterface` → OpenAI, Claude, Gemini, etc.
+> - `PhraseGeneratorInterface` → Groq, Gemini, OpenAI, etc.
 > - `PictogramProviderInterface` → ARASAAC, Mulberry Symbols, etc.
 
 ## Diagrama de Módulos

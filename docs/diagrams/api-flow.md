@@ -94,7 +94,7 @@ sequenceDiagram
                             %% Generate with LLM
                             UC->>Gen: generate(sequence)
                             Gen->>LLM: Call LLM API
-                            Note right of Gen: Gemini / OpenAI
+                            Note right of Gen: LLM API
 
                             alt LLM success
                                 LLM-->>Gen: JSON response

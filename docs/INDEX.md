@@ -51,6 +51,7 @@ Decisiones arquitectónicas documentadas con contexto, alternativas y consecuenc
 | [ADR-012](adrs/ADR-012-cd-pipeline.md) | CD Pipeline | Despliegue continuo con GitHub Actions, SSH y Docker Compose |
 | [ADR-013](adrs/ADR-013-keyboard-screenreader-accessibility.md) | Keyboard & Screen Reader | Navegación por teclado, atajos, gestión de foco y anuncios SR |
 | [ADR-014](adrs/ADR-014-monorepo-structure.md) | Monorepo Structure | Monorepo con stacks independientes y Docker Compose como unión |
+| [ADR-015](adrs/ADR-015-groq-primary-llm-provider.md) | Groq Primary LLM | Groq GPT-OSS 120B como proveedor LLM principal (sustituye Gemini) |
 
 ---
 

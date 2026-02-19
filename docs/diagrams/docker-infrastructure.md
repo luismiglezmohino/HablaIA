@@ -30,8 +30,8 @@ graph TB
     end
 
     subgraph ExternalAPIs["APIs Externas"]
+        Groq["Groq API<br/>api.groq.com"]
         Gemini["Gemini API<br/>generativelanguage.googleapis.com"]
-        OpenAI["OpenAI API<br/>api.openai.com"]
         ARASAAC["ARASAAC API<br/>api.arasaac.org"]
     end
 
@@ -42,8 +42,8 @@ graph TB
     Symfony -->|"DATABASE_URL"| PG
     PG --- PGData
 
+    Symfony -->|"PHRASE_PROVIDER=openai"| Groq
     Symfony -->|"PHRASE_PROVIDER=gemini"| Gemini
-    Symfony -->|"PHRASE_PROVIDER=openai"| OpenAI
     Symfony -->|"Búsqueda pictogramas"| ARASAAC
 
     style Internet fill:#e3f2fd
