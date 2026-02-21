@@ -904,7 +904,7 @@ align: l-lt-lt
 
 Un sistema de desarrollo completo: 12 agentes especializados (architect, TDD developer, security auditor, QA, UX...) con **quality gates** y **restricciones fatales**.
 
-No es solo el código — es un **proceso de desarrollo replicable** que se publica junto al proyecto.
+No es solo el código — es un **proceso de desarrollo reutilizable** que se publica junto al proyecto.
 
 </Admonition>
 
@@ -932,7 +932,7 @@ color: emerald
 - **IA generativa** — 3 variaciones naturales desde pictogramas
 - **Clean Architecture** — preparada para escalar
 - **0 hallazgos pendientes** en 4 auditorías
-- **12 agentes + skills con IA** — proceso de desarrollo replicable
+- **12 agentes + skills con IA** — reutilizables en cualquier proyecto
 
 ---
 layout: cover
