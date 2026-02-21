@@ -561,5 +561,6 @@ Ver [LICENSE](LICENSE) para más detalles.
 
 ## Agradecimientos
 
-- **ARASAAC** (Gobierno de Aragón) por proporcionar pictogramas de calidad bajo licencia abierta
-- **Comunidad SAAC** de terapeutas, familias y usuarios que inspiran este proyecto
+- **ARASAAC** (Gobierno de Aragón) por proporcionar pictogramas de calidad bajo licencia Creative Commons BY-NC-SA 4.0
+- **BIG School** y su equipo docente por la formación y el acompañamiento durante el máster:
+  - Brais Moure, Martin Cristobal, Carlos Azaustre, Aris Guimerá, Alan Buscaglia, Kiko Palomares, Nerea Luis, Xavi Portilla, Daniela Maissi
