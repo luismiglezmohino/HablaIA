@@ -435,7 +435,8 @@ OPcache mitiga completamente el coste de compilación de schema. Con `validate_t
 **Escenario crítico:** El primer render significativo es la CategoryBar con Skeletons (no requiere datos). El LCP real dependera de cuando el usuario selecciona una categoría y se cargan los pictogramas.
 
 #### Severidad: Informativo - MEDIDO
-- **Resultado Lighthouse producción:** LCP 3.1s (target < 2.5s). Supera el target por 0.6s. El LCP es la CategoryBar tras la carga de datos. Factores: VPS compartido (Hetzner CX33), HTTP sin TLS (sin HTTP/2), waterfall de chunks JS. Aceptable para MVP académico.
+- **Resultado Lighthouse producción (Fase 1, HTTP):** LCP 3.1s (target < 2.5s). Supera el target por 0.6s. El LCP es la CategoryBar tras la carga de datos. Factores: VPS compartido (Hetzner CX33), waterfall de chunks JS. Aceptable para MVP académico.
+- **Resultado Lighthouse producción (HTTPS, 21 feb 2026):** LCP 2.0s mobile / 0.5s desktop. HTTPS + HTTP/2 mejoran significativamente la carga.
 
 ### 5.2 CLS (Cumulative Layout Shift) - Target < 0.1
 
@@ -589,7 +590,7 @@ Los siguientes hallazgos de la revisión anterior no requieren acción para el a
 ## 8. Lighthouse Producción (medición real)
 
 **Fecha:** 13 de febrero de 2026
-**URL:** Servidor Hetzner CX33 (HTTP, sin TLS)
+**URL:** Servidor Hetzner CX33 (HTTP, sin TLS en Fase 1; HTTPS desde 21 feb 2026)
 **Herramienta:** Lighthouse (headless Chrome)
 **Evidencia:** `docs/audits/lighthouse/fase1/lighthouse-mobile.report.html`, `docs/audits/lighthouse/fase1/lighthouse-desktop.report.html`
 
@@ -617,9 +618,9 @@ Los siguientes hallazgos de la revisión anterior no requieren acción para el a
 - **Desktop (99):** Todos los Core Web Vitals dentro de targets. LCP 0.8s y FCP 0.7s son excelentes.
 - **Mobile (95):** LCP 2.4s dentro del target (< 2.5s). FCP 2.2s ligeramente por encima (target 1.8s). El throttling de Lighthouse mobile simula Moto G Power con 4G lenta, que es más restrictivo que el uso real en tablet (dispositivo principal de la app).
 - **TBT ~0ms y CLS ~0** en ambos confirman que la arquitectura frontend es eficiente: sin JS pesado, sin layout shifts.
-- **Best Practices 78** por uso de HTTP en lugar de HTTPS (TLS pendiente).
+- **Best Practices 78** por uso de HTTP en lugar de HTTPS (resuelto el 21 feb 2026, ver addendum).
 - **Accessibility 100** en ambos confirma el cumplimiento WCAG 2.2 AA.
-- Los scores varian ±5 puntos entre ejecuciones. Se realizaron 3 runs con resultados consistentes (mobile 95-96, desktop 98-99).
+- Los scores varían ±5 puntos entre ejecuciones.
 
 ### Métricas pendientes de medición
 
@@ -650,4 +651,36 @@ El proyecto HablaIA FASE 1 tiene una base de performance sólida, con mejoras si
 
 **Hallazgos pendientes: 0.** Los 5 hallazgos restantes de la revisión anterior (M-4, B-3, B-4, B-5, B-6) han sido reclasificados como NO APLICA con justificación: el volumen de datos (~200 registros), el tráfico (MVP académico) y la configuración (single server con OPcache) hacen que las optimizaciones propuestas no aporten beneficio medible.
 
-**Lighthouse producción:** Mobile 95 / Desktop 99. Accessibility 100/100. TBT ~0ms y CLS ~0 confirman la eficiencia del frontend. LCP dentro de targets en ambos (mobile 2.4s, desktop 0.8s). Best Practices 78 por HTTP sin TLS. Evidencia: `docs/audits/lighthouse/fase1/lighthouse-mobile.report.html`, `docs/audits/lighthouse/fase1/lighthouse-desktop.report.html`. **0 hallazgos pendientes de acción.**
+**Lighthouse producción (Fase 1):** Mobile 95 / Desktop 99. Accessibility 100/100. TBT ~0ms y CLS ~0 confirman la eficiencia del frontend. LCP dentro de targets en ambos (mobile 2.4s, desktop 0.8s). Best Practices 78 por HTTP sin TLS. Evidencia: `docs/audits/lighthouse/fase1/`. **0 hallazgos pendientes de acción.**
+
+---
+
+## 10. Addendum: HTTPS (21 de febrero de 2026)
+
+Tras configurar el dominio `damevozya.es` con certificado TLS (Let's Encrypt) y HTTP/2, se repitió la medición Lighthouse.
+
+**Evidencia:** `docs/audits/lighthouse/https/`
+
+### Scores
+
+| Categoría | Mobile | Desktop |
+|-----------|--------|---------|
+| Performance | **98** | **100** |
+| Accessibility | **100** | **100** |
+| Best Practices | **100** | **100** |
+| SEO | **91** | **91** |
+
+### Core Web Vitals
+
+| Métrica | Mobile | Desktop | Target | Estado |
+|---------|--------|---------|--------|--------|
+| LCP | 2.0s | 0.5s | < 2.5s | OK |
+| TBT | 0ms | 0ms | < 200ms | Excelente |
+| CLS | 0.018 | 0.001 | < 0.1 | Excelente |
+
+### Impacto de HTTPS
+
+- **Best Practices:** 78 → 100 (resuelto el único hallazgo pendiente: HTTP sin TLS)
+- **Performance mobile:** 95 → 98 (HTTP/2 multiplexing reduce waterfall de chunks JS)
+- **LCP mobile:** 2.4s → 2.0s (mejora por HTTP/2)
+- **Performance desktop:** 99 → 100

@@ -649,19 +649,13 @@ align: l-lt-lt
 
 :: left ::
 
-### Lighthouse (13 feb 2026)
+### Lighthouse (21 feb 2026)
 
 | Categoría | Mobile | Desktop |
 |---|---|---|
-| **Performance** | **95** | **99** |
+| **Performance** | **98** | **100** |
 | **Accessibility** | **100** | **100** |
-| Best Practices | — | — |
-
-<AdmonitionType type="info">
-
-Pendiente de medir con HTTPS (dominio: damevozya.es + Let's Encrypt)
-
-</AdmonitionType>
+| **Best Practices** | **100** | **100** |
 
 :: right ::
 
