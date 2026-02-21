@@ -36,7 +36,7 @@ Octubre 2025 - Febrero 2026
 </div>
 <div>
 
-- **Demo:** [http://46.225.96.206](http://46.225.96.206)
+- **Demo:** [https://damevozya.es](https://damevozya.es)
 - **Repo:** [github.com/luismiglezmohino/HablaIA](https://github.com/luismiglezmohino/HablaIA)
 
 </div>
@@ -655,11 +655,11 @@ align: l-lt-lt
 |---|---|---|
 | **Performance** | **95** | **99** |
 | **Accessibility** | **100** | **100** |
-| Best Practices | 78 | 78 |
+| Best Practices | — | — |
 
 <AdmonitionType type="info">
 
-Best Practices 78 por HTTP sin TLS (pendiente certificado HTTPS)
+Pendiente de medir con HTTPS (dominio: damevozya.es + Let's Encrypt)
 
 </AdmonitionType>
 
@@ -953,6 +953,6 @@ Luis Miguel González-Mohino · Febrero 2026
 
 <br>
 
-Demo: [http://46.225.96.206](http://46.225.96.206)
+Demo: [https://damevozya.es](https://damevozya.es)
 
 Repo: [github.com/luismiglezmohino/HablaIA](https://github.com/luismiglezmohino/HablaIA)

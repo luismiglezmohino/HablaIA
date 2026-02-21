@@ -12,7 +12,9 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript)](https://typescriptlang.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql)](https://postgresql.org)
 
-**Demo:** [http://46.225.96.206](http://46.225.96.206) · **Slides:** [http://46.225.96.206/slides/](http://46.225.96.206/slides/)
+**Demo:** [https://damevozya.es](https://damevozya.es) · **Slides:** [https://damevozya.es/slides/](https://damevozya.es/slides/)
+
+> **Nota:** El dominio `damevozya.es` es la URL de producción del proyecto. El nombre del proyecto es **HablaIA**.
 
 ---
 
@@ -559,5 +561,6 @@ Ver [LICENSE](LICENSE) para más detalles.
 
 ## Agradecimientos
 
-- **ARASAAC** (Gobierno de Aragón) por proporcionar pictogramas de calidad bajo licencia abierta
-- **Comunidad SAAC** de terapeutas, familias y usuarios que inspiran este proyecto
+- **ARASAAC** (Gobierno de Aragón) por proporcionar pictogramas de calidad bajo licencia Creative Commons BY-NC-SA 4.0
+- **BIG School** y su equipo docente por la formación y el acompañamiento durante el máster:
+  - Brais Moure, Martin Cristobal, Carlos Azaustre, Aris Guimerá, Alan Buscaglia, Kiko Palomares, Nerea Luis, Xavi Portilla, Daniela Maissi
