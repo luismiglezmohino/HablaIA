@@ -2,7 +2,7 @@
 
 > Resumen de postura de rendimiento. Informe detallado en [auditoría de rendimiento — Fase 1](../audits/phase1-performance-audit.md)
 
-**Última revisión:** 13 de febrero de 2026<br>
+**Última revisión:** 21 de febrero de 2026<br>
 **Scope:** Full stack - Backend Symfony 7.4 + Frontend Vue 3.5 + Docker/Nginx<br>
 **Fase:** Fase 1 MVP<br>
 
@@ -16,7 +16,7 @@
 | Frontend Runtime | BUENO | Stores ligeros, debounce 300ms, lazy loading imágenes. Sin virtual scroll (< 30 items/grid) |
 | Backend API | BUENO | Caché SHA256 frases, rate limiting, índices SQL, N+1 corregido con `findByIds()` |
 | Docker/Infra | BUENO | Gzip habilitado, cache headers correctos (assets 1y, pictograms 7d, index.html no-cache), OPcache |
-| Core Web Vitals | MEDIDO | Lighthouse producción: Mobile 95, Desktop 99, Accessibility 100/100 |
+| Core Web Vitals | MEDIDO | Lighthouse producción: Mobile 98, Desktop 100, Accessibility 100/100, Best Practices 100/100 |
 
 **Veredicto: BUENO para Fase 1 MVP** - 7 hallazgos corregidos (PRs #71, #72). 0 hallazgos pendientes.
 
@@ -24,25 +24,22 @@
 
 ## Lighthouse producción
 
-Medido el 13 de febrero de 2026 contra servidor Hetzner CX33. Evidencia en [`docs/audits/lighthouse/fase1/`](../audits/lighthouse/fase1/).
+Medido el 21 de febrero de 2026 contra servidor Hetzner CX33 con HTTPS (Let's Encrypt). Evidencia en [`docs/audits/lighthouse/https/`](../audits/lighthouse/https/).
 
 | Categoría | Mobile | Desktop |
 |-----------|--------|---------|
-| Performance | **95** | **99** |
+| Performance | **98** | **100** |
 | Accessibility | **100** | **100** |
-| Best Practices | 78 | 78 |
-| SEO | 91 | 91 |
+| Best Practices | **100** | **100** |
+| SEO | **91** | **91** |
 
 ### Core Web Vitals
 
 | Métrica | Mobile | Desktop | Target | Estado |
 |---------|--------|---------|--------|--------|
-| LCP | 2.4s | 0.8s | < 2.5s | OK |
-| TBT | 10ms | 0ms | < 200ms | Excelente |
+| LCP | 2.0s | 0.5s | < 2.5s | OK |
+| TBT | 0ms | 0ms | < 200ms | Excelente |
 | CLS | 0.018 | 0.001 | < 0.1 | Excelente |
-| FCP | 2.2s | 0.7s | < 1.8s | Desktop OK |
-
-Best Practices 78 por uso de HTTP sin TLS (pendiente para fases posteriores).
 
 ---
 
@@ -72,6 +69,5 @@ Best Practices 78 por uso de HTTP sin TLS (pendiente para fases posteriores).
 
 ## Pendiente para fases posteriores
 
-- **HTTPS/TLS** (mejoraría Best Practices y habilitaría HTTP/2)
 - **Load testing** con k6 o Artillery (p95 API response time)
 - **PostgreSQL tuning** si el volumen de datos crece de forma significativa
