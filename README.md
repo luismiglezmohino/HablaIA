@@ -366,7 +366,7 @@ hablaia/
 ├── .github/          # CI/CD y plantillas
 │   └── workflows/    # 3 CI (backend, frontend, commitlint) + 1 CD
 ├── .husky/           # Git hooks (pre-commit, pre-push)
-├── agents/           # Agentes IA para desarrollo
+├── agents/           # 12 agentes IA para desarrollo (reutilizables en otros proyectos)
 ├── backend/          # API REST Symfony 7
 ├── docker/           # Configuración Docker
 ├── docs/             # Documentación
