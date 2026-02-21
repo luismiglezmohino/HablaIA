@@ -83,8 +83,11 @@ Interceptor Symfony (`kernel.response`) que añade a todas las respuestas:
 
 ---
 
+## Implementado post-auditoría
+
+- **HSTS** vía Nginx (21 feb 2026)
+
 ## Pendiente para fases posteriores
 
 - **Autenticación JWT** (Fase 3)
 - **Paginación** en endpoints de listado
-- **HSTS** vía Nginx cuando se configure HTTPS en producción

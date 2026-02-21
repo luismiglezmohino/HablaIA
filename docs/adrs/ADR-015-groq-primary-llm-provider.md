@@ -40,7 +40,7 @@ multi-proveedor del ADR-009.
 
 ```
 PHRASE_PROVIDER=openai    # Groq usa API OpenAI-compatible
-OPENAI_BASE_URL=https://api.groq.com/openai/v1
+OPENAI_API_URL=https://api.groq.com/openai/v1/chat/completions
 OPENAI_MODEL=openai/gpt-oss-120b
 OPENAI_API_KEY=gsk_...
 ```
@@ -66,7 +66,7 @@ Si el volumen crece, cambiar a Llama 70B (12K TPM, mayor capacidad) es una varia
 ### Sin cambios en código
 
 Groq expone una API compatible con OpenAI (`/v1/chat/completions`). Se reutiliza
-`RealOpenAIPhraseGenerator` existente apuntando a `OPENAI_BASE_URL=https://api.groq.com/openai/v1`.
+`RealOpenAIPhraseGenerator` existente apuntando a `OPENAI_API_URL=https://api.groq.com/openai/v1/chat/completions`.
 No se necesita un `GroqPhraseGenerator` nuevo — esto valida de nuevo la extensibilidad de ADR-009.
 
 ### Impacto por capa

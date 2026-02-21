@@ -2,17 +2,38 @@
 
 > Comunicador Aumentativo y Alternativo (SAAC) con Inteligencia Artificial Humanizante
 
-[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Portfolio Project](https://img.shields.io/badge/Portfolio-TFM-blueviolet.svg)]()
-[![Development Status](https://img.shields.io/badge/Status-Fase%201%20Completada-brightgreen.svg)]()
-[![Fase](https://img.shields.io/badge/Fase-1%2F7-blue.svg)]()
-[![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php)](https://php.net)
-[![Symfony](https://img.shields.io/badge/Symfony-7.4-000000?logo=symfony)](https://symfony.com)
-[![Vue.js](https://img.shields.io/badge/Vue.js-3.5-4FC08D?logo=vue.js)](https://vuejs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript)](https://typescriptlang.org)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql)](https://postgresql.org)
+**Proyecto:**<br>
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge)](LICENSE)
+[![Fase](https://img.shields.io/badge/Fase-1%2F7%20Completada-brightgreen?style=for-the-badge)]()
+[![Tests](https://img.shields.io/badge/Tests-684%20passing-success?style=for-the-badge&logo=checkmarx)](docs/guides/QUALITY.md)
+[![PRs](https://img.shields.io/badge/PRs-94+-blueviolet?style=for-the-badge&logo=github)](https://github.com/luismiglezmohino/HablaIA/pulls?q=is%3Apr+is%3Amerged)
+[![ADRs](https://img.shields.io/badge/ADRs-15%20decisiones-orange?style=for-the-badge)](docs/adrs)
+[![Conventional Commits](https://img.shields.io/badge/Commits-Conventional-FE5196?style=for-the-badge&logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 
-**Demo:** [https://damevozya.es](https://damevozya.es) · **Slides:** [https://damevozya.es/slides/](https://damevozya.es/slides/)
+**Calidad:**<br>
+[![WCAG 2.2 AA](https://img.shields.io/badge/WCAG%202.2-AA-blue?style=for-the-badge)](docs/guides/ACCESSIBILITY.md)
+[![Lighthouse](https://img.shields.io/badge/Lighthouse-98%2F100-orange?style=for-the-badge&logo=lighthouse)](docs/guides/PERFORMANCE.md)
+[![OWASP](https://img.shields.io/badge/OWASP-0%20pendientes-green?style=for-the-badge&logo=owasp)](docs/guides/SECURITY.md)
+[![Clean Architecture](https://img.shields.io/badge/Clean-Architecture-blueviolet?style=for-the-badge)](docs/adrs/ADR-001-clean-architecture.md)
+[![TDD](https://img.shields.io/badge/TDD-Red%20Green%20Refactor-red?style=for-the-badge)](docs/guides/QUALITY.md)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](.github/workflows)
+[![Playwright](https://img.shields.io/badge/E2E-Playwright-2EAD33?style=for-the-badge&logo=playwright)](frontend/tests/e2e)
+[![Sentry](https://img.shields.io/badge/Sentry-Observability-362D59?style=for-the-badge&logo=sentry)](https://sentry.io)
+
+**IA y SAAC:**<br>
+[![Groq LLM](https://img.shields.io/badge/AI-Groq%20LLM-ff6600?style=for-the-badge)](docs/adrs/ADR-015-groq-primary-llm-provider.md)
+[![ARASAAC](https://img.shields.io/badge/SAAC-ARASAAC-E4572E?style=for-the-badge)](https://arasaac.org)
+
+**Stack:**<br>
+[![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?style=for-the-badge&logo=php)](https://php.net)
+[![Symfony](https://img.shields.io/badge/Symfony-7.4-000000?style=for-the-badge&logo=symfony&logoColor=white)](https://symfony.com)
+[![Vue.js](https://img.shields.io/badge/Vue.js-3.5-4FC08D?style=for-the-badge&logo=vue.js)](https://vuejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?style=for-the-badge&logo=typescript)](https://typescriptlang.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?style=for-the-badge&logo=postgresql)](https://postgresql.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker)](docker-compose.prod.yml)
+
+### [Demo: https://damevozya.es](https://damevozya.es) · [Slides: https://damevozya.es/slides/](https://damevozya.es/slides/)
 
 > **Nota:** El dominio `damevozya.es` es la URL de producción del proyecto. El nombre del proyecto es **HablaIA**.
 
@@ -555,6 +576,7 @@ Ver [LICENSE](LICENSE) para más detalles.
 ## Contacto
 
 - **GitHub:** [Perfil del autor](https://github.com/luismiglezmohino)
+- **LinkedIn:** [Luis Miguel González-Mohíno](https://www.linkedin.com/in/luismiguelgonzalezmohino/)
 - **Documentación:** `/docs` en este repositorio
 
 ---

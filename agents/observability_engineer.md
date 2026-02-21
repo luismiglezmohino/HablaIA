@@ -42,7 +42,7 @@ Implementar observabilidad completa: error tracking, logs estructurados, health 
   "correlationId": "abc-123",
   "message": "Failed to generate phrase",
   "context": {
-    "provider": "gemini",
+    "provider": "groq",
     "pictogramCount": 3
   }
 }
