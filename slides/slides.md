@@ -260,7 +260,7 @@ color: sky-light
     <div class="text-sm mt-1">ADRs</div>
   </div>
   <div class="bg-emerald-400 text-white rounded-lg p-4 text-center">
-    <div class="text-4xl font-bold">87+</div>
+    <div class="text-4xl font-bold">94+</div>
     <div class="text-sm mt-1">Pull Requests</div>
   </div>
   <div class="bg-rose-400 text-white rounded-lg p-4 text-center">
@@ -272,7 +272,7 @@ color: sky-light
     <div class="text-sm mt-1">Lighthouse A11y</div>
   </div>
   <div class="bg-teal-400 text-white rounded-lg p-4 text-center">
-    <div class="text-4xl font-bold">95/99</div>
+    <div class="text-4xl font-bold">98/100</div>
     <div class="text-sm mt-1">Performance M/D</div>
   </div>
 </div>

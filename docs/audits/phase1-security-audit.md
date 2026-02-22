@@ -462,9 +462,9 @@ El default `change_me_in_production_32_chars!` es aceptable para desarrollo loca
 
 El `VITE_SENTRY_DSN` se embebe en el bundle JS de producción (es una variable `VITE_` y Vite la incrusta en build time). Esto es **por diseño de Sentry**: el DSN del frontend es público y solo permite enviar eventos. El rate limiting y la protección contra abuso son responsabilidad de Sentry Cloud. Documentado como informativo.
 
-### INFO-05: TLS No Configurado
+### INFO-05: TLS — Resuelto
 
-El despliegue actual en Hetzner usa HTTP (puerto 80). TLS con Let's Encrypt es recomendable antes de uso real por usuarios. No es crítico para Fase 1 MVP en evaluación académica.
+HTTPS configurado con Let's Encrypt (dominio `damevozya.es`) el 21 de febrero de 2026. Nginx redirige HTTP → HTTPS. HSTS habilitado. Lighthouse Best Practices subió de 78 a 100.
 
 ### INFO-06: Alcance del Rate Limiting
 
