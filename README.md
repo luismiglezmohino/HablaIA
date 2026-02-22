@@ -560,10 +560,11 @@ docs/adrs/
 
 **Todos los derechos reservados.**
 
-Este proyecto es un **trabajo de fin de máster (TFM)** y proyecto de portfolio. El código fuente es propietario y se comparte de forma privada únicamente para:
+Este proyecto es un **trabajo de fin de máster (TFM)** y proyecto de portfolio. El código fuente es propietario y se comparte públicamente únicamente para:
 
+- Demostración de competencias técnicas del autor
 - Evaluación académica (tutores/evaluadores TFM)
-- Demostración de competencias técnicas (procesos de selección)
+- Evaluación en procesos de selección laboral
 
 **NO está permitido** ningún uso, copia, modificación o distribución sin autorización escrita.
 
