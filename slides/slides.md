@@ -101,7 +101,7 @@ color: sky-light
   </div>
   <div class="bg-violet-400 text-white rounded-lg p-3">
     <div class="text-lg font-bold">IA generativa</div>
-    <div class="text-sm mt-1">Primer SAAC que humaniza frases con un LLM</div>
+    <div class="text-sm mt-1">De pictogramas a frases naturales — gracias a la IA</div>
   </div>
   <div class="bg-amber-400 text-white rounded-lg p-3">
     <div class="text-lg font-bold">Sin barreras de entrada</div>
