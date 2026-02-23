@@ -50,6 +50,23 @@ function handleGridKeydown(event: KeyboardEvent) {
 
   event.preventDefault()
   buttons[next]?.focus()
+
+  // Diferir corrección de scroll al siguiente frame para que el focus ring se pinte primero
+  requestAnimationFrame(() => {
+    const card = buttons[next]?.parentElement
+    if (card) {
+      const rect = card.getBoundingClientRect()
+      const header = document.querySelector('header')
+      const stickySection = header?.nextElementSibling
+      const stickyBottom = stickySection?.getBoundingClientRect().bottom
+        ?? header?.getBoundingClientRect().bottom
+        ?? 0
+
+      if (rect.top < stickyBottom) {
+        window.scrollBy({ top: rect.top - stickyBottom - 8, behavior: 'instant' })
+      }
+    }
+  })
 }
 </script>
 
