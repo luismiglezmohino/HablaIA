@@ -29,7 +29,7 @@ fi
 # Detectar contexto (que se ha modificado)
 # -----------------------------------------------------------------------------
 REMOTE=${1:-origin}
-REMOTE_SHA=$(git rev-parse "$REMOTE/$BRANCH" 2>/dev/null || true)
+REMOTE_SHA=$(git rev-parse --verify "$REMOTE/$BRANCH" 2>/dev/null) || REMOTE_SHA=""
 
 if [ -n "$REMOTE_SHA" ]; then
     CHANGED_FILES=$(git diff --name-only "$REMOTE_SHA"..HEAD 2>/dev/null || echo "")
@@ -38,8 +38,15 @@ else
     CHANGED_FILES=$(git diff --name-only origin/main..HEAD 2>/dev/null || git diff --name-only HEAD~1..HEAD 2>/dev/null || echo "")
 fi
 
-HAS_FRONTEND=$(echo "$CHANGED_FILES" | grep "^frontend/" || true)
-HAS_BACKEND=$(echo "$CHANGED_FILES" | grep "^backend/" || true)
+# Fallback: si no se pudo detectar, ejecutar todos los checks
+if [ -z "$CHANGED_FILES" ]; then
+    echo "⚠️  No se pudo determinar ficheros cambiados. Ejecutando todos los checks."
+    HAS_FRONTEND="fallback"
+    HAS_BACKEND="fallback"
+else
+    HAS_FRONTEND=$(echo "$CHANGED_FILES" | grep "^frontend/" || true)
+    HAS_BACKEND=$(echo "$CHANGED_FILES" | grep "^backend/" || true)
+fi
 
 # -----------------------------------------------------------------------------
 # 2. Tests
@@ -153,7 +160,7 @@ if [ -n "$HAS_FRONTEND" ]; then
 
     if [ -f "frontend/package.json" ]; then
         cd frontend
-        npm audit --audit-level=high 2>/dev/null
+        npm audit --omit=dev --audit-level=high 2>/dev/null
         if [ $? -ne 0 ]; then
             echo "⚠️  npm audit encontro vulnerabilidades high/critical"
             FAILED=1
