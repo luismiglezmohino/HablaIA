@@ -15,7 +15,7 @@ const emit = defineEmits<{
 <template>
   <div
     :style="{ borderTopColor: props.categoryColor, backgroundColor: props.categoryColor + '14' }"
-    class="group rounded-2xl border border-surface-400 border-t-[5px] shadow-card motion-safe:transition-all motion-safe:duration-200 motion-safe:hover:shadow-card-hover motion-safe:hover:-translate-y-1 has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-primary-500 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:shadow-card-hover has-[:focus-visible]:-translate-y-1"
+    class="group rounded-2xl border border-surface-400 border-t-[5px] shadow-card motion-safe:transition-all motion-safe:duration-200 motion-safe:hover:shadow-card-hover motion-safe:hover:-translate-y-1 has-[:focus-visible]:z-30 has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-primary-500 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:shadow-card-hover has-[:focus-visible]:-translate-y-1"
   >
     <button
       :aria-label="`Pictograma ${props.pictogram.label}`"

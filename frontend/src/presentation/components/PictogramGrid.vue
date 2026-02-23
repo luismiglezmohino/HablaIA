@@ -30,6 +30,26 @@ function getColumnCount(grid: HTMLElement): number {
   return children.length
 }
 
+const SCROLL_MARGIN = 12
+
+function ensureCardVisible(card: HTMLElement) {
+  const rect = card.getBoundingClientRect()
+
+  const header = document.querySelector('header')
+  const stickyBottom = header?.nextElementSibling?.getBoundingClientRect().bottom
+    ?? header?.getBoundingClientRect().bottom
+    ?? 0
+
+  const footerRect = document.querySelector('footer')?.getBoundingClientRect()
+  const footerTop = (footerRect && footerRect.height > 0) ? footerRect.top : window.innerHeight
+
+  if (rect.top < stickyBottom + SCROLL_MARGIN) {
+    window.scrollBy({ top: rect.top - stickyBottom - SCROLL_MARGIN, behavior: 'instant' })
+  } else if (rect.bottom + SCROLL_MARGIN > footerTop) {
+    window.scrollBy({ top: rect.bottom + SCROLL_MARGIN - footerTop, behavior: 'instant' })
+  }
+}
+
 function handleGridKeydown(event: KeyboardEvent) {
   const grid = event.currentTarget as HTMLElement
   const buttons = Array.from(grid.querySelectorAll<HTMLButtonElement>('button'))
@@ -49,23 +69,10 @@ function handleGridKeydown(event: KeyboardEvent) {
   }
 
   event.preventDefault()
-  buttons[next]?.focus()
-
-  // Diferir corrección de scroll al siguiente frame para que el focus ring se pinte primero
+  buttons[next]?.focus({ preventScroll: true })
   requestAnimationFrame(() => {
     const card = buttons[next]?.parentElement
-    if (card) {
-      const rect = card.getBoundingClientRect()
-      const header = document.querySelector('header')
-      const stickySection = header?.nextElementSibling
-      const stickyBottom = stickySection?.getBoundingClientRect().bottom
-        ?? header?.getBoundingClientRect().bottom
-        ?? 0
-
-      if (rect.top < stickyBottom) {
-        window.scrollBy({ top: rect.top - stickyBottom - 8, behavior: 'instant' })
-      }
-    }
+    if (card) ensureCardVisible(card)
   })
 }
 </script>
