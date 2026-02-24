@@ -33,7 +33,7 @@ servers:
 
 tags:
   - name: Health
-    description: Health check endpoints for container orchestration (Kubernetes, Docker)
+    description: Health check endpoints for container orchestration (Docker Compose)
   - name: Categories
     description: SAAC category management (Acciones, Emociones, Alimentos, etc.)
   - name: Pictograms
@@ -60,7 +60,7 @@ paths:
                 $ref: '#/components/schemas/HealthResponse'
               example:
                 status: healthy
-                timestamp: "2024-02-04T15:30:00+00:00"
+                timestamp: "2026-02-04T15:30:00+00:00"
                 components:
                   database:
                     status: up
@@ -73,7 +73,7 @@ paths:
                 $ref: '#/components/schemas/HealthResponse'
               example:
                 status: unhealthy
-                timestamp: "2024-02-04T15:30:00+00:00"
+                timestamp: "2026-02-04T15:30:00+00:00"
                 components:
                   database:
                     status: down
@@ -86,17 +86,7 @@ paths:
       summary: Liveness probe
       description: |
         Returns 200 if the PHP process is alive.
-        Used by Kubernetes to determine when to restart the container.
-
-        **Kubernetes configuration:**
-        ```yaml
-        livenessProbe:
-          httpGet:
-            path: /api/health/live
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        ```
+        Used by container orchestrators to determine when to restart the container.
       operationId: getLiveness
       responses:
         '200':
@@ -115,17 +105,7 @@ paths:
       summary: Readiness probe
       description: |
         Returns 200 only if all dependencies (database, etc.) are available.
-        Used by Kubernetes to determine when to send traffic to the pod.
-
-        **Kubernetes configuration:**
-        ```yaml
-        readinessProbe:
-          httpGet:
-            path: /api/health/ready
-            port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 5
-        ```
+        Used by container orchestrators to determine when to route traffic.
       operationId: getReadiness
       responses:
         '200':

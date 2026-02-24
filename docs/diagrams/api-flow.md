@@ -407,34 +407,6 @@ flowchart TB
     style NotReady fill:#ffcdd2
 ```
 
-### Kubernetes Configuration
-
-```yaml
-livenessProbe:
-  httpGet:
-    path: /api/health/live
-    port: 8080
-  initialDelaySeconds: 5
-  periodSeconds: 10
-  failureThreshold: 3
-
-readinessProbe:
-  httpGet:
-    path: /api/health/ready
-    port: 8080
-  initialDelaySeconds: 10
-  periodSeconds: 5
-  failureThreshold: 3
-
-startupProbe:
-  httpGet:
-    path: /api/health/ready
-    port: 8080
-  initialDelaySeconds: 0
-  periodSeconds: 5
-  failureThreshold: 30
-```
-
 ---
 
 ## Resumen de APIs
@@ -442,8 +414,8 @@ startupProbe:
 | Endpoint | Método | Propósito | Latencia Esperada |
 |----------|--------|-----------|-------------------|
 | `/api/health` | GET | Monitoring general | <10ms |
-| `/api/health/live` | GET | Kubernetes liveness | <1ms |
-| `/api/health/ready` | GET | Kubernetes readiness | <10ms |
+| `/api/health/live` | GET | Liveness probe | <1ms |
+| `/api/health/ready` | GET | Readiness probe | <10ms |
 | `/api/categories` | GET | Listar categorías | <50ms |
 | `/api/categories/{id}` | GET | Detalle categoría | <20ms |
 | `/api/pictograms` | GET | Listar pictogramas | <100ms |
