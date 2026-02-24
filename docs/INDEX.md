@@ -2,7 +2,7 @@
 
 > Guía de navegación de toda la documentación del proyecto
 
-**Última actualización:** 14 de febrero de 2026
+**Última actualización:** 24 de febrero de 2026
 
 ---
 
@@ -86,7 +86,7 @@ Informes de auditoría por fase del proyecto.
 
 | Documento | Descripción |
 |-----------|-------------|
-| [prompt-tuning-validation.md](testing/prompt-tuning-validation.md) | Validación de prompt tuning LLM con 19 test cases (100%) |
+| [prompt-tuning-validation.md](testing/prompt-tuning-validation.md) | Validación de prompt tuning LLM multi-modelo |
 
 ---
 
