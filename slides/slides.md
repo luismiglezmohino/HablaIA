@@ -234,7 +234,7 @@ El vocabulario núcleo (core vocabulary) cubre **~80% de la comunicación diaria
 </div>
 <div class="text-sm">
 
-- **API oficial** ARASAAC — Centro Aragonés, Gobierno de Aragón (CC BY-NC-SA 4.0)
+- **API oficial** [ARASAAC](http://www.arasaac.org) — Autor pictogramas: Sergio Palao. Licencia: CC (BY-NC-SA). Propiedad: Gobierno de Aragón (España)
 - **Estándar de referencia** en España y Latinoamérica
 - **Buscador** — si un pictograma no está en la base, lo busca en la API de ARASAAC (+30.000) y lo muestra al instante
 
