@@ -568,7 +568,7 @@ Este proyecto es un **trabajo de fin de máster (TFM)** y proyecto de portfolio.
 
 **NO está permitido** ningún uso, copia, modificación o distribución sin autorización escrita.
 
-**Nota sobre ARASAAC:** Los pictogramas de ARASAAC están bajo licencia **Creative Commons BY-NC-SA 4.0**.
+**Nota sobre ARASAAC:** Autor pictogramas: Sergio Palao. Origen: [ARASAAC](http://www.arasaac.org). Licencia: CC (BY-NC-SA). Propiedad: Gobierno de Aragón (España).
 
 Ver [LICENSE](LICENSE) para más detalles.
 
@@ -584,6 +584,6 @@ Ver [LICENSE](LICENSE) para más detalles.
 
 ## Agradecimientos
 
-- **ARASAAC** (Gobierno de Aragón) por proporcionar pictogramas de calidad bajo licencia Creative Commons BY-NC-SA 4.0
+- **ARASAAC** — Autor pictogramas: Sergio Palao. Origen: [ARASAAC](http://www.arasaac.org). Licencia: CC (BY-NC-SA). Propiedad: Gobierno de Aragón (España)
 - **BIG School** y su equipo docente por la formación y el acompañamiento durante el máster:
   - Brais Moure, Martin Cristobal, Carlos Azaustre, Aris Guimerá, Alan Buscaglia, Kiko Palomares, Nerea Luis, Xavi Portilla, Daniela Maissi
